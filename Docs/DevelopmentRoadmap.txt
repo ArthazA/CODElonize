@@ -1,0 +1,224 @@
+# CODElonize Development Roadmap
+
+The project should be implemented incrementally. Each phase should produce a working application before moving to the next phase.
+
+=========================================================
+PHASE 0 — PROJECT SETUP
+=======================
+
+□ Create Xcode project
+□ Configure Git repository
+□ Create folder structure
+□ Create documentation
+□ Import RealityKit and ARKit
+□ Verify application launches
+
+Goal:
+A clean project foundation.
+
+---
+
+=========================================================
+PHASE 1 — CORE AR
+=================
+
+□ Initialize ARSession
+□ Plane detection
+□ Host places island
+□ Load island model
+□ Display virtual pinpoints
+□ Verify island remains stable
+
+Goal:
+A single-player AR scene.
+
+---
+
+=========================================================
+PHASE 2 — MULTIPLAYER NETWORKING
+================================
+
+□ Create lobby
+□ Join lobby
+□ Generate lobby code
+□ Peer discovery
+□ Ready system
+□ Start game synchronization
+
+Goal:
+Multiple devices connect successfully.
+
+---
+
+=========================================================
+PHASE 3 — SHARED AR
+===================
+
+□ Share AR anchor
+□ Synchronize island placement
+□ Synchronize pinpoints
+□ Verify every player sees the same island
+
+Goal:
+Shared AR environment.
+
+---
+
+=========================================================
+PHASE 4 — MATCH STATE
+=====================
+
+□ Implement Shared Match State
+□ Player model
+□ Area model
+□ Lobby model
+□ Match model
+□ Synchronization messages
+
+Goal:
+Authoritative game state.
+
+---
+
+=========================================================
+PHASE 5 — QUIZ SYSTEM
+=====================
+
+□ Load JSON files
+□ Randomize questions
+□ Display quiz UI
+□ Timer
+□ Answer validation
+□ Completion time recording
+
+Goal:
+Playable quiz system.
+
+---
+
+=========================================================
+PHASE 6 — AREA CONQUEST
+=======================
+
+□ Area ownership
+□ Best-time comparison
+□ Conquer animation
+□ Ownership synchronization
+□ Area locking
+
+Goal:
+Players can conquer territories.
+
+---
+
+=========================================================
+PHASE 7 — POWER-UP SYSTEM
+=========================
+
+□ Random spawning
+□ Collection
+□ Inventory (HUD)
+□ Activation
+□ Earthquake
+□ Tsunami
+□ Pocket Watch
+
+Goal:
+Complete gameplay mechanics.
+
+---
+
+=========================================================
+PHASE 8 — USER INTERFACE
+========================
+
+□ Home screen
+□ Lobby screen
+□ Ready screen
+□ HUD
+□ Quiz UI
+□ Results screen
+□ Winner screen
+
+Goal:
+Complete player experience.
+
+---
+
+=========================================================
+PHASE 9 — AUDIO & VISUAL POLISH
+===============================
+
+□ Sound effects
+□ Background music
+□ Particle effects
+□ Animations
+□ UI transitions
+□ Feedback effects
+
+Goal:
+Game feel.
+
+---
+
+=========================================================
+PHASE 10 — TESTING
+==================
+
+□ Unit testing
+□ Multiplayer testing
+□ AR alignment testing
+□ Stress testing
+□ Edge case testing
+□ Bug fixing
+
+Goal:
+Stable gameplay.
+
+---
+
+=========================================================
+PHASE 11 — OPTIMIZATION
+=======================
+
+□ Reduce network traffic
+□ Improve AR performance
+□ Optimize model loading
+□ Memory optimization
+□ Battery optimization
+
+Goal:
+Smooth gameplay.
+
+---
+
+=========================================================
+PHASE 12 — FINALIZATION
+=======================
+
+□ Documentation
+□ README update
+□ Gameplay balancing
+□ Code cleanup
+□ Refactoring
+□ Final presentation build
+
+Goal:
+Production-ready thesis prototype.
+
+=========================================================
+OPTIONAL FUTURE IMPROVEMENTS
+============================
+
+□ Additional power-ups
+□ New maps
+□ New quiz topics
+□ AI-generated questions
+□ Replay system
+□ Statistics dashboard
+□ Spectator mode
+□ Cross-platform support
+□ Cloud synchronization
+□ Online matchmaking
+□ Persistent player profiles
+

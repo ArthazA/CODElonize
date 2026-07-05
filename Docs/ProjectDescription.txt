@@ -1,0 +1,21 @@
+## CODElonize Gameplay and Architecture Overview
+
+CODElonize is a **co-located multiplayer shared AR educational strategy game** designed for **2–5 players**. Rather than being an open-world AR experience, it functions as a **shared AR board game** where all players must be physically present in the same location and view the same virtual island through their own devices. The island acts as the shared game board and is anchored once by the host at the beginning of the match. After the anchor is established, every player sees the island in the same physical position through synchronized AR.
+
+A match consists of a single fixed island containing **six conquerable areas**, each representing a different learning topic. The island itself is purely visual and cannot be manipulated by players. Instead, players interact with **virtual pinpoints** placed on each area and with randomly spawned **power-ups**. Selecting a virtual pinpoint opens a quiz interface on the player's device.
+
+To conquer an area, a player answers **three multiple-choice questions** belonging to that area's topic. Every player may attempt each area **only once per match**. The completion time is recorded, and the player with the fastest valid completion time becomes the owner of that area. Ownership is synchronized in real time so that every player immediately sees changes to the island.
+
+Question sets are randomly selected from predefined JSON files before each attempt. However, every player attempting the same area receives **exactly the same questions** to ensure fairness. If an Earthquake power-up resets an area, a new randomized question set is generated and shared consistently among all players.
+
+Power-ups spawn randomly across the island during gameplay. The first player to collect a power-up stores it in their personal HUD, where it may be activated strategically at any time. Example power-ups include:
+
+* **Earthquake** – Generates a new question set for the selected area, clears all recorded completion times, removes its current owner, and allows the area to be conquered again.
+* **Tsunami** – Immediately removes all players currently attempting the selected area and temporarily locks the area from further attempts.
+* **Pocket Watch** – Reduces the activating player's recorded completion time for a completed area by 10%, potentially changing ownership if the adjusted time becomes the fastest.
+
+Matches are temporary and reset completely once they end. While the island layout remains fixed across matches, question sets and power-up spawns are randomized, providing replayability while maintaining a consistent game board.
+
+Upon launching the application, players may either create or join a lobby. Creating a lobby generates a unique lobby code and designates that player as the host. The host is responsible for placing the shared AR anchor, after which all joining players synchronize to the same island. Once every participant indicates they are ready, the host begins the match.
+
+Networking follows a **host-authoritative peer-to-peer architecture**. The host maintains the authoritative game state—including conquered areas, recorded completion times, power-up ownership, and match events—and synchronizes updates to all connected players in real time. This ensures that every participant shares a consistent view of the match without requiring a dedicated cloud game server.
