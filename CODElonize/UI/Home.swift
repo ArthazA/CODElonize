@@ -2,7 +2,7 @@ import SwiftUI
 
 struct Home: View {
     @EnvironmentObject var appState: AppState
-    @State private var roomCode = ["5", "5", "5", "5"] // Placeholder for the inputs
+    @State private var roomCode = ["", "", "", ""] // Placeholder for the inputs
     
     var body: some View {
         ZStack {
@@ -48,6 +48,8 @@ struct Home: View {
                             .font(.system(size: 16, weight: .semibold, design: .rounded))
                             .foregroundColor(.white)
                             .padding(.horizontal, 10)
+                            .fixedSize()
+                            .layoutPriority(1)
                         Rectangle()
                             .fill(Color.white.opacity(0.5))
                             .frame(height: 1)

@@ -72,6 +72,7 @@ class IslandPlacement {
         }
     }
     
+    
     // MARK: - Placement
     
     /// Places the island at the given raycast result location in the AR scene.
@@ -93,9 +94,24 @@ class IslandPlacement {
         
         // Load the model
         let model = try loadIslandModel()
+        func printHierarchy(_ entity: Entity, level: Int = 0) {
+            print(String(repeating: "-", count: level), entity.name)
+
+            for child in entity.children {
+                printHierarchy(child, level: level + 1)
+            }
+        }
+
+        printHierarchy(model)
         
         // Create an anchor at the raycast hit position
         let anchor = AnchorEntity(raycastResult: result)
+        
+        let bounds = model.visualBounds(relativeTo: nil)
+        AppLogger.ar.info("Island RAW size (before scale): \(bounds.extents)")
+        let height = bounds.extents.y
+        
+        model.position.y = -(height / 2) - 0.02
         
         // Apply transform
         model.scale = SIMD3<Float>(repeating: scale)
