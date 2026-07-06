@@ -77,6 +77,25 @@ enum GameConstants {
     /// Pocket Watch time reduction factor (10%).
     static let pocketWatchReduction: Float = 0.10
     
+    /// Duration in seconds that a Tsunami power-up locks an area.
+    static let tsunamiLockDuration: TimeInterval = 30
+    
+    // MARK: - Quiz
+    
+    /// How frequently the quiz elapsed timer updates (in seconds).
+    static let quizTimerUpdateInterval: TimeInterval = 0.1
+    
+    /// Maps the display topic names (from `areaTopics`) to their JSON filenames (without extension).
+    /// The JSON files live in the app bundle under `Questions/`.
+    static let topicFileMapping: [String: String] = [
+        "Algorithms": "algorithms",
+        "AI": "ai",
+        "Cybersecurity": "cybersecurity",
+        "OOP": "oop",
+        "Computer Networks": "computernetworks",
+        "Database": "database"
+    ]
+    
     // MARK: - Lobby
     
     /// Number of digits in a lobby code.

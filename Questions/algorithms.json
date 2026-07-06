@@ -1,0 +1,23 @@
+{
+  "topic": "algorithms",
+  "questions": [
+    {
+      "id": "A1000001-0001-0001-0001-000000000001",
+      "text": "What is the time complexity of binary search?",
+      "choices": ["O(n)", "O(log n)", "O(n log n)", "O(1)"],
+      "correctIndex": 1
+    },
+    {
+      "id": "A1000001-0001-0001-0001-000000000002",
+      "text": "Which sorting algorithm has the best average-case time complexity?",
+      "choices": ["Bubble Sort", "Selection Sort", "Merge Sort", "Insertion Sort"],
+      "correctIndex": 2
+    },
+    {
+      "id": "A1000001-0001-0001-0001-000000000003",
+      "text": "What data structure does BFS use?",
+      "choices": ["Stack", "Queue", "Heap", "Tree"],
+      "correctIndex": 1
+    }
+  ]
+}
