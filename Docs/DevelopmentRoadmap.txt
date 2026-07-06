@@ -20,7 +20,7 @@ A clean project foundation.
 
 =========================================================
 PHASE 1 — CORE AR
-=================
+================= Dila
 
 □ Initialize ARSession
 □ Plane detection
@@ -36,7 +36,7 @@ A single-player AR scene.
 
 =========================================================
 PHASE 2 — MULTIPLAYER NETWORKING
-================================
+================================ Dila
 
 □ Create lobby
 □ Join lobby
@@ -52,7 +52,7 @@ Multiple devices connect successfully.
 
 =========================================================
 PHASE 3 — SHARED AR
-===================
+=================== Dila
 
 □ Share AR anchor
 □ Synchronize island placement
@@ -66,7 +66,7 @@ Shared AR environment.
 
 =========================================================
 PHASE 4 — MATCH STATE
-=====================
+===================== Dila
 
 □ Implement Shared Match State
 □ Player model
@@ -82,7 +82,7 @@ Authoritative game state.
 
 =========================================================
 PHASE 5 — QUIZ SYSTEM
-=====================
+===================== Arthaz
 
 □ Load JSON files
 □ Randomize questions
@@ -98,7 +98,7 @@ Playable quiz system.
 
 =========================================================
 PHASE 6 — AREA CONQUEST
-=======================
+======================= Arthaz
 
 □ Area ownership
 □ Best-time comparison
@@ -113,7 +113,7 @@ Players can conquer territories.
 
 =========================================================
 PHASE 7 — POWER-UP SYSTEM
-=========================
+========================= Arthaz
 
 □ Random spawning
 □ Collection
@@ -130,7 +130,7 @@ Complete gameplay mechanics.
 
 =========================================================
 PHASE 8 — USER INTERFACE
-========================
+======================== Arthaz
 
 □ Home screen
 □ Lobby screen
