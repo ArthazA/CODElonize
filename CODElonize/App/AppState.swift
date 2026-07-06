@@ -36,6 +36,34 @@ class AppState: ObservableObject {
     /// so the camera/session doesn't start until the AR view actually appears.
     let arSessionManager = ARSessionManager()
     
+    /// The match manager. Coordinates all gameplay systems (Phase 6).
+    /// Injected into the environment for UI views to observe.
+    let matchManager = MatchManager()
+    
+    /// Subscriptions for reactive wiring.
+    private var cancellables = Set<AnyCancellable>()
+    
+    init() {
+        setupPinpointWiring()
+    }
+    
+    // MARK: - Reactive Wiring
+    
+    /// Connects AR pinpoint taps to the match manager.
+    ///
+    /// When `ARSessionManager.tappedAreaIndex` changes (player tapped a pinpoint
+    /// in AR), it routes to `MatchManager.handlePinpointTap` to start the quiz flow.
+    private func setupPinpointWiring() {
+        arSessionManager.$tappedAreaIndex
+            .compactMap { $0 }
+            .sink { [weak self] areaIndex in
+                self?.matchManager.handlePinpointTap(areaIndex: areaIndex)
+                // Reset the tap so it can fire again
+                self?.arSessionManager.tappedAreaIndex = nil
+            }
+            .store(in: &cancellables)
+    }
+    
     // MARK: - Navigation
     
     /// Navigates to a new screen.
@@ -47,6 +75,8 @@ class AppState: ObservableObject {
     /// Resets the app back to the home screen and clears session state.
     func returnToHome() {
         arSessionManager.resetSession()
+        matchManager.gameState.reset()
+        matchManager.matchResult = nil
         isHost = false
         currentScreen = .home
         AppLogger.ui.info("Returned to home, session reset")

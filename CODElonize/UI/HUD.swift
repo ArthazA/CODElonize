@@ -1,64 +1,27 @@
 import SwiftUI
 
+/// The heads-up display shown during gameplay.
+///
+/// Displays the live leaderboard (top-left), match countdown timer (top-right),
+/// and the power-up action bar (bottom). All data is driven by `MatchManager`.
 struct HUD: View {
-    let players = [
-        ("Adi", 3),
-        ("Arthaz", 1),
-        ("Dila", 1),
-        ("Kinah", 1),
-        ("Barra", 1)
-    ]
+    @EnvironmentObject var matchManager: MatchManager
     
     var body: some View {
         VStack {
             HStack(alignment: .top) {
                 // Top Left: Leaderboard
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Area Conquer")
-                        .font(.system(size: 16, weight: .heavy, design: .rounded))
-                        .foregroundColor(Color.themeOrange)
-                        .padding(.bottom, 4)
-                    
-                    ForEach(0..<players.count, id: \.self) { index in
-                        let player = players[index]
-                        HStack {
-                            Text(player.0)
-                                .font(.system(size: 14, weight: .semibold, design: .rounded))
-                                .foregroundColor(.white)
-                            Spacer()
-                            Text("\(player.1) area")
-                                .font(.system(size: 14, weight: .heavy, design: .rounded))
-                                .foregroundColor(.white)
-                        }
-                        if index < players.count - 1 {
-                            Divider().background(Color.white.opacity(0.5))
-                        }
-                    }
-                }
-                .padding(16)
-                .frame(width: 150)
-                .background(Color.themeDarkTeal.opacity(0.9))
-                .cornerRadius(12, corners: [.bottomRight])
-                .edgesIgnoringSafeArea(.top)
+                leaderboardPanel
                 
                 Spacer()
                 
                 // Top Right: Timer
-                Text("05:00")
-                    .font(.system(size: 36, weight: .heavy, design: .rounded))
-                    .foregroundColor(.white)
-                    .padding(.top, 50)
-                    .padding(.trailing, 20)
-                    // Simple outline effect using shadows
-                    .shadow(color: Color.themeOrange, radius: 1, x: 2, y: 2)
-                    .shadow(color: Color.themeOrange, radius: 1, x: -2, y: -2)
-                    .shadow(color: Color.themeOrange, radius: 1, x: 2, y: -2)
-                    .shadow(color: Color.themeOrange, radius: 1, x: -2, y: 2)
+                timerDisplay
             }
             
             Spacer()
             
-            // Bottom Action Bar
+            // Bottom Action Bar (power-ups — Phase 7 placeholder)
             HStack(spacing: 20) {
                 ActionButton(iconName: "drop.fill", color: .blue)
                 ActionButton(iconName: "house.fill", color: .red)
@@ -70,6 +33,64 @@ struct HUD: View {
             .cornerRadius(24)
             .padding(.bottom, 30)
         }
+    }
+    
+    // MARK: - Leaderboard Panel
+    
+    private var leaderboardPanel: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Area Conquer")
+                .font(.system(size: 16, weight: .heavy, design: .rounded))
+                .foregroundColor(Color.themeOrange)
+                .padding(.bottom, 4)
+            
+            if matchManager.leaderboard.isEmpty {
+                Text("No players")
+                    .font(.system(size: 14, weight: .semibold, design: .rounded))
+                    .foregroundColor(.white.opacity(0.6))
+            } else {
+                ForEach(Array(matchManager.leaderboard.enumerated()), id: \.element.playerID) { index, score in
+                    HStack {
+                        Text(score.displayName)
+                            .font(.system(size: 14, weight: .semibold, design: .rounded))
+                            .foregroundColor(.white)
+                        Spacer()
+                        Text("\(score.conqueredAreas) area")
+                            .font(.system(size: 14, weight: .heavy, design: .rounded))
+                            .foregroundColor(.white)
+                    }
+                    if index < matchManager.leaderboard.count - 1 {
+                        Divider().background(Color.white.opacity(0.5))
+                    }
+                }
+            }
+        }
+        .padding(16)
+        .frame(width: 150)
+        .background(Color.themeDarkTeal.opacity(0.9))
+        .cornerRadius(12, corners: [.bottomRight])
+        .edgesIgnoringSafeArea(.top)
+    }
+    
+    // MARK: - Timer Display
+    
+    private var timerDisplay: some View {
+        Text(matchManager.timerSystem.formattedTime)
+            .font(.system(size: 36, weight: .heavy, design: .rounded))
+            .foregroundColor(timerColor)
+            .monospacedDigit()
+            .padding(.top, 50)
+            .padding(.trailing, 20)
+            // Outline effect using shadows
+            .shadow(color: Color.themeOrange, radius: 1, x: 2, y: 2)
+            .shadow(color: Color.themeOrange, radius: 1, x: -2, y: -2)
+            .shadow(color: Color.themeOrange, radius: 1, x: 2, y: -2)
+            .shadow(color: Color.themeOrange, radius: 1, x: -2, y: 2)
+    }
+    
+    /// Timer text color — turns red when under 60 seconds.
+    private var timerColor: Color {
+        matchManager.timerSystem.remainingTime <= 60 ? .red : .white
     }
 }
 
@@ -103,5 +124,6 @@ struct ActionButton: View {
     ZStack {
         Color.black
         HUD()
+            .environmentObject(MatchManager())
     }
 }

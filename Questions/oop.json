@@ -1,0 +1,23 @@
+{
+  "topic": "oop",
+  "questions": [
+    {
+      "id": "A4000001-0001-0001-0001-000000000001",
+      "text": "Which OOP principle allows a class to inherit from another class?",
+      "choices": ["Encapsulation", "Polymorphism", "Inheritance", "Abstraction"],
+      "correctIndex": 2
+    },
+    {
+      "id": "A4000001-0001-0001-0001-000000000002",
+      "text": "What is encapsulation?",
+      "choices": ["Hiding internal details", "Creating multiple objects", "Overriding methods", "Extending classes"],
+      "correctIndex": 0
+    },
+    {
+      "id": "A4000001-0001-0001-0001-000000000003",
+      "text": "What keyword is used to create a subclass in Swift?",
+      "choices": ["extends", "implements", "class SubClass: SuperClass", "inherits"],
+      "correctIndex": 2
+    }
+  ]
+}

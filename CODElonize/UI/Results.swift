@@ -1,22 +1,19 @@
 import SwiftUI
 
+/// The post-match results screen showing the winner and final leaderboard.
+///
+/// Reads from `MatchManager.matchResult` for live data instead of hardcoded values.
 struct Results: View {
-    let winner = "ADI"
-    
-    let leaderboard = [
-        ("Adi", 3),
-        ("Arthaz", 1),
-        ("Dila", 1),
-        ("Kinah", 1),
-        ("Barra", 1)
-    ]
+    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var matchManager: MatchManager
     
     var body: some View {
         ZStack {
             Color.themeTeal.edgesIgnoringSafeArea(.all)
             
             VStack {
-                Text("\(winner) WINS!")
+                // Winner banner
+                Text("\(winnerName) WINS!")
                     .font(.system(size: 44, weight: .heavy, design: .rounded))
                     .foregroundColor(.white)
                     .shadow(color: .black.opacity(0.2), radius: 2, x: 0, y: 3)
@@ -25,17 +22,20 @@ struct Results: View {
                 
                 // Leaderboard list
                 VStack(spacing: 0) {
-                    ForEach(0..<leaderboard.count, id: \.self) { index in
-                        let player = leaderboard[index]
-                        
+                    ForEach(Array(leaderboard.enumerated()), id: \.element.playerID) { index, score in
                         HStack {
-                            Text(player.0)
+                            Text(score.displayName)
                                 .font(.system(size: 24, weight: .regular, design: .rounded))
                                 .foregroundColor(.white)
                             Spacer()
-                            Text("\(player.1) area")
-                                .font(.system(size: 24, weight: .heavy, design: .rounded))
-                                .foregroundColor(.white)
+                            VStack(alignment: .trailing, spacing: 2) {
+                                Text("\(score.conqueredAreas) area")
+                                    .font(.system(size: 24, weight: .heavy, design: .rounded))
+                                    .foregroundColor(.white)
+                                Text(formatTime(score.totalTime))
+                                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                                    .foregroundColor(.white.opacity(0.7))
+                            }
                         }
                         .padding(.vertical, 16)
                         
@@ -52,11 +52,16 @@ struct Results: View {
                 // Bottom Buttons
                 VStack(spacing: 24) {
                     PrimaryButton(title: "Play again") {
-                        // Play again action
+                        // Reset match and go back to lobby
+                        matchManager.gameState.reset()
+                        matchManager.matchResult = nil
+                        appState.navigate(to: .lobby)
                     }
                     
                     Button(action: {
-                        // Back to home action
+                        matchManager.gameState.reset()
+                        matchManager.matchResult = nil
+                        appState.returnToHome()
                     }) {
                         Text("Back to home")
                             .font(.system(size: 18, weight: .bold, design: .rounded))
@@ -68,8 +73,28 @@ struct Results: View {
             }
         }
     }
+    
+    // MARK: - Data
+    
+    /// The winner's display name from match result, or fallback.
+    private var winnerName: String {
+        matchManager.matchResult?.winner?.displayName.uppercased() ?? "NO ONE"
+    }
+    
+    /// The sorted leaderboard from match result.
+    private var leaderboard: [PlayerScore] {
+        matchManager.matchResult?.leaderboard ?? []
+    }
+    
+    /// Formats a time interval as "Xs" for display.
+    private func formatTime(_ time: TimeInterval) -> String {
+        if time == 0 { return "" }
+        return String(format: "%.1fs total", time)
+    }
 }
 
 #Preview {
     Results()
+        .environmentObject(AppState())
+        .environmentObject(MatchManager())
 }

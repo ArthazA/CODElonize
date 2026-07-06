@@ -34,6 +34,7 @@ struct ContentView: View {
             }
         }
         .animation(.easeInOut(duration: 0.3), value: appState.currentScreen)
+        .environmentObject(appState.matchManager)
     }
 }
 
