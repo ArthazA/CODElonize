@@ -66,7 +66,7 @@ enum ConquestSystem {
     /// - Returns: The conquest result describing what happened.
     static func processAttemptResult(
         areaIndex: Int,
-        playerID: String,
+        playerID: UUID,
         time: TimeInterval,
         gameState: GameState
     ) -> ConquestResult {
@@ -141,7 +141,8 @@ enum ConquestSystem {
         
         // Count owned areas
         for area in gameState.areas {
-            if let ownerID = area.ownerID,
+            if let ownerIDString = area.ownerID,
+               let ownerID = UUID(uuidString: ownerIDString),
                let playerIdx = gameState.playerIndex(byID: ownerID) {
                 gameState.players[playerIdx].conqueredAreaCount += 1
             }

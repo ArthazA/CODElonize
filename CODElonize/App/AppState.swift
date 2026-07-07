@@ -38,6 +38,7 @@ class AppState: ObservableObject {
     /// The AR session manager. The ARView within it is created lazily,
     /// so the camera/session doesn't start until the AR view actually appears.
     let arSessionManager: ARSessionManager
+    let matchManager = MatchManager()
     
     private var cancellables = Set<AnyCancellable>()
     init(preview: Bool = false) {
@@ -48,16 +49,6 @@ class AppState: ObservableObject {
                 self?.objectWillChange.send()
             }
             .store(in: &cancellables)
-    }
-    
-    /// The match manager. Coordinates all gameplay systems (Phase 6).
-    /// Injected into the environment for UI views to observe.
-    let matchManager = MatchManager()
-    
-    /// Subscriptions for reactive wiring.
-    private var cancellables = Set<AnyCancellable>()
-    
-    init() {
         setupPinpointWiring()
     }
     
