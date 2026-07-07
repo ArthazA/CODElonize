@@ -96,6 +96,23 @@ enum GameConstants {
         "Database": "database"
     ]
     
+    // MARK: - Power-ups
+    
+    /// Minimum delay (seconds) between power-up spawns.
+    static let powerUpSpawnMinInterval: TimeInterval = 15
+    
+    /// Maximum delay (seconds) between power-up spawns.
+    static let powerUpSpawnMaxInterval: TimeInterval = 45
+    
+    /// Maximum number of uncollected power-ups on the island at once.
+    static let maxActivePowerUps: Int = 3
+    
+    /// Number of predefined spawn positions around the island.
+    static let powerUpSpawnSlots: Int = 5
+    
+    /// Maximum number of power-ups a player can hold in inventory.
+    static let maxInventorySize: Int = 3
+    
     // MARK: - Lobby
     
     /// Number of digits in a lobby code.

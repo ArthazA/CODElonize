@@ -30,6 +30,10 @@ struct Player: Identifiable, Equatable {
     /// The area index the player is currently attempting (nil if not in a quiz).
     var currentAttemptArea: Int? = nil
     
+    /// Power-ups the player has collected but not yet activated.
+    /// Maximum size is `GameConstants.maxInventorySize`.
+    var inventory: [PowerUpType] = []
+    
     // MARK: - Computed Properties
     
     /// Number of areas this player currently owns.
