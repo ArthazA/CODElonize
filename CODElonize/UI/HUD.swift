@@ -1,13 +1,7 @@
 import SwiftUI
 
 struct HUD: View {
-    let players = [
-        ("Adi", 3),
-        ("Arthaz", 1),
-        ("Dila", 1),
-        ("Kinah", 1),
-        ("Barra", 1)
-    ]
+    @EnvironmentObject var appState: AppState
     
     var body: some View {
         VStack {
@@ -19,20 +13,15 @@ struct HUD: View {
                         .foregroundColor(Color.themeOrange)
                         .padding(.bottom, 4)
                     
-                    ForEach(0..<players.count, id: \.self) { index in
-                        let player = players[index]
-                        HStack {
-                            Text(player.0)
-                                .font(.system(size: 14, weight: .semibold, design: .rounded))
-                                .foregroundColor(.white)
-                            Spacer()
-                            Text("\(player.1) area")
-                                .font(.system(size: 14, weight: .heavy, design: .rounded))
-                                .foregroundColor(.white)
-                        }
-                        if index < players.count - 1 {
-                            Divider().background(Color.white.opacity(0.5))
-                        }
+                    ForEach(appState.lobbyManager.lobby?.players ?? []) { player in
+                        PlayerAvatar(
+                            imageName: player.avatar,
+                            name: player.name,
+                            isReady: player.isReady,
+                            isHost: player.isHost,
+                            isSelf: player.id == appState.playerID
+                        )
+
                     }
                 }
                 .padding(16)
@@ -98,10 +87,37 @@ struct ActionButton: View {
     }
 }
 
-
 #Preview {
-    ZStack {
+    let appState = AppState()
+    let hostID = UUID()
+
+    appState.playerID = hostID
+
+    appState.lobbyManager.lobby = LobbyModel(
+        roomCode: "1234",
+        hostID: hostID,
+        players: [
+            Player(
+                id: hostID,
+                name: "Adi",
+                avatar: "player_1",
+                isHost: true,
+                isReady: true
+            ),
+            Player(
+                id: UUID(),
+                name: "Barra",
+                avatar: "player_2",
+                isHost: false,
+                isReady: true
+            )
+        ],
+        maxPlayers: 5
+    )
+
+    return ZStack {
         Color.black
         HUD()
+            .environmentObject(appState)
     }
 }

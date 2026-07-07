@@ -20,8 +20,8 @@ struct ContentView: View {
             case .lobby:
                 Lobby(isHost: appState.isHost)
                 
-            case .preview:
-                PreviewIsland()
+            case .islandPreview:
+                IslandPreviewView()
                 
             case .arPlacement:
                 ARPlacementView()
@@ -47,6 +47,10 @@ struct ARPlacementView: View {
             // AR Camera Feed
             ARViewContainer(arSessionManager: appState.arSessionManager)
                 .edgesIgnoringSafeArea(.all)
+                .onAppear {
+                    appState.arSessionManager.isPreviewMode = false
+                    appState.arSessionManager.placeIslandUsingSavedTransformIfAvailable()
+                }
             
             // Overlay UI
             VStack {

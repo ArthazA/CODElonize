@@ -58,14 +58,24 @@ class ARSessionManager: NSObject, ObservableObject {
     
     /// Current island Y-axis rotation in radians.
     @Published var islandRotation: Float = 0
+    @Published var isPreviewMode = false
+    @Published var savedPlacementTransform: simd_float4x4?
+    private var previewAnchor: AnchorEntity?
     
     // MARK: - Internal Components
     
     /// The RealityKit view. Created lazily on first access so the AR session
     /// doesn't start until the view actually appears on screen.
+    private let enableAR: Bool
+    init(enableAR: Bool = true) {
+        self.enableAR = enableAR
+        super.init()
+    }
     lazy var arView: ARView = {
         let view = ARView(frame: .zero)
-        configureARView(view)
+            if enableAR {
+                configureARView(view)
+            }
         return view
     }()
     
@@ -107,7 +117,13 @@ class ARSessionManager: NSObject, ObservableObject {
     
     @objc private func handleTap(_ sender: UITapGestureRecognizer) {
         let location = sender.location(in: arView)
-        
+
+        if isPreviewMode {
+            guard savedPlacementTransform == nil else { return }
+            placePreviewIslandAtTap(location)
+            return
+        }
+
         switch sessionState {
         case .initializing, .planeDetected:
             placeIslandAtTap(location)
@@ -115,6 +131,54 @@ class ARSessionManager: NSObject, ObservableObject {
             detectPinpointTap(location)
         case .failed:
             break
+        }
+    }
+    
+    private func placePreviewIslandAtTap(_ location: CGPoint) {
+        guard let result = arView.raycast(
+            from: location,
+            allowing: .estimatedPlane,
+            alignment: .horizontal
+        ).first else {
+            AppLogger.ar.debug("No horizontal plane at tap location (preview)")
+            return
+        }
+
+        guard let entity = try? Entity.load(named: "PreviewIslands") else {
+            AppLogger.ar.error("Gagal load PreviewIslands.usdz")
+            return
+        }
+
+        previewAnchor = AnchorEntity(world: result.worldTransform)
+        previewAnchor?.addChild(entity)
+
+        arView.scene.addAnchor(previewAnchor!)
+
+        savedPlacementTransform = result.worldTransform
+        AppLogger.ar.info("Preview island placed, transform saved")
+    }
+
+    func placeIslandUsingSavedTransformIfAvailable() {
+        guard let transform = savedPlacementTransform else {
+            AppLogger.ar.warning("Belum ada saved transform, fallback ke tap manual")
+            return
+        }
+        guard !islandPlacement.isPlaced else { return }
+
+        do {
+            try islandPlacement.placeIsland(
+                at: transform,
+                in: arView,
+                scale: islandScale,
+                rotation: islandRotation
+            )
+            if let anchor = islandPlacement.islandAnchor {
+                pinpointSystem.spawnPinpoints(on: anchor)
+            }
+            sessionState = .islandPlaced
+        } catch {
+            AppLogger.ar.error("Gagal placing dari saved transform: \(error.localizedDescription)")
+            sessionState = .failed(error.localizedDescription)
         }
     }
     
@@ -204,6 +268,12 @@ class ARSessionManager: NSObject, ObservableObject {
         arView.session.run(configuration, options: [.removeExistingAnchors, .resetTracking])
         
         AppLogger.ar.info("AR session reset")
+    }
+    func removePreviewIsland() {
+        if let previewAnchor {
+            arView.scene.removeAnchor(previewAnchor)
+            self.previewAnchor = nil
+        }
     }
 }
 

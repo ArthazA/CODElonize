@@ -83,81 +83,108 @@ class IslandPlacement {
     ///   - rotation: The Y-axis rotation in radians to apply.
     /// - Throws: `IslandPlacementError` if the island is already placed or loading fails.
     func placeIsland(
-        at result: ARRaycastResult,
-        in arView: ARView,
-        scale: Float,
-        rotation: Float
-    ) throws {
-        guard !isPlaced else {
-            throw IslandPlacementError.alreadyPlaced
-        }
-        
-        // Load the model
-        let model = try loadIslandModel()
-        func printHierarchy(_ entity: Entity, level: Int = 0) {
-            print(String(repeating: "-", count: level), entity.name)
-
-            for child in entity.children {
-                printHierarchy(child, level: level + 1)
+            at result: ARRaycastResult,
+            in arView: ARView,
+            scale: Float,
+            rotation: Float
+        ) throws {
+            guard !isPlaced else {
+                throw IslandPlacementError.alreadyPlaced
             }
+
+            let model = try loadIslandModel()
+
+            func printHierarchy(_ entity: Entity, level: Int = 0) {
+                print(String(repeating: "-", count: level), entity.name)
+                for child in entity.children {
+                    printHierarchy(child, level: level + 1)
+                }
+            }
+            printHierarchy(model)
+
+            let anchor = AnchorEntity(raycastResult: result)
+
+            let bounds = model.visualBounds(relativeTo: nil)
+            AppLogger.ar.info("Island RAW size (before scale): \(bounds.extents)")
+            let height = bounds.extents.y
+
+            model.position.y = -(height / 2) - 0.02
+            model.scale = SIMD3<Float>(repeating: scale)
+            model.orientation = simd_quatf(angle: rotation, axis: SIMD3<Float>(0, 1, 0))
+
+            anchor.addChild(model)
+            arView.scene.addAnchor(anchor)
+
+            self.islandAnchor = anchor
+            self.islandEntity = model
+
+            AppLogger.ar.info("Island placed at world position: \(result.worldTransform.columns.3)")
         }
 
-        printHierarchy(model)
-        
-        // Create an anchor at the raycast hit position
-        let anchor = AnchorEntity(raycastResult: result)
-        
-        let bounds = model.visualBounds(relativeTo: nil)
-        AppLogger.ar.info("Island RAW size (before scale): \(bounds.extents)")
-        let height = bounds.extents.y
-        
-        model.position.y = -(height / 2) - 0.02
-        
-        // Apply transform
-        model.scale = SIMD3<Float>(repeating: scale)
-        model.orientation = simd_quatf(angle: rotation, axis: SIMD3<Float>(0, 1, 0))
-        
-        anchor.addChild(model)
-        arView.scene.addAnchor(anchor)
-        
-        self.islandAnchor = anchor
-        self.islandEntity = model
-        
-        AppLogger.ar.info("Island placed at world position: \(result.worldTransform.columns.3)")
-    }
-    
-    // MARK: - Transform Updates
-    
-    /// Updates the island's scale and rotation. Called when the host adjusts settings from the Lobby.
-    /// - Parameters:
-    ///   - scale: New scale factor.
-    ///   - rotation: New Y-axis rotation in radians.
-    func updateTransform(scale: Float, rotation: Float) {
-        guard let island = islandEntity else { return }
-        island.scale = SIMD3<Float>(repeating: scale)
-        island.orientation = simd_quatf(angle: rotation, axis: SIMD3<Float>(0, 1, 0))
-        AppLogger.ar.debug("Island transform updated — scale: \(scale), rotation: \(rotation)")
-    }
-    
-    /// Moves the island anchor to a new world position.
-    /// Used when the host repositions the island from the Lobby.
-    /// - Parameter newTransform: The new world transform for the anchor.
-    func moveIsland(to newTransform: simd_float4x4) {
-        guard let anchor = islandAnchor else { return }
-        anchor.transform = Transform(matrix: newTransform)
-        AppLogger.ar.debug("Island moved to new position")
-    }
-    
-    // MARK: - Removal
-    
-    /// Removes the island and its anchor from the AR scene.
-    /// - Parameter arView: The `ARView` to remove from.
-    func removeIsland(from arView: ARView) {
-        if let anchor = islandAnchor {
-            arView.scene.removeAnchor(anchor)
+        // MARK: - Placement (dari transform tersimpan — dipakai ulang dari Preview)
+
+        func placeIsland(
+            at worldTransform: simd_float4x4,
+            in arView: ARView,
+            scale: Float,
+            rotation: Float
+        ) throws {
+            guard !isPlaced else {
+                throw IslandPlacementError.alreadyPlaced
+            }
+
+            let model = try loadIslandModel()
+            let anchor = AnchorEntity(world: worldTransform)
+
+            let bounds = model.visualBounds(relativeTo: nil)
+            let height = bounds.extents.y
+            model.position.y = -(height / 2) - 0.02
+
+            model.scale = SIMD3<Float>(repeating: scale)
+            model.orientation = simd_quatf(angle: rotation, axis: SIMD3<Float>(0, 1, 0))
+
+            anchor.addChild(model)
+            arView.scene.addAnchor(anchor)
+
+            self.islandAnchor = anchor
+            self.islandEntity = model
+
+            AppLogger.ar.info("Island placed from saved transform")
         }
-        islandAnchor = nil
-        islandEntity = nil
-        AppLogger.ar.info("Island removed from scene")
+        
+        // MARK: - Transform Updates
+        
+        /// Updates the island's scale and rotation. Called when the host adjusts settings from the Lobby.
+        /// - Parameters:
+        ///   - scale: New scale factor.
+        ///   - rotation: New Y-axis rotation in radians.
+        func updateTransform(scale: Float, rotation: Float) {
+            guard let island = islandEntity else { return }
+            island.scale = SIMD3<Float>(repeating: scale)
+            island.orientation = simd_quatf(angle: rotation, axis: SIMD3<Float>(0, 1, 0))
+            AppLogger.ar.debug("Island transform updated — scale: \(scale), rotation: \(rotation)")
+        }
+        
+        /// Moves the island anchor to a new world position.
+        /// Used when the host repositions the island from the Lobby.
+        /// - Parameter newTransform: The new world transform for the anchor.
+        func moveIsland(to newTransform: simd_float4x4) {
+            guard let anchor = islandAnchor else { return }
+            anchor.transform = Transform(matrix: newTransform)
+            AppLogger.ar.debug("Island moved to new position")
+        }
+        
+        // MARK: - Removal
+        
+        /// Removes the island and its anchor from the AR scene.
+        /// - Parameter arView: The `ARView` to remove from.
+        func removeIsland(from arView: ARView) {
+            if let anchor = islandAnchor {
+                arView.scene.removeAnchor(anchor)
+            }
+            islandAnchor = nil
+            islandEntity = nil
+            AppLogger.ar.info("Island removed from scene")
+        }
     }
-}
+

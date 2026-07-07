@@ -10,9 +10,22 @@
 		AF4FB08B2FF605EB00FD31B4 /* CODElonize.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CODElonize.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		2ECB910D2FFC94F100919EFB /* Exceptions for "CODElonize" folder in "CODElonize" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = AF4FB08A2FF605EB00FD31B4 /* CODElonize */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		AF4FB08D2FF605EB00FD31B4 /* CODElonize */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				2ECB910D2FFC94F100919EFB /* Exceptions for "CODElonize" folder in "CODElonize" target */,
+			);
 			path = CODElonize;
 			sourceTree = "<group>";
 		};
@@ -284,7 +297,9 @@
 				DEVELOPMENT_TEAM = RL4D4674QY;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CODElonize/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "show AR";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "CODElonize uses the local network to discover nearby players";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -318,7 +333,9 @@
 				DEVELOPMENT_TEAM = RL4D4674QY;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CODElonize/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "show AR";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "CODElonize uses the local network to discover nearby players";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
