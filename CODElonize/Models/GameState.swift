@@ -33,17 +33,17 @@ class GameState: ObservableObject {
     @Published var isMatchFinished: Bool = false
     
     /// The ID of the local player on this device.
-    var localPlayerID: String = ""
+    var localPlayerID: UUID = UUID()
     
     // MARK: - Lookups
     
     /// Returns the player with the given ID, or nil if not found.
-    func player(byID id: String) -> Player? {
+    func player(byID id: UUID) -> Player? {
         players.first { $0.id == id }
     }
     
     /// Returns the index of the player with the given ID in the `players` array.
-    func playerIndex(byID id: String) -> Int? {
+    func playerIndex(byID id: UUID) -> Int? {
         players.firstIndex { $0.id == id }
     }
     
@@ -75,7 +75,7 @@ class GameState: ObservableObject {
     /// - Parameters:
     ///   - players: The players participating in the match.
     ///   - localPlayerID: The ID of the player on this device.
-    func initializeMatch(players: [Player], localPlayerID: String) {
+    func initializeMatch(players: [Player], localPlayerID: UUID) {
         self.players = players
         self.localPlayerID = localPlayerID
         self.areas = Area.createAllAreas()
@@ -91,6 +91,6 @@ class GameState: ObservableObject {
         matchTimeRemaining = GameConstants.matchDuration
         isMatchActive = false
         isMatchFinished = false
-        localPlayerID = ""
+        localPlayerID = UUID()
     }
 }

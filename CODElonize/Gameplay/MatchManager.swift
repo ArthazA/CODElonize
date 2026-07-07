@@ -85,7 +85,7 @@ class MatchManager: ObservableObject {
     /// - Parameters:
     ///   - players: The players participating in the match.
     ///   - localPlayerID: The ID of the player on this device.
-    func startMatch(players: [Player], localPlayerID: String) {
+    func startMatch(players: [Player], localPlayerID: UUID) {
         // Initialize game state
         gameState.initializeMatch(players: players, localPlayerID: localPlayerID)
         
@@ -113,8 +113,13 @@ class MatchManager: ObservableObject {
     ///
     /// - Parameter playerName: The display name for the local player.
     func startSinglePlayerMatch(playerName: String) {
-        let localID = UUID().uuidString
-        let player = Player(id: localID, displayName: playerName)
+        let localID = UUID()
+        let player = Player(
+            id: localID,
+            name: playerName,
+            isHost: true,
+            isReady: true
+        )
         startMatch(players: [player], localPlayerID: localID)
     }
     
@@ -260,7 +265,10 @@ class MatchManager: ObservableObject {
     func areaInfo(for index: Int) -> (topic: String, ownerName: String?, bestTime: TimeInterval?)? {
         guard let area = gameState.area(byIndex: index) else { return nil }
         
-        let ownerName = area.ownerID.flatMap { gameState.player(byID: $0)?.displayName }
+        let ownerName = area.ownerID.flatMap { ownerIDString -> String? in
+            guard let ownerID = UUID(uuidString: ownerIDString) else { return nil }
+            return gameState.player(byID: ownerID)?.name
+        }
         
         return (topic: area.topic, ownerName: ownerName, bestTime: area.bestTime)
     }

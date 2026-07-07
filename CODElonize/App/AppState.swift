@@ -13,7 +13,7 @@ import os
 enum AppScreen: Equatable {
     case home
     case lobby
-    case preview
+    case islandPreview
     case arPlacement
     case game
     case results
@@ -31,19 +31,24 @@ class AppState: ObservableObject {
     
     /// The local player's display name.
     @Published var playerName: String = ""
+    @Published var playerID = UUID()
+    @Published var roomCode: String = ""
     
+    let lobbyManager = LobbyManager()
     /// The AR session manager. The ARView within it is created lazily,
     /// so the camera/session doesn't start until the AR view actually appears.
-    let arSessionManager = ARSessionManager()
-    
-    /// The match manager. Coordinates all gameplay systems (Phase 6).
-    /// Injected into the environment for UI views to observe.
+    let arSessionManager: ARSessionManager
     let matchManager = MatchManager()
     
-    /// Subscriptions for reactive wiring.
     private var cancellables = Set<AnyCancellable>()
-    
-    init() {
+    init(preview: Bool = false) {
+        self.arSessionManager = ARSessionManager(enableAR: !preview)
+
+        lobbyManager.objectWillChange
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
         setupPinpointWiring()
     }
     
@@ -80,5 +85,9 @@ class AppState: ObservableObject {
         isHost = false
         currentScreen = .home
         AppLogger.ui.info("Returned to home, session reset")
+    }
+    
+    func generateRoomCode() {
+        roomCode = String(format: "%04d", Int.random(in: 0...9999))
     }
 }

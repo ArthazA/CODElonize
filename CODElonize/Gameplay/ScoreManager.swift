@@ -52,7 +52,7 @@ enum ScoreManager {
     static func calculateScores(gameState: GameState) -> [PlayerScore] {
         let scores = gameState.players.map { player in
             PlayerScore(
-                playerID: player.id,
+                playerID: player.id.uuidString,
                 displayName: player.displayName,
                 conqueredAreas: player.conqueredAreaCount,
                 totalTime: player.totalCompletionTime
