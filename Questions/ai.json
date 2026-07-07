@@ -1,0 +1,23 @@
+{
+  "topic": "ai",
+  "questions": [
+    {
+      "id": "A2000001-0001-0001-0001-000000000001",
+      "text": "What does CNN stand for in deep learning?",
+      "choices": ["Central Neural Network", "Convolutional Neural Network", "Connected Node Network", "Computed Neuron Network"],
+      "correctIndex": 1
+    },
+    {
+      "id": "A2000001-0001-0001-0001-000000000002",
+      "text": "Which technique helps prevent overfitting in neural networks?",
+      "choices": ["Dropout", "Gradient Descent", "Backpropagation", "Forward Pass"],
+      "correctIndex": 0
+    },
+    {
+      "id": "A2000001-0001-0001-0001-000000000003",
+      "text": "What is the purpose of an activation function?",
+      "choices": ["To store weights", "To introduce non-linearity", "To reduce parameters", "To normalize data"],
+      "correctIndex": 1
+    }
+  ]
+}

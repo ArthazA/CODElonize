@@ -1,0 +1,23 @@
+{
+  "topic": "database",
+  "questions": [
+    {
+      "id": "A6000001-0001-0001-0001-000000000001",
+      "text": "What does SQL stand for?",
+      "choices": ["Structured Query Language", "Simple Query Logic", "Standard Query List", "System Query Language"],
+      "correctIndex": 0
+    },
+    {
+      "id": "A6000001-0001-0001-0001-000000000002",
+      "text": "Which type of database uses tables with rows and columns?",
+      "choices": ["NoSQL", "Graph", "Relational", "Document"],
+      "correctIndex": 2
+    },
+    {
+      "id": "A6000001-0001-0001-0001-000000000003",
+      "text": "What is a primary key?",
+      "choices": ["A foreign reference", "A unique identifier for a record", "An index type", "A database password"],
+      "correctIndex": 1
+    }
+  ]
+}

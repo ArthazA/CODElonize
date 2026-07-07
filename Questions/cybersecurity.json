@@ -1,0 +1,23 @@
+{
+  "topic": "cybersecurity",
+  "questions": [
+    {
+      "id": "A3000001-0001-0001-0001-000000000001",
+      "text": "What does SQL injection target?",
+      "choices": ["Operating System", "Database", "Network Router", "Web Browser"],
+      "correctIndex": 1
+    },
+    {
+      "id": "A3000001-0001-0001-0001-000000000002",
+      "text": "Which protocol provides secure web communication?",
+      "choices": ["HTTP", "FTP", "HTTPS", "SMTP"],
+      "correctIndex": 2
+    },
+    {
+      "id": "A3000001-0001-0001-0001-000000000003",
+      "text": "What is a firewall primarily used for?",
+      "choices": ["Encrypting data", "Filtering network traffic", "Compressing files", "Managing databases"],
+      "correctIndex": 1
+    }
+  ]
+}

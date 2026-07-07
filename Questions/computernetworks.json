@@ -1,0 +1,23 @@
+{
+  "topic": "computernetworks",
+  "questions": [
+    {
+      "id": "A5000001-0001-0001-0001-000000000001",
+      "text": "Which layer of the OSI model handles routing?",
+      "choices": ["Data Link", "Transport", "Network", "Application"],
+      "correctIndex": 2
+    },
+    {
+      "id": "A5000001-0001-0001-0001-000000000002",
+      "text": "What protocol is used for reliable data transfer?",
+      "choices": ["UDP", "TCP", "ICMP", "ARP"],
+      "correctIndex": 1
+    },
+    {
+      "id": "A5000001-0001-0001-0001-000000000003",
+      "text": "What does DNS stand for?",
+      "choices": ["Data Network Service", "Domain Name System", "Digital Network Standard", "Dynamic Node Server"],
+      "correctIndex": 1
+    }
+  ]
+}
