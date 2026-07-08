@@ -17,7 +17,16 @@ struct HUD: View {
                 Spacer()
                 
                 // Top Right: Timer
-                timerDisplay
+                Text("05:00")
+                    .font(.system(size: 36, weight: .heavy, design: .rounded))
+                    .foregroundColor(.white)
+                    .padding(.top, 50)
+                    .padding(.trailing, 20)
+                    // Simple outline effect using shadows
+                    .shadow(color: Color.themeOrange, radius: 1, x: 2, y: 2)
+                    .shadow(color: Color.themeOrange, radius: 1, x: -2, y: -2)
+                    .shadow(color: Color.themeOrange, radius: 1, x: 2, y: -2)
+                    .shadow(color: Color.themeOrange, radius: 1, x: -2, y: 2)
             }
             
             Spacer()
@@ -180,9 +189,35 @@ struct InventoryButton: View {
     }
 }
 
-
 #Preview {
-    ZStack {
+    let appState = AppState()
+    let hostID = UUID()
+
+    appState.playerID = hostID
+
+    appState.lobbyManager.lobby = LobbyModel(
+        roomCode: "1234",
+        hostID: hostID,
+        players: [
+            Player(
+                id: hostID,
+                name: "Adi",
+                avatar: "player_1",
+                isHost: true,
+                isReady: true
+            ),
+            Player(
+                id: UUID(),
+                name: "Barra",
+                avatar: "player_2",
+                isHost: false,
+                isReady: true
+            )
+        ],
+        maxPlayers: 5
+    )
+
+    return ZStack {
         Color.black
         HUD()
             .environmentObject(MatchManager())

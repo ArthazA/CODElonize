@@ -29,7 +29,7 @@ enum AreaManager {
     ///   - playerID: The player requesting the attempt.
     ///   - gameState: The current game state.
     /// - Returns: `true` if the attempt is allowed.
-    static func canAttempt(areaIndex: Int, playerID: String, gameState: GameState) -> Bool {
+    static func canAttempt(areaIndex: Int, playerID: UUID, gameState: GameState) -> Bool {
         guard let area = gameState.area(byIndex: areaIndex) else {
             AppLogger.gameplay.error("Invalid area index: \(areaIndex)")
             return false
@@ -67,7 +67,7 @@ enum AreaManager {
     ///   - areaIndex: The area being attempted.
     ///   - playerID: The player starting the attempt.
     ///   - gameState: The game state to modify.
-    static func beginAttempt(areaIndex: Int, playerID: String, gameState: GameState) {
+    static func beginAttempt(areaIndex: Int, playerID: UUID, gameState: GameState) {
         guard let playerIdx = gameState.playerIndex(byID: playerID) else { return }
         
         gameState.players[playerIdx].currentAttemptArea = areaIndex
@@ -82,7 +82,7 @@ enum AreaManager {
     ///   - playerID: The player who completed the attempt.
     ///   - time: The completion time in seconds.
     ///   - gameState: The game state to modify.
-    static func recordAttempt(areaIndex: Int, playerID: String, time: TimeInterval, gameState: GameState) {
+    static func recordAttempt(areaIndex: Int, playerID: UUID, time: TimeInterval, gameState: GameState) {
         guard let playerIdx = gameState.playerIndex(byID: playerID) else { return }
         guard areaIndex < gameState.areas.count else { return }
         
@@ -92,7 +92,7 @@ enum AreaManager {
         gameState.players[playerIdx].currentAttemptArea = nil
         
         // Record in area state
-        gameState.areas[areaIndex].attemptRecords[playerID] = time
+        gameState.areas[areaIndex].attemptRecords[playerID.uuidString] = time
         
         AppLogger.gameplay.info(
             "Recorded attempt: player='\(playerID)', area=\(areaIndex), time=\(String(format: "%.1f", time))s"
@@ -105,7 +105,7 @@ enum AreaManager {
     /// - Parameters:
     ///   - playerID: The player whose attempt to cancel.
     ///   - gameState: The game state to modify.
-    static func cancelAttempt(playerID: String, gameState: GameState) {
+    static func cancelAttempt(playerID: UUID, gameState: GameState) {
         guard let playerIdx = gameState.playerIndex(byID: playerID) else { return }
         
         let areaIndex = gameState.players[playerIdx].currentAttemptArea

@@ -52,22 +52,34 @@ struct RoomCodeBox: View {
 }
 
 struct PlayerAvatar: View {
+    let imageName: String
     let name: String
     let isReady: Bool
     let isHost: Bool
+    let isSelf: Bool
     
     var body: some View {
         VStack(spacing: 8) {
             ZStack(alignment: .bottomTrailing) {
-                Circle()
-                    .fill(Color.themeOrange)
+                Image(imageName)
+                    .resizable()
+                    .scaledToFill()
                     .frame(width: 80, height: 80)
+                    .clipShape(Circle())
                     .overlay(
-                        Circle()
-                            .stroke(Color.themeTeal, lineWidth: 4)
-                            .padding(-4)
+                        Circle().stroke(
+                            isSelf ? Color.green : Color.themeDarkTeal,
+                            lineWidth: isSelf ? 4 : 3
+                        )
                     )
-                
+                    .overlay(
+                        isReady ?
+                            Image(systemName: "checkmark.circle.fill")
+                            .foregroundColor(.white)
+                            .background(Circle().fill(Color.green))
+                            .offset(x: 25, y: 25)
+                        : nil
+                    )
                 if isReady {
                     Image(systemName: "checkmark.circle.fill")
                         .resizable()
@@ -98,8 +110,21 @@ struct PlayerAvatar: View {
             RoomCodeBox(character: "A")
         }
         HStack(spacing: 30) {
-            PlayerAvatar(name: "Adi", isReady: true, isHost: true)
-            PlayerAvatar(name: "Arthaz", isReady: false, isHost: false)
+            PlayerAvatar(
+                imageName: "player_1",
+                name: "Adi",
+                isReady: true,
+                isHost: true,
+                isSelf: true
+            )
+
+            PlayerAvatar(
+                imageName: "player_2",
+                name: "Arthaz",
+                isReady: false,
+                isHost: false,
+                isSelf: false
+            )
         }
     }
     .padding()
