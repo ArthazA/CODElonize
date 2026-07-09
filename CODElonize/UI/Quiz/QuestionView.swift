@@ -1,34 +1,20 @@
 import SwiftUI
 
-/// The quiz modal overlay displayed when a player attempts to conquer an area.
-///
-/// This view observes a `QuizManager` instance and routes between the MCQ card
-/// and the `CodeArrangementView` based on the current question's type.
-///
-/// ## Design Decisions
-/// - **No dismiss button** (EC-011): The quiz cannot be closed mid-attempt;
-///   it only dismisses on completion or external cancellation (e.g. Tsunami).
-/// - **3-second freeze** (EC-015): Wrong answers freeze the UI, showing a red overlay
-///   and a countdown before the player can retry.
-/// - **Elapsed stopwatch**: Counts up from 0:00 to record fastest completion time.
-/// - **Question order**: Questions 1–3 are MCQ, Questions 4–5 are Code Arrangement.
 struct QuestionView: View {
     @ObservedObject var quizManager: QuizManager
-    
-    /// Called when the quiz finishes (all questions answered correctly).
-    /// The parent view uses this to record the completion time and dismiss the overlay.
+
     var onComplete: ((TimeInterval) -> Void)? = nil
-    
+
     var body: some View {
         ZStack {
-            // Semi-transparent backdrop (blocks interaction with game behind)
+
             Color.black.opacity(0.4)
                 .edgesIgnoringSafeArea(.all)
-            
+
             if quizManager.isComplete {
                 completionCard
             } else if let question = quizManager.currentQuestion {
-                // Route to the correct view based on question type
+
                 if question.isMCQ {
                     mcqCard(for: question)
                 } else if question.isCodeArrangement {
@@ -39,17 +25,13 @@ struct QuestionView: View {
         .animation(.easeInOut(duration: 0.3), value: quizManager.currentQuestionIndex)
         .animation(.easeInOut(duration: 0.3), value: quizManager.isComplete)
     }
-    
-    // MARK: - MCQ Card
-    
-    /// The main MCQ quiz card showing the current question and answer choices.
+
     @ViewBuilder
     private func mcqCard(for question: Question) -> some View {
         VStack(alignment: .center, spacing: 24) {
-            // Header: Topic, progress, and timer
+
             quizHeader
-            
-            // Question text
+
             Text(question.text)
                 .font(.system(size: 24, weight: .heavy, design: .rounded))
                 .foregroundColor(Color.themeDarkTeal)
@@ -57,8 +39,7 @@ struct QuestionView: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 20)
-            
-            // Answer grid (2×2)
+
             answerGrid(for: question)
         }
         .padding(24)
@@ -72,20 +53,15 @@ struct QuestionView: View {
         .shadow(color: .black.opacity(0.15), radius: 10, y: 5)
         .overlay(freezeOverlay)
     }
-    
-    // MARK: - Code Arrangement Card
-    
-    /// The Code Arrangement quiz card with drag-and-drop interface.
+
     @ViewBuilder
     private func arrangementCard(for question: Question) -> some View {
         VStack(alignment: .center, spacing: 16) {
-            // Header: Topic, progress, and timer
+
             quizHeader
-            
-            // Code Arrangement content
+
             CodeArrangementView(quizManager: quizManager, question: question)
-                // Overriding text colors inside CodeArrangementView for the paper theme if needed
-                // But for now we just wrap it in the paper container
+
         }
         .padding(24)
         .background(Color.themePaper)
@@ -98,17 +74,14 @@ struct QuestionView: View {
         .shadow(color: .black.opacity(0.15), radius: 10, y: 5)
         .overlay(freezeOverlay)
     }
-    
-    // MARK: - Shared Header
-    
-    /// Header showing topic name, question counter, and elapsed timer.
+
     private var quizHeader: some View {
         VStack(spacing: 20) {
-            // Area Title (e.g. "Mountain")
+
             Text(GameConstants.areaTopics.firstIndex(of: quizManager.topic).map { areaName(for: $0) } ?? quizManager.topic)
                 .font(.system(size: 20, weight: .heavy, design: .rounded))
                 .foregroundColor(Color.themeDarkTeal)
-            
+
             HStack(alignment: .bottom) {
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 6) {
@@ -118,14 +91,14 @@ struct QuestionView: View {
                             .font(.system(size: 14, weight: .bold, design: .rounded))
                     }
                     .foregroundColor(Color.themeDarkTeal)
-                    
+
                     Text("Question \(quizManager.currentQuestionIndex + 1)/\(quizManager.totalQuestions)")
                         .font(.system(size: 14, weight: .semibold, design: .rounded))
                         .foregroundColor(.gray)
                 }
-                
+
                 Spacer()
-                
+
                 Text(quizManager.formattedElapsedTime)
                     .font(.system(size: 24, weight: .heavy, design: .rounded))
                     .foregroundColor(Color.themeDarkTeal)
@@ -133,11 +106,10 @@ struct QuestionView: View {
             }
         }
     }
-    
-    /// The 2×2 MCQ answer button grid.
+
     private func answerGrid(for question: Question) -> some View {
         let choices = question.choices ?? []
-        
+
         return VStack(spacing: 16) {
             if choices.count >= 4 {
                 HStack(spacing: 16) {
@@ -151,10 +123,7 @@ struct QuestionView: View {
             }
         }
     }
-    
-    // MARK: - Answer Button
-    
-    /// A single answer choice button with feedback coloring.
+
     private func answerButton(index: Int, text: String) -> some View {
         Button {
             quizManager.submitAnswer(index)
@@ -173,7 +142,7 @@ struct QuestionView: View {
         }
         .disabled(quizManager.isFrozen || quizManager.answerState == .correct)
     }
-    
+
     private func answerBackgroundColor(for index: Int) -> Color {
         guard let selected = quizManager.selectedAnswer, selected == index else {
             return .white
@@ -184,7 +153,7 @@ struct QuestionView: View {
         case .unanswered: return .white
         }
     }
-    
+
     private func answerBorderColor(for index: Int) -> Color {
         guard let selected = quizManager.selectedAnswer, selected == index else {
             return Color.themeDarkTeal
@@ -195,7 +164,7 @@ struct QuestionView: View {
         case .unanswered: return Color.themeDarkTeal
         }
     }
-    
+
     private func answerTextColor(for index: Int) -> Color {
         guard let selected = quizManager.selectedAnswer, selected == index else {
             return Color.themeDarkTeal
@@ -206,10 +175,7 @@ struct QuestionView: View {
         case .unanswered: return Color.themeDarkTeal
         }
     }
-    
-    // MARK: - Freeze Overlay
-    
-    /// Visual overlay shown during the 3-second wrong-answer penalty.
+
     @ViewBuilder
     private var freezeOverlay: some View {
         if quizManager.isFrozen {
@@ -220,30 +186,27 @@ struct QuestionView: View {
                 .animation(.easeInOut(duration: 0.3), value: quizManager.isFrozen)
         }
     }
-    
-    // MARK: - Completion Card
-    
-    /// Shown briefly after all questions are answered correctly.
+
     private var completionCard: some View {
         VStack(spacing: 20) {
             Image(systemName: "checkmark.circle.fill")
                 .resizable()
                 .frame(width: 60, height: 60)
                 .foregroundColor(.green)
-            
+
             Text("Quiz Complete!")
                 .font(.system(size: 28, weight: .heavy, design: .rounded))
                 .foregroundColor(Color.themeDarkTeal)
-            
+
             Text(quizManager.topic)
                 .font(.system(size: 18, weight: .semibold, design: .rounded))
                 .foregroundColor(Color.themeOrange)
-            
+
             VStack(spacing: 8) {
                 Text("Completion Time")
                     .font(.system(size: 14, weight: .semibold, design: .rounded))
                     .foregroundColor(Color.themeDarkTeal.opacity(0.8))
-                
+
                 Text(quizManager.formattedElapsedTime)
                     .font(.system(size: 36, weight: .heavy, design: .rounded))
                     .foregroundColor(Color.themeOrange)
@@ -269,10 +232,7 @@ struct QuestionView: View {
         }
         .transition(.scale.combined(with: .opacity))
     }
-    
-    // MARK: - Helpers
-    
-    /// Maps area index to a descriptive area name for the subheading.
+
     private func areaName(for index: Int) -> String {
         let names = ["Mountain", "Forest East", "Forest West", "River", "Village", "Center", "Armageddon Isle"]
         guard index < names.count else { return "Area \(index + 1)" }
@@ -280,26 +240,23 @@ struct QuestionView: View {
     }
 }
 
-// MARK: - Preview
-
 #Preview("Quiz In Progress") {
     QuizPreviewWrapper()
 }
 
-/// A wrapper that starts a live quiz session for SwiftUI Previews.
 private struct QuizPreviewWrapper: View {
     @StateObject private var quizManager = QuizManager()
-    
+
     var body: some View {
         ZStack {
             Color.black.edgesIgnoringSafeArea(.all)
-            
+
             QuestionView(quizManager: quizManager) { time in
                 print("Quiz completed in \(time)s")
             }
         }
         .onAppear {
-            // Use sample questions directly for preview (bundle not available in previews)
+
             let sampleQuestions: [Question] = [
                 Question(
                     id: UUID(),

@@ -1,9 +1,3 @@
-//
-//  TransparentSceneView.swift.swift
-//  CODElonize
-//
-//  Created by Nadila Rizky Amelia on 06/07/26.
-//
 
 import SwiftUI
 import SceneKit
@@ -26,7 +20,6 @@ struct TransparentSceneView: UIViewRepresentable {
         view.autoenablesDefaultLighting = true
         view.allowsCameraControl = true
 
-        // Rotate forever
         let rotate = CABasicAnimation(keyPath: "rotation")
         rotate.fromValue = SCNVector4(0, 1, 0, 0)
         rotate.toValue = SCNVector4(0, 1, 0, Float.pi * 2)

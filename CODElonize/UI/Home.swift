@@ -6,13 +6,13 @@ struct Home: View {
     @FocusState private var isRoomCodeFocused: Bool
     @State private var isJoining = false
     @State private var isShowingHowToPlay = false
-    
+
     var body: some View {
         ZStack {
             Color.themeTeal.edgesIgnoringSafeArea(.all)
-            
+
             VStack(spacing: 24) {
-                // Title
+
                 VStack(spacing: 8) {
                     HStack(spacing: 0) {
                         Text("CODE-")
@@ -22,21 +22,20 @@ struct Home: View {
                     }
                     .font(.system(size: 44, weight: .heavy, design: .rounded))
                     .shadow(color: .black.opacity(0.3), radius: 2, x: 0, y: 4)
-                    
+
                     Text("Answer fast & Conquer the Island!")
                         .font(.system(size: 18, weight: .bold, design: .rounded))
                         .foregroundColor(.white)
                 }
                 .padding(.top, 40)
-                
-                // 3D Island
+
                 Island3DView()
                     .frame(height: isRoomCodeFocused ? 100 : 280)
                     .animation(.easeInOut(duration: 0.3), value: isRoomCodeFocused)
-                
+
                 Spacer()
                 ScrollView(showsIndicators: false) {
-                    // Bottom Controls
+
                     VStack(spacing: 20) {
                         PrimaryButton(title: "Host Game") {
                             appState.isHost = true
@@ -46,7 +45,7 @@ struct Home: View {
                             )
                             appState.navigate(to: .lobby)
                         }
-                        // Divider
+
                         HStack {
                             Rectangle()
                                 .fill(Color.white.opacity(0.5))
@@ -61,31 +60,29 @@ struct Home: View {
                                 .fill(Color.white.opacity(0.5))
                                 .frame(height: 1)
                         }
-                        
-                        // Code Input Boxes
+
                         VStack {
-                            
+
                             HStack(spacing: 12) {
-                                
+
                                 ForEach(0..<4, id: \.self) { index in
-                                    
+
                                     ZStack {
-                                        
+
                                         RoundedRectangle(cornerRadius: 12)
                                             .fill(.white)
                                             .frame(width: 55, height: 60)
-                                        
+
                                         Text(character(at: index))
                                             .font(.system(size: 28, weight: .bold))
                                             .foregroundColor(.black)
-                                        
+
                                     }
-                                    
+
                                 }
-                                
+
                             }
-                            
-                            // Hidden TextField
+
                             TextField("", text: $roomCode)
                                 .keyboardType(.numberPad)
                                 .textContentType(.oneTimeCode)
@@ -93,41 +90,40 @@ struct Home: View {
                                 .opacity(0.01)
                                 .frame(width: 1, height: 1)
                                 .onChange(of: roomCode) { _, newValue in
-                                    
+
                                     roomCode = newValue.filter(\.isNumber)
-                                    
+
                                     if roomCode.count > 4 {
                                         roomCode = String(roomCode.prefix(4))
                                     }
-                                    
+
                                     if roomCode.count == 4 {
-                                        
+
                                         isRoomCodeFocused = false
                                         isJoining = true
-                                        
+
                                         joinLobby(roomCode)
-                                        
+
                                     }
                                 }
-                            
+
                         }
                         .onTapGesture {
                             isRoomCodeFocused = true
                         }
-                        
-                        //Loading State
+
                         if isJoining {
                             HStack(spacing: 8) {
                                 Text("Joining lobby...")
                                     .font(.system(size: 16, weight: .semibold, design: .rounded))
                                     .foregroundColor(.white)
-                                
+
                                 ProgressView()
                                     .progressViewStyle(.circular)
                                     .tint(.white)
                             }
                         }
-                        
+
                         Button(action: {
                             isShowingHowToPlay = true
                         }) {

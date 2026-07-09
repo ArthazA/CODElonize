@@ -1,32 +1,28 @@
 import SwiftUI
 
-/// The heads-up display shown during gameplay.
 struct HUD: View {
     @EnvironmentObject var matchManager: MatchManager
     @State private var isLeaderboardExpanded = false
-    
+
     var body: some View {
         VStack {
             HStack(alignment: .top) {
-                // Top Left: Leaderboard Dropdown
+
                 leaderboardPanel
-                
+
                 Spacer()
-                
-                // Top Right: Live Timer
+
                 timerDisplay
             }
             .padding(.horizontal, 20)
             .padding(.top, 50)
-            
+
             Spacer()
-            
-            // Armageddon Phase banner
+
             if matchManager.gameState.isArmageddonActive {
                 armageddonBanner
             }
-            
-            // Power-up feedback toast
+
             if let feedback = matchManager.powerUpFeedback {
                 Text(feedback)
                     .font(.system(size: 14, weight: .bold, design: .rounded))
@@ -38,16 +34,13 @@ struct HUD: View {
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                     .padding(.bottom, 8)
             }
-            
-            // Bottom: Power-up Inventory Bar (1 slot)
+
             inventoryBar
         }
         .animation(.easeInOut(duration: 0.3), value: matchManager.powerUpFeedback)
         .animation(.easeInOut(duration: 0.3), value: matchManager.gameState.isArmageddonActive)
     }
-    
-    // MARK: - Leaderboard Panel
-    
+
     private var leaderboardPanel: some View {
         VStack(alignment: .leading, spacing: 0) {
             Button {
@@ -58,7 +51,7 @@ struct HUD: View {
                 VStack(spacing: 4) {
                     Text("Area Conquer")
                         .font(.system(size: 16, weight: .heavy, design: .rounded))
-                        .foregroundColor(Color(hex: "8A5C1E")) // Brown text
+                        .foregroundColor(Color(hex: "8A5C1E")) 
                     Image(systemName: isLeaderboardExpanded ? "chevron.up" : "chevron.down")
                         .font(.system(size: 14, weight: .bold))
                         .foregroundColor(Color(hex: "8A5C1E"))
@@ -74,7 +67,7 @@ struct HUD: View {
                 .shadow(color: .black.opacity(0.15), radius: 4, y: 2)
             }
             .buttonStyle(.plain)
-            
+
             if isLeaderboardExpanded {
                 VStack(alignment: .leading, spacing: 12) {
                     if matchManager.leaderboard.isEmpty {
@@ -112,9 +105,7 @@ struct HUD: View {
             }
         }
     }
-    
-    // MARK: - Timer Display
-    
+
     private var timerDisplay: some View {
         Text(matchManager.timerSystem.formattedTime)
             .font(.system(size: 32, weight: .heavy, design: .rounded))
@@ -130,9 +121,7 @@ struct HUD: View {
             .cornerRadius(16)
             .shadow(color: .black.opacity(0.15), radius: 4, y: 2)
     }
-    
-    // MARK: - Armageddon Banner
-    
+
     private var armageddonBanner: some View {
         HStack(spacing: 8) {
             Image(systemName: "flame.fill")
@@ -154,19 +143,17 @@ struct HUD: View {
         .transition(.scale.combined(with: .opacity))
         .padding(.bottom, 4)
     }
-    
-    // MARK: - Inventory Bar (1 slot)
-    
+
     private var inventoryBar: some View {
         HStack(spacing: 16) {
             if let player = matchManager.gameState.localPlayer {
                 if let powerUp = player.inventory.first {
-                    // Filled inventory slot
+
                     InventoryButton(type: powerUp) {
                         matchManager.startAreaPicker(for: powerUp)
                     }
                 } else {
-                    // Empty inventory slot
+
                     emptySlot
                 }
             } else {
@@ -175,8 +162,7 @@ struct HUD: View {
         }
         .padding(.bottom, 30)
     }
-    
-    /// An empty inventory slot placeholder.
+
     private var emptySlot: some View {
         Circle()
             .fill(Color.themePaper)
@@ -189,11 +175,10 @@ struct HUD: View {
     }
 }
 
-/// A tappable circular button representing a collected power-up in the inventory.
 struct InventoryButton: View {
     let type: PowerUpType
     let action: () -> Void
-    
+
     var body: some View {
         Button(action: action) {
             Circle()
@@ -203,11 +188,11 @@ struct InventoryButton: View {
                     ZStack {
                         Circle()
                             .stroke(Color.white, lineWidth: 4)
-                        
+
                         Circle()
-                            .fill(Color(hex: "3FA9CD")) // Mock wave button color
+                            .fill(Color(hex: "3FA9CD")) 
                             .padding(8)
-                        
+
                         Image(systemName: type.iconName)
                             .resizable()
                             .aspectRatio(contentMode: .fit)

@@ -1,9 +1,3 @@
-//
-//  IslandPreviewManager.swift
-//  CODElonize
-//
-//  Created by Nadila Rizky Amelia on 07/07/26.
-//
 
 import RealityKit
 import ARKit
@@ -12,7 +6,7 @@ import Combine
 final class IslandPreviewManager: NSObject, ObservableObject {
 
     @Published var isModelPlaced = false
-    
+
     lazy var arView: ARView = {
         let view = ARView(frame: .zero)
         configure(view)

@@ -1,9 +1,3 @@
-//
-//  LobbyManager.swift
-//  CODElonize
-//
-//  Created by Arthaz's MacBook on 05/07/26.
-//
 
 import Foundation
 import Combine
@@ -15,7 +9,7 @@ final class LobbyManager: ObservableObject {
 
     let hostManager = HostManager()
     let clientManager = ClientManager()
-    
+
     init() {
         hostManager.lobbyManager = self
         clientManager.lobbyManager = self
@@ -35,7 +29,7 @@ final class LobbyManager: ObservableObject {
             hostID: hostID,
             players: [host]
         )
-        
+
         guard let lobby else {
             return
         }
@@ -56,13 +50,13 @@ final class LobbyManager: ObservableObject {
     private func generateRoomCode() -> String {
         String(format: "%04d", Int.random(in: 0...9999))
     }
-    
+
     func updateLobby(_ lobby: LobbyModel) {
         DispatchQueue.main.async {
             self.lobby = lobby
         }
     }
-    
+
     func setReady(playerID: UUID, isReady: Bool, isHost: Bool) {
         if isHost {
             hostManager.setPlayerReady(playerID: playerID, isReady: isReady)
@@ -71,7 +65,6 @@ final class LobbyManager: ObservableObject {
         }
     }
 
-    
     func startGame() {
         hostManager.startGame()
         didStartGame = true
