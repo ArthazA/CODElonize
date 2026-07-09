@@ -1,23 +1,173 @@
 {
-  "topic": "oop",
-  "questions": [
-    {
-      "id": "A4000001-0001-0001-0001-000000000001",
-      "text": "Which OOP principle allows a class to inherit from another class?",
-      "choices": ["Encapsulation", "Polymorphism", "Inheritance", "Abstraction"],
-      "correctIndex": 2
-    },
-    {
-      "id": "A4000001-0001-0001-0001-000000000002",
-      "text": "What is encapsulation?",
-      "choices": ["Hiding internal details", "Creating multiple objects", "Overriding methods", "Extending classes"],
-      "correctIndex": 0
-    },
-    {
-      "id": "A4000001-0001-0001-0001-000000000003",
-      "text": "What keyword is used to create a subclass in Swift?",
-      "choices": ["extends", "implements", "class SubClass: SuperClass", "inherits"],
-      "correctIndex": 2
-    }
-  ]
+    "topic": "OOP",
+    "questions": [
+        {
+            "id": "3e369401-327d-4e49-a8dc-ed6742bbdac9",
+            "type": "mcq",
+            "text": "Sample MCQ 0 about OOP?",
+            "choices": [
+                "Option A for OOP",
+                "Option B for OOP",
+                "Option C for OOP",
+                "Option D for OOP"
+            ],
+            "correctIndex": 0
+        },
+        {
+            "id": "21296257-a811-442f-ae46-db15ccc85c91",
+            "type": "mcq",
+            "text": "Sample MCQ 1 about OOP?",
+            "choices": [
+                "Option A for OOP",
+                "Option B for OOP",
+                "Option C for OOP",
+                "Option D for OOP"
+            ],
+            "correctIndex": 1
+        },
+        {
+            "id": "c03100b1-07e3-4fee-82d1-11fdf128c216",
+            "type": "mcq",
+            "text": "Sample MCQ 2 about OOP?",
+            "choices": [
+                "Option A for OOP",
+                "Option B for OOP",
+                "Option C for OOP",
+                "Option D for OOP"
+            ],
+            "correctIndex": 2
+        },
+        {
+            "id": "8a617678-d92f-46c4-be03-82d0f3a8f43a",
+            "type": "mcq",
+            "text": "Sample MCQ 3 about OOP?",
+            "choices": [
+                "Option A for OOP",
+                "Option B for OOP",
+                "Option C for OOP",
+                "Option D for OOP"
+            ],
+            "correctIndex": 3
+        },
+        {
+            "id": "06b3e93c-eba1-4710-9ee4-258237edcb32",
+            "type": "mcq",
+            "text": "Sample MCQ 4 about OOP?",
+            "choices": [
+                "Option A for OOP",
+                "Option B for OOP",
+                "Option C for OOP",
+                "Option D for OOP"
+            ],
+            "correctIndex": 0
+        },
+        {
+            "id": "a7d7145f-dc6c-4d6e-a739-ebf55f4eec3d",
+            "type": "mcq",
+            "text": "Sample MCQ 5 about OOP?",
+            "choices": [
+                "Option A for OOP",
+                "Option B for OOP",
+                "Option C for OOP",
+                "Option D for OOP"
+            ],
+            "correctIndex": 1
+        },
+        {
+            "id": "ef13e554-9ae5-41c0-bc94-3768e9bb48d1",
+            "type": "code_arrangement",
+            "text": "Complete the code for OOP problem 0:",
+            "codeTemplate": [
+                "func example() {",
+                "    _____",
+                "    print(\"middle\")",
+                "    _____",
+                "    _____",
+                "}"
+            ],
+            "options": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b",
+                "let d = 4"
+            ],
+            "correctAnswer": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b"
+            ]
+        },
+        {
+            "id": "f16e2a3f-3053-4cdf-90d0-66625a34cf3b",
+            "type": "code_arrangement",
+            "text": "Complete the code for OOP problem 1:",
+            "codeTemplate": [
+                "func example() {",
+                "    _____",
+                "    print(\"middle\")",
+                "    _____",
+                "    _____",
+                "}"
+            ],
+            "options": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b",
+                "let d = 4"
+            ],
+            "correctAnswer": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b"
+            ]
+        },
+        {
+            "id": "58ffd2d7-016f-40e0-9ac7-9ee4c7b83c20",
+            "type": "code_arrangement",
+            "text": "Complete the code for OOP problem 2:",
+            "codeTemplate": [
+                "func example() {",
+                "    _____",
+                "    print(\"middle\")",
+                "    _____",
+                "    _____",
+                "}"
+            ],
+            "options": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b",
+                "let d = 4"
+            ],
+            "correctAnswer": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b"
+            ]
+        },
+        {
+            "id": "c201b3a0-c42c-4f92-a4db-871b6eb3159a",
+            "type": "code_arrangement",
+            "text": "Complete the code for OOP problem 3:",
+            "codeTemplate": [
+                "func example() {",
+                "    _____",
+                "    print(\"middle\")",
+                "    _____",
+                "    _____",
+                "}"
+            ],
+            "options": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b",
+                "let d = 4"
+            ],
+            "correctAnswer": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b"
+            ]
+        }
+    ]
 }

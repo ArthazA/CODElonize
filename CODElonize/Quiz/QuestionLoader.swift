@@ -10,14 +10,15 @@ import os
 
 /// Loads and decodes quiz questions from the bundled JSON files.
 ///
-/// Each JSON file corresponds to one learning topic and follows the `QuestionBank` schema.
+/// Each JSON file corresponds to one learning topic and follows the unified `QuestionBank` schema.
+/// Questions can be either MCQ or Code Arrangement, differentiated by the `type` field.
 /// The loader resolves topic names (e.g. "Algorithms") to their JSON filenames
 /// using `GameConstants.topicFileMapping`.
 enum QuestionLoader {
     
     /// Loads all questions for the given topic from the app bundle.
     ///
-    /// - Parameter topic: The display name of the topic (e.g. "Algorithms", "AI").
+    /// - Parameter topic: The display name of the topic (e.g. "Algorithms", "SwiftUI").
     ///   Must match a key in `GameConstants.topicFileMapping`.
     /// - Returns: An array of `Question` objects, or an empty array if loading fails.
     static func loadQuestions(for topic: String) -> [Question] {
@@ -44,6 +45,22 @@ enum QuestionLoader {
         }
     }
     
+    /// Loads only MCQ questions for the given topic.
+    ///
+    /// - Parameter topic: The display name of the topic.
+    /// - Returns: An array of MCQ `Question` objects.
+    static func loadMCQQuestions(for topic: String) -> [Question] {
+        loadQuestions(for: topic).filter { $0.type == .mcq }
+    }
+    
+    /// Loads only Code Arrangement questions for the given topic.
+    ///
+    /// - Parameter topic: The display name of the topic.
+    /// - Returns: An array of Code Arrangement `Question` objects.
+    static func loadArrangementQuestions(for topic: String) -> [Question] {
+        loadQuestions(for: topic).filter { $0.type == .codeArrangement }
+    }
+    
     /// Loads all questions across every topic.
     ///
     /// Useful for diagnostics or validating that all JSON files are properly formatted.
@@ -54,5 +71,30 @@ enum QuestionLoader {
             result[topic] = loadQuestions(for: topic)
         }
         return result
+    }
+    
+    /// Validates that a topic has sufficient questions for a full attempt.
+    ///
+    /// Requires at least `GameConstants.mcqPerAttempt` MCQ questions
+    /// and `GameConstants.arrangementPerAttempt` Code Arrangement questions.
+    ///
+    /// - Parameter topic: The display name of the topic.
+    /// - Returns: `true` if the topic has enough questions of both types.
+    static func hasEnoughQuestions(for topic: String) -> Bool {
+        let all = loadQuestions(for: topic)
+        let mcqCount = all.filter { $0.type == .mcq }.count
+        let arrangementCount = all.filter { $0.type == .codeArrangement }.count
+        
+        let hasMCQ = mcqCount >= GameConstants.mcqPerAttempt
+        let hasArrangement = arrangementCount >= GameConstants.arrangementPerAttempt
+        
+        if !hasMCQ {
+            AppLogger.quiz.warning("Topic '\(topic)' has only \(mcqCount) MCQ questions (need \(GameConstants.mcqPerAttempt))")
+        }
+        if !hasArrangement {
+            AppLogger.quiz.warning("Topic '\(topic)' has only \(arrangementCount) arrangement questions (need \(GameConstants.arrangementPerAttempt))")
+        }
+        
+        return hasMCQ && hasArrangement
     }
 }

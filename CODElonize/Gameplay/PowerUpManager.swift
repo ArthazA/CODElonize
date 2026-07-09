@@ -38,7 +38,7 @@ enum PowerUpManager {
     ///   - gameState: The game state to modify.
     /// - Returns: `true` if the power-up was added to inventory.
     @discardableResult
-    static func addToInventory(type: PowerUpType, playerID: String, gameState: GameState) -> Bool {
+    static func addToInventory(type: PowerUpType, playerID: UUID, gameState: GameState) -> Bool {
         guard let playerIdx = gameState.playerIndex(byID: playerID) else {
             AppLogger.gameplay.error("Player not found for inventory: \(playerID)")
             return false
@@ -62,7 +62,7 @@ enum PowerUpManager {
     ///   - gameState: The game state to modify.
     /// - Returns: `true` if the power-up was found and removed.
     @discardableResult
-    static func removeFromInventory(type: PowerUpType, playerID: String, gameState: GameState) -> Bool {
+    static func removeFromInventory(type: PowerUpType, playerID: UUID, gameState: GameState) -> Bool {
         guard let playerIdx = gameState.playerIndex(byID: playerID) else { return false }
         
         if let itemIdx = gameState.players[playerIdx].inventory.firstIndex(of: type) {
@@ -84,7 +84,7 @@ enum PowerUpManager {
     /// - Returns: `nil` if activation is valid, or a failure reason string.
     static func validateActivation(
         type: PowerUpType,
-        playerID: String,
+        playerID: UUID,
         targetArea: Int,
         gameState: GameState
     ) -> String? {
@@ -138,7 +138,7 @@ enum PowerUpManager {
     ///   - gameState: The game state to modify.
     /// - Returns: The activation result.
     static func activateEarthquake(
-        playerID: String,
+        playerID: UUID,
         targetArea: Int,
         gameState: GameState
     ) -> ActivationResult {
@@ -174,7 +174,7 @@ enum PowerUpManager {
     ///   - gameState: The game state to modify.
     /// - Returns: The activation result.
     static func activateTsunami(
-        playerID: String,
+        playerID: UUID,
         targetArea: Int,
         gameState: GameState
     ) -> ActivationResult {
@@ -211,7 +211,7 @@ enum PowerUpManager {
     ///   - gameState: The game state to modify.
     /// - Returns: The activation result.
     static func activatePocketWatch(
-        playerID: String,
+        playerID: UUID,
         targetArea: Int,
         gameState: GameState
     ) -> ActivationResult {
@@ -238,7 +238,7 @@ enum PowerUpManager {
         gameState.players[playerIdx].completionTimes[targetArea] = newTime
         
         // Update the area's attempt record
-        gameState.areas[targetArea].attemptRecords[playerID] = newTime
+        gameState.areas[targetArea].attemptRecords[playerID.uuidString] = newTime
         
         // Re-evaluate ownership
         let (newOwnerID, newBestTime) = ConquestSystem.evaluateOwnership(for: gameState.areas[targetArea])

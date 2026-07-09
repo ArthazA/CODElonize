@@ -5,6 +5,7 @@ struct Home: View {
     @State private var roomCode = ""
     @FocusState private var isRoomCodeFocused: Bool
     @State private var isJoining = false
+    @State private var isShowingHowToPlay = false
     
     var body: some View {
         ZStack {
@@ -128,7 +129,7 @@ struct Home: View {
                         }
                         
                         Button(action: {
-                            // How to play action
+                            isShowingHowToPlay = true
                         }) {
                             Text("How to play?")
                                 .font(.system(size: 16, weight: .bold, design: .rounded))
@@ -142,6 +143,15 @@ struct Home: View {
                 }
             }
         }
+        .overlay(
+            Group {
+                if isShowingHowToPlay {
+                    HowToPlayView {
+                        isShowingHowToPlay = false
+                    }
+                }
+            }
+        )
         .contentShape(Rectangle())
         .onTapGesture {
             isRoomCodeFocused = false

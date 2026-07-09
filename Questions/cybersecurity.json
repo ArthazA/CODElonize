@@ -1,23 +1,173 @@
 {
-  "topic": "cybersecurity",
-  "questions": [
-    {
-      "id": "A3000001-0001-0001-0001-000000000001",
-      "text": "What does SQL injection target?",
-      "choices": ["Operating System", "Database", "Network Router", "Web Browser"],
-      "correctIndex": 1
-    },
-    {
-      "id": "A3000001-0001-0001-0001-000000000002",
-      "text": "Which protocol provides secure web communication?",
-      "choices": ["HTTP", "FTP", "HTTPS", "SMTP"],
-      "correctIndex": 2
-    },
-    {
-      "id": "A3000001-0001-0001-0001-000000000003",
-      "text": "What is a firewall primarily used for?",
-      "choices": ["Encrypting data", "Filtering network traffic", "Compressing files", "Managing databases"],
-      "correctIndex": 1
-    }
-  ]
+    "topic": "Cybersecurity",
+    "questions": [
+        {
+            "id": "bab086c9-4b31-41d9-95c0-5667cfdef41d",
+            "type": "mcq",
+            "text": "Sample MCQ 0 about Cybersecurity?",
+            "choices": [
+                "Option A for Cybersecurity",
+                "Option B for Cybersecurity",
+                "Option C for Cybersecurity",
+                "Option D for Cybersecurity"
+            ],
+            "correctIndex": 0
+        },
+        {
+            "id": "a626b769-3dd8-40aa-80ec-61cc3601edc7",
+            "type": "mcq",
+            "text": "Sample MCQ 1 about Cybersecurity?",
+            "choices": [
+                "Option A for Cybersecurity",
+                "Option B for Cybersecurity",
+                "Option C for Cybersecurity",
+                "Option D for Cybersecurity"
+            ],
+            "correctIndex": 1
+        },
+        {
+            "id": "e473a9b8-25bf-44f8-95d2-852d6c790b26",
+            "type": "mcq",
+            "text": "Sample MCQ 2 about Cybersecurity?",
+            "choices": [
+                "Option A for Cybersecurity",
+                "Option B for Cybersecurity",
+                "Option C for Cybersecurity",
+                "Option D for Cybersecurity"
+            ],
+            "correctIndex": 2
+        },
+        {
+            "id": "1e24dd5d-d554-4853-9929-82a71e32011b",
+            "type": "mcq",
+            "text": "Sample MCQ 3 about Cybersecurity?",
+            "choices": [
+                "Option A for Cybersecurity",
+                "Option B for Cybersecurity",
+                "Option C for Cybersecurity",
+                "Option D for Cybersecurity"
+            ],
+            "correctIndex": 3
+        },
+        {
+            "id": "272d9d1f-756d-408f-b19e-c02d0aca41bb",
+            "type": "mcq",
+            "text": "Sample MCQ 4 about Cybersecurity?",
+            "choices": [
+                "Option A for Cybersecurity",
+                "Option B for Cybersecurity",
+                "Option C for Cybersecurity",
+                "Option D for Cybersecurity"
+            ],
+            "correctIndex": 0
+        },
+        {
+            "id": "2f05d3f3-38ad-4a16-a06f-c0beee1832a6",
+            "type": "mcq",
+            "text": "Sample MCQ 5 about Cybersecurity?",
+            "choices": [
+                "Option A for Cybersecurity",
+                "Option B for Cybersecurity",
+                "Option C for Cybersecurity",
+                "Option D for Cybersecurity"
+            ],
+            "correctIndex": 1
+        },
+        {
+            "id": "29a1f56e-4c2d-4c97-8d73-5897ef3912cc",
+            "type": "code_arrangement",
+            "text": "Complete the code for Cybersecurity problem 0:",
+            "codeTemplate": [
+                "func example() {",
+                "    _____",
+                "    print(\"middle\")",
+                "    _____",
+                "    _____",
+                "}"
+            ],
+            "options": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b",
+                "let d = 4"
+            ],
+            "correctAnswer": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b"
+            ]
+        },
+        {
+            "id": "7638b33c-2046-4089-a281-fd0478a889a8",
+            "type": "code_arrangement",
+            "text": "Complete the code for Cybersecurity problem 1:",
+            "codeTemplate": [
+                "func example() {",
+                "    _____",
+                "    print(\"middle\")",
+                "    _____",
+                "    _____",
+                "}"
+            ],
+            "options": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b",
+                "let d = 4"
+            ],
+            "correctAnswer": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b"
+            ]
+        },
+        {
+            "id": "8bcb5fa5-45c3-4df9-a1c6-d0153353e3ab",
+            "type": "code_arrangement",
+            "text": "Complete the code for Cybersecurity problem 2:",
+            "codeTemplate": [
+                "func example() {",
+                "    _____",
+                "    print(\"middle\")",
+                "    _____",
+                "    _____",
+                "}"
+            ],
+            "options": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b",
+                "let d = 4"
+            ],
+            "correctAnswer": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b"
+            ]
+        },
+        {
+            "id": "a9b0b784-c132-4f97-a564-ac8093f6a35d",
+            "type": "code_arrangement",
+            "text": "Complete the code for Cybersecurity problem 3:",
+            "codeTemplate": [
+                "func example() {",
+                "    _____",
+                "    print(\"middle\")",
+                "    _____",
+                "    _____",
+                "}"
+            ],
+            "options": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b",
+                "let d = 4"
+            ],
+            "correctAnswer": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b"
+            ]
+        }
+    ]
 }

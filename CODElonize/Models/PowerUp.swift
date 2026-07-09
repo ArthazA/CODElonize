@@ -12,7 +12,7 @@ import Foundation
 /// Each power-up has a distinct strategic effect on area conquest:
 /// - **Earthquake**: Resets an area completely (owner, times, questions)
 /// - **Tsunami**: Temporarily locks an area and kicks active players
-/// - **Pocket Watch**: Reduces the activating player's time by 10%
+/// - **Pocket Watch**: Reduces the activating player's time by 20%
 enum PowerUpType: String, CaseIterable, Codable, Equatable {
     case earthquake
     case tsunami
@@ -58,7 +58,7 @@ struct SpawnedPowerUp: Identifiable, Equatable {
     let type: PowerUpType
     
     /// The spawn slot index (0–4) determining its position on the island.
-    let spawnSlot: Int
+    var spawnSlot: Int
     
     /// Whether this power-up has been collected by a player.
     var isCollected: Bool = false
@@ -73,6 +73,46 @@ struct SpawnedPowerUp: Identifiable, Equatable {
     init(type: PowerUpType, spawnSlot: Int) {
         self.id = UUID()
         self.type = type
+        self.spawnSlot = spawnSlot
+        self.spawnTime = Date()
+    }
+}
+
+// MARK: - Ember Moth
+
+/// A special collectible that awards bonus points immediately on collection.
+///
+/// Unlike power-ups, Ember Moths:
+/// - Do NOT occupy inventory
+/// - Use the same probability-based claim mechanic
+/// - Immediately award `GameConstants.emberMothPoints` (+0.5) on successful claim
+/// - Disappear immediately after collection
+/// - No activation required
+struct SpawnedEmberMoth: Identifiable, Equatable {
+    /// Unique identifier for this Ember Moth instance.
+    let id: UUID
+    
+    /// The spawn slot index determining its position on the island.
+    var spawnSlot: Int
+    
+    /// Whether this Ember Moth has been collected by a player.
+    var isCollected: Bool = false
+    
+    /// The ID of the player who collected this Ember Moth (nil if uncollected).
+    var collectedByPlayerID: String? = nil
+    
+    /// When this Ember Moth was spawned.
+    let spawnTime: Date
+    
+    /// SF Symbol icon name for the HUD display.
+    static let iconName = "flame.fill"
+    
+    /// Display name for the UI.
+    static let displayName = "Ember Moth"
+    
+    /// Creates a new spawned Ember Moth.
+    init(spawnSlot: Int) {
+        self.id = UUID()
         self.spawnSlot = spawnSlot
         self.spawnTime = Date()
     }

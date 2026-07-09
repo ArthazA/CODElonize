@@ -25,9 +25,15 @@ enum AnswerState: Equatable {
 /// questions, handle answer submissions, enforce the wrong-answer penalty,
 /// track elapsed time, and report completion.
 ///
+/// ## Question Flow
+/// Each attempt consists of 5 questions:
+/// - Questions 1–3: Multiple Choice (MCQ)
+/// - Questions 4–5: Code Arrangement
+///
 /// ## Lifecycle
 /// 1. Call `startQuiz(topic:seed:)` to load questions and begin the timer.
-/// 2. The player taps answers via `submitAnswer(_:)`.
+/// 2. The player taps MCQ answers via `submitAnswer(_:)` or submits arrangements
+///    via `submitArrangementAnswer(_:)`.
 /// 3. Correct answers advance to the next question. Wrong answers freeze for 3 seconds.
 /// 4. After all questions are answered correctly, `isComplete` becomes `true`
 ///    and `completionTime` records the elapsed duration.
@@ -36,13 +42,13 @@ class QuizManager: ObservableObject {
     
     // MARK: - Published State
     
-    /// The questions for this quiz attempt (typically 3).
+    /// The questions for this quiz attempt (typically 5: 3 MCQ + 2 Arrangement).
     @Published private(set) var currentQuestions: [Question] = []
     
     /// Index of the question currently being displayed (0-based).
     @Published private(set) var currentQuestionIndex: Int = 0
     
-    /// The player's selected answer index, or nil if not yet selected.
+    /// The player's selected MCQ answer index, or nil if not yet selected.
     @Published private(set) var selectedAnswer: Int? = nil
     
     /// Current answer validation state.
@@ -62,6 +68,10 @@ class QuizManager: ObservableObject {
     
     /// Whether a quiz session is currently active.
     @Published private(set) var isActive: Bool = false
+    
+    /// The player's current code arrangement answer (for Code Arrangement questions).
+    /// Index corresponds to slot index, value is the placed option string (nil if empty).
+    @Published var arrangementSlots: [String?] = []
     
     /// The recorded completion time (set when the quiz finishes).
     /// This is the value used for area conquest time comparison.
@@ -94,6 +104,17 @@ class QuizManager: ObservableObject {
         currentQuestions.count
     }
     
+    /// Whether the current question is a Code Arrangement question.
+    var isCurrentQuestionArrangement: Bool {
+        currentQuestion?.isCodeArrangement ?? false
+    }
+    
+    /// Whether all arrangement slots are filled (submit button can be enabled).
+    var allSlotsFilled: Bool {
+        guard let question = currentQuestion, question.isCodeArrangement else { return false }
+        return arrangementSlots.allSatisfy { $0 != nil } && arrangementSlots.count == question.slotCount
+    }
+    
     /// Formatted elapsed time string (MM:SS.d).
     var formattedElapsedTime: String {
         let minutes = Int(elapsedTime) / 60
@@ -106,8 +127,8 @@ class QuizManager: ObservableObject {
     
     /// Starts a new quiz session for the given topic.
     ///
-    /// Loads questions from the JSON file, selects a randomized subset using the
-    /// provided seed, and begins the elapsed timer.
+    /// Loads questions from the JSON file, selects a randomized mixed set (3 MCQ + 2 Arrangement)
+    /// using the provided seed, and begins the elapsed timer.
     ///
     /// - Parameters:
     ///   - topic: The display name of the topic (e.g. "Algorithms").
@@ -120,24 +141,39 @@ class QuizManager: ObservableObject {
         self.topic = topic
         self.currentSeed = seed ?? Randomizer.generateSeed()
         
-        // Load and randomize questions
-        let allQuestions = QuestionLoader.loadQuestions(for: topic)
+        // Load questions by type
+        let mcqPool = QuestionLoader.loadMCQQuestions(for: topic)
+        let arrangementPool = QuestionLoader.loadArrangementQuestions(for: topic)
         
-        guard !allQuestions.isEmpty else {
-            AppLogger.quiz.error("Cannot start quiz: no questions available for '\(topic)'")
+        guard !mcqPool.isEmpty else {
+            AppLogger.quiz.error("Cannot start quiz: no MCQ questions available for '\(topic)'")
             return
         }
         
-        currentQuestions = Randomizer.selectQuestions(
-            from: allQuestions,
-            count: GameConstants.questionsPerAttempt,
-            seed: currentSeed
-        )
+        // Select mixed questions: 3 MCQ + 2 Arrangement (or fewer if pool is limited)
+        if !arrangementPool.isEmpty {
+            currentQuestions = Randomizer.selectMixedQuestions(
+                mcqPool: mcqPool,
+                arrangementPool: arrangementPool,
+                seed: currentSeed
+            )
+        } else {
+            // Fallback: MCQ only if no arrangement questions available
+            AppLogger.quiz.warning("No arrangement questions for '\(topic)' — using MCQ only")
+            currentQuestions = Randomizer.selectQuestions(
+                from: mcqPool,
+                count: GameConstants.mcqPerAttempt,
+                seed: currentSeed
+            )
+        }
         
         guard !currentQuestions.isEmpty else {
             AppLogger.quiz.error("Randomizer returned empty question set for '\(topic)'")
             return
         }
+        
+        // Initialize arrangement slots if first question is arrangement (unlikely but safe)
+        setupArrangementSlots()
         
         // Start the session
         isActive = true
@@ -165,6 +201,8 @@ class QuizManager: ObservableObject {
             return
         }
         
+        setupArrangementSlots()
+        
         isActive = true
         startTime = Date()
         startTimer()
@@ -174,7 +212,7 @@ class QuizManager: ObservableObject {
         )
     }
     
-    /// Submits an answer for the current question.
+    /// Submits an MCQ answer for the current question.
     ///
     /// - Parameter choiceIndex: The index (0–3) of the selected answer choice.
     ///
@@ -186,7 +224,7 @@ class QuizManager: ObservableObject {
     ///   can try again on the same question.
     func submitAnswer(_ choiceIndex: Int) {
         guard isActive, !isComplete, !isFrozen else { return }
-        guard let question = currentQuestion else { return }
+        guard let question = currentQuestion, question.isMCQ else { return }
         
         selectedAnswer = choiceIndex
         
@@ -205,6 +243,85 @@ class QuizManager: ObservableObject {
         }
     }
     
+    /// Submits a Code Arrangement answer for the current question.
+    ///
+    /// Validates the current `arrangementSlots` against the correct answer.
+    ///
+    /// ## Behavior
+    /// - If **correct**: briefly shows feedback, then advances.
+    /// - If **incorrect**: freezes UI for 3 seconds, then resets to allow retry.
+    func submitArrangementAnswer() {
+        guard isActive, !isComplete, !isFrozen else { return }
+        guard let question = currentQuestion, question.isCodeArrangement else { return }
+        guard allSlotsFilled else { return }
+        
+        let userAnswer = arrangementSlots.compactMap { $0 }
+        let isCorrect = AnswerValidator.validateArrangement(userAnswer: userAnswer, for: question)
+        
+        if isCorrect {
+            answerState = .correct
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { [weak self] in
+                self?.advanceToNextQuestion()
+            }
+        } else {
+            answerState = .incorrect
+            applyFreezePenalty()
+        }
+    }
+    
+    // MARK: - Arrangement Slot Management
+    
+    /// Places an option into a specific slot.
+    ///
+    /// If the slot is already occupied, the existing block is displaced back to the options area.
+    /// If the option is already placed in another slot, it is first removed from that slot.
+    ///
+    /// - Parameters:
+    ///   - option: The code block string to place.
+    ///   - slotIndex: The target slot index.
+    /// - Returns: The displaced option string if the slot was occupied, or nil.
+    @discardableResult
+    func placeOption(_ option: String, inSlot slotIndex: Int) -> String? {
+        guard slotIndex >= 0 && slotIndex < arrangementSlots.count else { return nil }
+        guard !isFrozen else { return nil }
+        
+        // If this option is already in another slot, remove it first
+        if let existingSlot = arrangementSlots.firstIndex(where: { $0 == option }) {
+            arrangementSlots[existingSlot] = nil
+        }
+        
+        // Displace the current occupant if any
+        let displaced = arrangementSlots[slotIndex]
+        
+        // Place the new option
+        arrangementSlots[slotIndex] = option
+        
+        return displaced
+    }
+    
+    /// Removes an option from a slot, returning it to the options area.
+    ///
+    /// - Parameter slotIndex: The slot to clear.
+    /// - Returns: The removed option string, or nil if the slot was empty.
+    @discardableResult
+    func removeFromSlot(_ slotIndex: Int) -> String? {
+        guard slotIndex >= 0 && slotIndex < arrangementSlots.count else { return nil }
+        guard !isFrozen else { return nil }
+        
+        let removed = arrangementSlots[slotIndex]
+        arrangementSlots[slotIndex] = nil
+        return removed
+    }
+    
+    /// Returns the options that are not currently placed in any slot.
+    var availableOptions: [String] {
+        guard let question = currentQuestion, question.isCodeArrangement,
+              let options = question.options else { return [] }
+        let placedOptions = Set(arrangementSlots.compactMap { $0 })
+        return options.filter { !placedOptions.contains($0) }
+    }
+    
     /// Cancels the current quiz session.
     ///
     /// Used when a Tsunami power-up locks the area, the player disconnects,
@@ -216,6 +333,15 @@ class QuizManager: ObservableObject {
     }
     
     // MARK: - Private Methods
+    
+    /// Sets up arrangement slots for the current question if it's a Code Arrangement question.
+    private func setupArrangementSlots() {
+        if let question = currentQuestion, question.isCodeArrangement {
+            arrangementSlots = Array(repeating: nil, count: question.slotCount)
+        } else {
+            arrangementSlots = []
+        }
+    }
     
     /// Advances to the next question, or completes the quiz if all are answered.
     private func advanceToNextQuestion() {
@@ -229,6 +355,9 @@ class QuizManager: ObservableObject {
             currentQuestionIndex = nextIndex
             selectedAnswer = nil
             answerState = .unanswered
+            
+            // Setup arrangement slots if the next question is Code Arrangement
+            setupArrangementSlots()
             
             AppLogger.quiz.info("Advanced to question \(nextIndex + 1)/\(self.totalQuestions)")
         }
@@ -310,5 +439,6 @@ class QuizManager: ObservableObject {
         isActive = false
         completionTime = nil
         startTime = nil
+        arrangementSlots = []
     }
 }

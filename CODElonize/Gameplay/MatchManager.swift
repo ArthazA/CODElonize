@@ -71,6 +71,7 @@ class MatchManager: ObservableObject {
     
     init() {
         setupTimerExpiry()
+        setupArmageddonTrigger()
         setupGameStateObservation()
     }
     
@@ -80,6 +81,30 @@ class MatchManager: ObservableObject {
             AppLogger.gameplay.info("Timer expired — ending match")
             self?.endMatch()
         }
+    }
+    
+    /// Monitors the countdown timer to trigger Armageddon Phase.
+    private func setupArmageddonTrigger() {
+        timerSystem.$remainingTime
+            .sink { [weak self] remaining in
+                guard let self = self else { return }
+                if remaining <= GameConstants.armageddonRemainingTime,
+                   self.gameState.isMatchActive,
+                   !self.gameState.armageddonTriggered {
+                    
+                    self.gameState.armageddonTriggered = true
+                    self.gameState.isArmageddonActive = true
+                    
+                    // Unlock the 7th area (index 6)
+                    AreaManager.unlockArea(index: 6, gameState: self.gameState)
+                    
+                    // Spawn the first Ember Moth
+                    self.spawnManager.spawnEmberMoth()
+                    
+                    AppLogger.gameplay.info("Armageddon Phase triggered!")
+                }
+            }
+            .store(in: &cancellables)
     }
     
     /// Observes GameState changes to keep the leaderboard up to date.
@@ -313,8 +338,10 @@ class MatchManager: ObservableObject {
             return
         }
         
-        // Collect from spawn manager
-        guard let type = spawnManager.collectPowerUp(spawnID: spawnID, playerID: playerID) else {
+        // Attempt claim from spawn manager using new probability mechanic
+        guard let type = spawnManager.attemptClaim(spawnID: spawnID, playerID: playerID) else {
+            powerUpFeedback = "Claim failed!"
+            clearFeedbackAfterDelay()
             return
         }
         
@@ -322,6 +349,24 @@ class MatchManager: ObservableObject {
         PowerUpManager.addToInventory(type: type, playerID: playerID, gameState: gameState)
         
         powerUpFeedback = "\(type.displayName) collected!"
+        clearFeedbackAfterDelay()
+    }
+    
+    /// Handles tapping a spawned Ember Moth to collect it.
+    ///
+    /// - Parameter spawnID: The UUID of the spawned Ember Moth.
+    func handleEmberMothCollection(spawnID: UUID) {
+        let playerID = gameState.localPlayerID
+        
+        if spawnManager.attemptEmberMothClaim(mothID: spawnID, playerID: playerID) {
+            gameState.awardEmberMothPoints(playerID: playerID)
+            refreshLeaderboard()
+            
+            powerUpFeedback = "Ember Moth collected! +0.5 pts"
+        } else {
+            powerUpFeedback = "Moth claim failed!"
+        }
+        
         clearFeedbackAfterDelay()
     }
     

@@ -33,31 +33,42 @@ enum GameConstants {
     
     // MARK: - Areas
     
-    /// Number of conquerable areas on the island.
-    static let areaCount = 6
+    /// Number of conquerable areas on the island (6 normal + 1 Armageddon-locked).
+    static let areaCount = 7
     
-    /// Number of questions per area attempt.
-    static let questionsPerAttempt = 3
+    /// The index of the Armageddon-locked area (0-indexed).
+    static let armageddonAreaIndex = 6
+    
+    /// Number of MCQ questions per area attempt.
+    static let mcqPerAttempt = 3
+    
+    /// Number of Code Arrangement questions per area attempt.
+    static let arrangementPerAttempt = 2
+    
+    /// Total number of questions per area attempt (3 MCQ + 2 Code Arrangement).
+    static let questionsPerAttempt = 5
     
     /// The learning topics mapped to each area index.
     static let areaTopics = [
+        "SwiftUI",
         "Algorithms",
-        "AI",
-        "Cybersecurity",
+        "Data Structures",
+        "Networking",
+        "Databases",
         "OOP",
-        "Computer Networks",
-        "Database"
+        "Frameworks"
     ]
     
     /// Pinpoint positions relative to the island entity's local origin.
     /// These are placeholder coordinates — adjust after testing with the actual Islands.usdz model.
     static let pinpointPositions: [SIMD3<Float>] = [
-        SIMD3<Float>( 0.00,  0.03, -0.30),  // Area 0 (RED) — Algorithms (Mountain)
-        SIMD3<Float>( 0.14,  0.04, -0.05),  // Area 1 (PINK) — AI (Forest East)
-        SIMD3<Float>(-0.33,  0.11, -0.10),  // Area 2 (GREEN) — Cybersecurity (Forest West)
-        SIMD3<Float>( 0.31,  0.21,  0.14),  // Area 3 (BLUE) — OOP (River)
-        SIMD3<Float>(-0.10,  0.02,  0.09),  // Area 4 (ORANGE) — Computer Networks (Village)
-        SIMD3<Float>( 0.03,  0.05,  0.24),  // Area 5 (YELLOW) — Database (Center)
+        SIMD3<Float>( 0.00,  0.03, -0.30),  // Area 0 — SwiftUI (Mountain)
+        SIMD3<Float>( 0.14,  0.04, -0.05),  // Area 1 — Algorithms (Forest East)
+        SIMD3<Float>(-0.33,  0.11, -0.10),  // Area 2 — Data Structures (Forest West)
+        SIMD3<Float>( 0.31,  0.21,  0.14),  // Area 3 — Networking (River)
+        SIMD3<Float>(-0.10,  0.02,  0.09),  // Area 4 — Databases (Village)
+        SIMD3<Float>( 0.03,  0.05,  0.24),  // Area 5 — OOP (Center)
+        SIMD3<Float>( 0.20,  0.08,  0.30),  // Area 6 — Frameworks (Armageddon-locked)
     ]
     
     /// Collision radius for each pinpoint (used for tap detection).
@@ -74,8 +85,8 @@ enum GameConstants {
     /// Time penalty in seconds when a wrong answer is given (UI freeze).
     static let wrongAnswerPenalty: TimeInterval = 3
     
-    /// Pocket Watch time reduction factor (10%).
-    static let pocketWatchReduction: Float = 0.10
+    /// Pocket Watch time reduction factor (20%).
+    static let pocketWatchReduction: Float = 0.20
     
     /// Duration in seconds that a Tsunami power-up locks an area.
     static let tsunamiLockDuration: TimeInterval = 30
@@ -88,12 +99,13 @@ enum GameConstants {
     /// Maps the display topic names (from `areaTopics`) to their JSON filenames (without extension).
     /// The JSON files live in the app bundle under `Questions/`.
     static let topicFileMapping: [String: String] = [
+        "SwiftUI": "swiftui",
         "Algorithms": "algorithms",
-        "AI": "ai",
-        "Cybersecurity": "cybersecurity",
+        "Data Structures": "datastructures",
+        "Networking": "networking",
+        "Databases": "databases",
         "OOP": "oop",
-        "Computer Networks": "computernetworks",
-        "Database": "database"
+        "Frameworks": "frameworks"
     ]
     
     // MARK: - Power-ups
@@ -110,8 +122,29 @@ enum GameConstants {
     /// Number of predefined spawn positions around the island.
     static let powerUpSpawnSlots: Int = 5
     
-    /// Maximum number of power-ups a player can hold in inventory.
-    static let maxInventorySize: Int = 3
+    /// Maximum number of power-ups a player can hold in inventory (ONE slot per spec).
+    static let maxInventorySize: Int = 1
+    
+    // MARK: - Claim Mechanic
+    
+    /// Initial chance of successfully claiming a power-up on tap (10%).
+    static let initialClaimChance: Double = 0.10
+    
+    /// Increase in claim chance per failed attempt (+7.5%).
+    static let claimChanceIncrease: Double = 0.075
+    
+    /// Interval in seconds between power-up relocations.
+    static let powerUpMoveInterval: TimeInterval = 2
+    
+    // MARK: - Armageddon
+    
+    /// Remaining match time (in seconds) at which Armageddon Phase triggers.
+    static let armageddonRemainingTime: TimeInterval = 60
+    
+    // MARK: - Ember Moth
+    
+    /// Points awarded for collecting an Ember Moth.
+    static let emberMothPoints: Double = 0.5
     
     // MARK: - Lobby
     

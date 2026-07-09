@@ -11,7 +11,7 @@ import os
 /// A player's score summary for leaderboard display and winner determination.
 struct PlayerScore: Identifiable, Equatable {
     /// The player's unique ID.
-    let playerID: String
+    let playerID: UUID
     
     /// The player's display name.
     let displayName: String
@@ -22,8 +22,16 @@ struct PlayerScore: Identifiable, Equatable {
     /// Total completion time across all attempted areas (tiebreaker).
     let totalTime: TimeInterval
     
+    /// Points from Ember Moth collections (each worth 0.5).
+    let emberMothPoints: Double
+    
+    /// Total points: conqueredAreas × 1.0 + emberMothPoints.
+    var totalPoints: Double {
+        Double(conqueredAreas) + emberMothPoints
+    }
+    
     /// Identifiable conformance.
-    var id: String { playerID }
+    var id: UUID { playerID }
 }
 
 /// The final match result, containing the winner and full leaderboard.
@@ -31,20 +39,21 @@ struct MatchResult: Equatable {
     /// The winning player's score, or nil if no winner (e.g. no conquests).
     let winner: PlayerScore?
     
-    /// All players sorted by rank (most areas → least total time).
+    /// All players sorted by rank (most points → least total time).
     let leaderboard: [PlayerScore]
 }
 
 /// Calculates scores and determines the match winner.
 ///
-/// Winner rule (EC-028): Most conquered areas wins.
+/// Winner rule: Highest total points wins.
+/// Points = (conquered areas × 1) + (Ember Moth collections × 0.5).
 /// Tiebreaker: Lowest total completion time.
 enum ScoreManager {
     
     /// Calculates the sorted leaderboard from the current game state.
     ///
     /// Players are sorted by:
-    /// 1. Most conquered areas (descending)
+    /// 1. Highest total points (descending)
     /// 2. Lowest total completion time (ascending, as tiebreaker)
     ///
     /// - Parameter gameState: The current game state.
@@ -52,17 +61,18 @@ enum ScoreManager {
     static func calculateScores(gameState: GameState) -> [PlayerScore] {
         let scores = gameState.players.map { player in
             PlayerScore(
-                playerID: player.id.uuidString,
+                playerID: player.id,
                 displayName: player.displayName,
                 conqueredAreas: player.conqueredAreaCount,
-                totalTime: player.totalCompletionTime
+                totalTime: player.totalCompletionTime,
+                emberMothPoints: gameState.emberMothPointsFor(playerID: player.id)
             )
         }
         
-        // Sort: most areas first, then least total time
+        // Sort: most points first, then least total time
         return scores.sorted { a, b in
-            if a.conqueredAreas != b.conqueredAreas {
-                return a.conqueredAreas > b.conqueredAreas
+            if a.totalPoints != b.totalPoints {
+                return a.totalPoints > b.totalPoints
             }
             return a.totalTime < b.totalTime
         }
@@ -78,7 +88,7 @@ enum ScoreManager {
         
         if let winner {
             AppLogger.gameplay.info(
-                "Match result: winner='\(winner.displayName)' with \(winner.conqueredAreas) areas, time=\(String(format: "%.1f", winner.totalTime))s"
+                "Match result: winner='\(winner.displayName)' with \(String(format: "%.1f", winner.totalPoints)) points, time=\(String(format: "%.1f", winner.totalTime))s"
             )
         } else {
             AppLogger.gameplay.info("Match result: no winner (no players)")
