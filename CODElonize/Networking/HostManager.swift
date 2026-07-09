@@ -1,3 +1,9 @@
+//
+//  HostManager.swift
+//  CODElonize
+//
+//  Created by Arthaz's MacBook on 05/07/26.
+//
 
 import Foundation
 import Network
@@ -79,7 +85,7 @@ final class HostManager: ObservableObject {
             print(error)
         }
     }
-
+    
     private func broadcast<T: Codable>(_ message: NetworkMessage<T>) {
 
             do {
@@ -113,7 +119,7 @@ final class HostManager: ObservableObject {
         )
         broadcast(message)
     }
-
+    
     func setPlayerReady(playerID: UUID, isReady: Bool) {
         guard var lobby = lobbyManager?.lobby else {
             return
@@ -126,7 +132,7 @@ final class HostManager: ObservableObject {
         }
 
         lobby.players[index].isReady = isReady
-
+        
         lobbyManager?.updateLobby(lobby)
         print("Lobby Synced")
         for player in lobby.players {
@@ -134,11 +140,11 @@ final class HostManager: ObservableObject {
         }
         broadcastLobby(lobby)
     }
-
+    
     private func handleReady(_ ready: ReadyMessage) {
         setPlayerReady(playerID: ready.playerID, isReady: ready.isReady)
     }
-
+    
     private func handleJoin(_ join: JoinMessage) {
         guard var lobby = lobbyManager?.lobby else {
             return
@@ -162,12 +168,12 @@ final class HostManager: ObservableObject {
             isHost: false,
             isReady: false
         )
-
+        
         if lobby.players.contains(where: { $0.id == player.id }) {
             return
         }
         lobby.players.append(player)
-
+        
         print("Player Joined:")
         lobby.players.forEach {
             print($0.name)
@@ -180,12 +186,26 @@ final class HostManager: ObservableObject {
             print(player.name)
         }
 
-        broadcastLobby(lobby)  
+        broadcastLobby(lobby)
     }
-
+    
+    /// Starts the match: generates the shared start time and per-area
+    /// question seeds, broadcasts them to every client, and applies the
+    /// same payload locally so the host itself starts in sync (README §6.3).
     func startGame() {
+        guard let lobby = lobbyManager?.lobby else {
+            print("Cannot start game — no lobby")
+            return
+        }
+        
+        // Host generates one seed per area so every device's Randomizer
+        // produces identical question sets for that area (fairness requirement).
+        let seeds = (0..<GameConstants.areaCount).map { _ in Randomizer.generateSeed() }
+        
         let payload = StartGameMessage(
-            startTime: Date()
+            startTime: Date(),
+            questionSeeds: seeds,
+            players: lobby.players
         )
         let message = NetworkMessage<StartGameMessage>(
             type: .startGame,
@@ -194,10 +214,11 @@ final class HostManager: ObservableObject {
         broadcast(message)
         handleStartGame(payload)
     }
-
+    
     private func handleStartGame(
         _ message: StartGameMessage
     ) {
         print("Host Start")
+        lobbyManager?.applyMatchStart(message)
     }
 }

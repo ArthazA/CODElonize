@@ -1,51 +1,32 @@
 import SwiftUI
 
+/// The main gameplay screen shown during an active match.
+///
+/// Displays the AR camera feed (or placeholder island view) with the HUD overlay.
+/// When a player taps a pinpoint and a quiz starts, the `QuestionView` is overlaid
+/// on top of this screen. Spawned power-ups appear as collectible floating icons.
 struct GameScreen: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var matchManager: MatchManager
-
+    
     var body: some View {
         ZStack {
             ARViewContainer(arSessionManager: appState.arSessionManager)
                 .edgesIgnoringSafeArea(.all)
-
-            ZStack {
-                MapPin(iconName: "mappin.circle.fill", areaIndex: 0)
-                    .offset(x: -80, y: 150)
-                    .onTapGesture { matchManager.handlePinpointTap(areaIndex: 0) }
-
-                MapPin(iconName: "mappin.circle.fill", areaIndex: 1)
-                    .offset(x: 10, y: -50)
-                    .onTapGesture { matchManager.handlePinpointTap(areaIndex: 1) }
-
-                MapPin(iconName: "mappin.circle.fill", areaIndex: 2)
-                    .offset(x: 120, y: -20)
-                    .onTapGesture { matchManager.handlePinpointTap(areaIndex: 2) }
-
-                MapPin(iconName: "mappin.circle.fill", areaIndex: 3)
-                    .offset(x: 80, y: 100)
-                    .onTapGesture { matchManager.handlePinpointTap(areaIndex: 3) }
-
-                MapPin(iconName: "mappin.circle.fill", areaIndex: 4)
-                    .offset(x: -50, y: 30)
-                    .onTapGesture { matchManager.handlePinpointTap(areaIndex: 4) }
-
-                MapPin(iconName: "mappin.circle.fill", areaIndex: 5)
-                    .offset(x: 30, y: -130)
-                    .onTapGesture { matchManager.handlePinpointTap(areaIndex: 5) }
-            }
-
             spawnedPowerUpsOverlay
-
+            
+            // HUD Overlay
             HUD()
-
+            
+            // Quiz Overlay (shown when a quiz is active)
             if matchManager.isQuizActive {
                 QuestionView(quizManager: matchManager.quizManager) { completionTime in
                     matchManager.handleQuizCompletion(time: completionTime)
                 }
                 .transition(.opacity)
             }
-
+            
+            // Area Picker Overlay (shown when activating a power-up)
             if matchManager.isAreaPickerActive, let type = matchManager.pendingPowerUpType {
                 AreaPicker(powerUpType: type)
                     .transition(.opacity)
@@ -59,7 +40,7 @@ struct GameScreen: View {
             }
             
             if !matchManager.gameState.isMatchActive && !matchManager.gameState.isMatchFinished {
-                matchManager.startSinglePlayerMatch(playerName: appState.playerName.isEmpty ? "Player" : appState.playerName)
+                startMatchFromAvailableData()
             }
         }
         .onChange(of: matchManager.gameState.isMatchFinished) { _, isFinished in
@@ -68,7 +49,32 @@ struct GameScreen: View {
             }
         }
     }
-
+    
+    /// Starts the match using real multiplayer data when available
+    /// (`LobbyManager.pendingMatchStart`, populated via the host's broadcast
+    /// `StartGameMessage` — README §6.3), otherwise falls back to a local
+    /// single-player match for dev/testing (README §5.8/§8.5 — this fallback
+    /// is intentionally kept, not removed).
+    private func startMatchFromAvailableData() {
+        if let matchStart = appState.lobbyManager.pendingMatchStart,
+           let lobby = appState.lobbyManager.lobby {
+            matchManager.startMatch(
+                players: lobby.players,
+                localPlayerID: appState.playerID,
+                isHost: appState.isHost,
+                startTime: matchStart.startTime,
+                questionSeeds: matchStart.questionSeeds
+            )
+        } else {
+            matchManager.startSinglePlayerMatch(
+                playerName: appState.playerName.isEmpty ? "Player" : appState.playerName
+            )
+        }
+    }
+    
+    // MARK: - Spawned Power-ups
+    
+    /// Displays uncollected power-ups as floating collectible icons on the game screen.
     private var spawnedPowerUpsOverlay: some View {
         ForEach(matchManager.spawnManager.activePowerUps) { powerUp in
             SpawnedPowerUpView(powerUp: powerUp) {
@@ -79,7 +85,8 @@ struct GameScreen: View {
         }
         .animation(.spring(response: 0.5, dampingFraction: 0.7), value: matchManager.spawnManager.activePowerUps.count)
     }
-
+    
+    /// Maps a spawn slot index to a screen offset for mockup display.
     private func spawnOffset(for slot: Int) -> CGSize {
         let offsets: [CGSize] = [
             CGSize(width: -120, height: -180),
@@ -93,12 +100,14 @@ struct GameScreen: View {
     }
 }
 
+/// A floating, tappable power-up collectible on the game screen.
 struct SpawnedPowerUpView: View {
     let powerUp: SpawnedPowerUp
     let onCollect: () -> Void
-
+    
     @State private var isBouncing = false
-
+    
+    /// Color for this power-up type.
     private var typeColor: Color {
         switch powerUp.type {
         case .earthquake: return .orange
@@ -106,16 +115,17 @@ struct SpawnedPowerUpView: View {
         case .pocketWatch: return .purple
         }
     }
-
+    
     var body: some View {
         Button(action: onCollect) {
             ZStack {
-
+                // Glow circle
                 Circle()
                     .fill(typeColor.opacity(0.3))
                     .frame(width: 50, height: 50)
                     .scaleEffect(isBouncing ? 1.2 : 1.0)
-
+                
+                // Inner circle
                 Circle()
                     .fill(typeColor)
                     .frame(width: 40, height: 40)
@@ -136,17 +146,19 @@ struct SpawnedPowerUpView: View {
     }
 }
 
+/// A tappable map pin representing an area on the island.
 struct MapPin: View {
     let iconName: String
     let areaIndex: Int
     @EnvironmentObject var matchManager: MatchManager
-
+    
+    /// Color based on ownership state.
     private var pinColor: Color {
         guard areaIndex < matchManager.gameState.areas.count else {
             return Color.themeDarkTeal
         }
         let area = matchManager.gameState.areas[areaIndex]
-
+        
         if area.isLocked {
             return .gray
         } else if area.isConquered {
@@ -155,7 +167,7 @@ struct MapPin: View {
             return Color.themeDarkTeal
         }
     }
-
+    
     var body: some View {
         VStack(spacing: 2) {
             Image(systemName: iconName)
@@ -164,7 +176,8 @@ struct MapPin: View {
                 .foregroundColor(pinColor)
                 .background(Circle().fill(Color.white).frame(width: 24, height: 24))
                 .shadow(radius: 3, y: 3)
-
+            
+            // Show area topic label
             if areaIndex < GameConstants.areaTopics.count {
                 Text(GameConstants.areaTopics[areaIndex])
                     .font(.system(size: 8, weight: .bold, design: .rounded))

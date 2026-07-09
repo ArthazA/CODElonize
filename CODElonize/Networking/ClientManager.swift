@@ -1,3 +1,9 @@
+//
+//  ClientManager.swift
+//  CODElonize
+//
+//  Created by Arthaz's MacBook on 05/07/26.
+//
 
 import Foundation
 import Network
@@ -8,7 +14,7 @@ final class ClientManager {
     private var browser: NWBrowser?
     private var discoveredRooms: [NWBrowser.Result] = []
     private var connection: NWConnection?
-
+    
     func browseHosts() {
         browser?.cancel()
         browser = NWBrowser(
@@ -24,7 +30,7 @@ final class ClientManager {
         }
         browser?.start(queue: .main)
     }
-
+    
     func connect(roomCode: String, playerID: UUID, playerName: String, attemptsLeft: Int = 5) {
         print("Trying to match roomCode: '\(roomCode)' against \(discoveredRooms.count) discovered rooms")
         for room in discoveredRooms {
@@ -74,7 +80,7 @@ final class ClientManager {
             print("Room not found after retries")
         }
     }
-
+    
     private func send<T: Codable>(_ message: NetworkMessage<T>) {
         guard let connection else { return }
         do {
@@ -93,7 +99,7 @@ final class ClientManager {
             print(error)
         }
     }
-
+    
     func sendJoin(playerID: UUID, playerName: String) {
         let join = JoinMessage(
             playerID: playerID,
@@ -105,14 +111,14 @@ final class ClientManager {
         )
         send(message)
     }
-
+    
     private func receive() {
         connection?.receive(
             minimumIncompleteLength: 1,
             maximumLength: 65536
         ) { [weak self] data, _, complete, error in
             guard let self else { return }
-
+            
             if let data {
                 self.handle(data)
             }
@@ -121,7 +127,7 @@ final class ClientManager {
             }
         }
     }
-
+    
     private func handle(_ data: Data) {
         do {
             let base = try JSONDecoder().decode(
@@ -162,7 +168,7 @@ final class ClientManager {
             print(error)
         }
     }
-
+    
     func sendReady(playerID: UUID, isReady: Bool) {
         let payload = ReadyMessage(
             playerID: playerID,
@@ -178,11 +184,14 @@ final class ClientManager {
         }
         send(message)
     }
-
+    
+    /// Receives the host's match-start payload (shared start time + question
+    /// seeds + final roster) and forwards it to `LobbyManager` so the client
+    /// can start its own `MatchManager` in sync with the host (README §6.3).
     private func handleStartGame(
         _ message: StartGameMessage
     ) {
         print("Game Started")
-        lobbyManager?.notifyGameStarted()
+        lobbyManager?.applyMatchStart(message)
     }
 }

@@ -1,12 +1,26 @@
 import SwiftUI
-internal import UniformTypeIdentifiers
 
+/// The Code Arrangement quiz interaction.
+///
+/// DECISION (README §5.3/§8.1): `Docs/UpdateV2.md` originally described a
+/// drag-and-drop interaction ("player drags code blocks into slots"), and
+/// this file used to import `UniformTypeIdentifiers` for that purpose —
+/// but no `DragGesture`, `.draggable`, or `.onDrop` was ever actually
+/// implemented; the shipped mechanic has always been tap-to-select,
+/// tap-to-place (`selectedOption` state + `handleTap()` in `SlotView` below).
+/// That's now formally adopted as the intended interaction model rather than
+/// stale/abandoned scaffolding: dragging a small on-screen UI element while
+/// the rest of the scene is a live AR camera feed is awkward on mobile, and
+/// tap-to-select is both simpler and more reliable in that context. The
+/// unused `UniformTypeIdentifiers` import has been removed accordingly.
 struct CodeArrangementView: View {
     @ObservedObject var quizManager: QuizManager
     let question: Question
-
+    
+    // Tap-to-select mechanic state
     @State private var selectedOption: String? = nil
-
+    
+    // Compute mapping once
     private var slotMapping: [Int: Int] {
         guard let template = question.codeTemplate else { return [:] }
         var mapping: [Int: Int] = [:]
@@ -19,40 +33,40 @@ struct CodeArrangementView: View {
         }
         return mapping
     }
-
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text(question.text)
                 .font(.system(size: 18, weight: .heavy, design: .rounded))
                 .foregroundColor(.white)
                 .fixedSize(horizontal: false, vertical: true)
-
+            
             CodeTemplateSection(
                 quizManager: quizManager,
                 template: question.codeTemplate ?? [],
                 slotMapping: slotMapping,
                 selectedOption: $selectedOption
             )
-
+            
             OptionsSection(
                 quizManager: quizManager,
                 options: question.options ?? [],
                 selectedOption: $selectedOption
             )
-
+            
             submitButton
         }
         .opacity(quizManager.isFrozen ? 0.5 : 1.0)
-
+        // Reset selection if frozen
         .onChange(of: quizManager.isFrozen) { frozen in
             if frozen { selectedOption = nil }
         }
     }
-
+    
     private var submitButton: some View {
         Button {
             quizManager.submitArrangementAnswer()
-            selectedOption = nil 
+            selectedOption = nil // Reset on submit
         } label: {
             HStack {
                 Image(systemName: "checkmark.circle.fill")
@@ -70,12 +84,13 @@ struct CodeArrangementView: View {
     }
 }
 
+// MARK: - Template Section
 struct CodeTemplateSection: View {
     @ObservedObject var quizManager: QuizManager
     let template: [String]
     let slotMapping: [Int: Int]
     @Binding var selectedOption: String?
-
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 2) {
@@ -106,15 +121,16 @@ struct CodeTemplateSection: View {
     }
 }
 
+// MARK: - Slot View
 struct SlotView: View {
     @ObservedObject var quizManager: QuizManager
     let slotIndex: Int
     @Binding var selectedOption: String?
-
+    
     private var content: String? {
         quizManager.arrangementSlots.indices.contains(slotIndex) ? quizManager.arrangementSlots[slotIndex] : nil
     }
-
+    
     var body: some View {
         Button {
             handleTap()
@@ -125,9 +141,9 @@ struct SlotView: View {
                         .font(.system(size: 13, weight: .semibold, design: .monospaced))
                         .foregroundColor(slotTextColor)
                         .lineLimit(1)
-
+                    
                     Spacer()
-
+                    
                     Button {
                         withAnimation(.easeInOut(duration: 0.2)) {
                             _ = quizManager.removeFromSlot(slotIndex)
@@ -143,7 +159,7 @@ struct SlotView: View {
                         .font(.system(size: 13, weight: .medium, design: .monospaced))
                         .foregroundColor(selectedOption != nil ? Color.themeOrange : .white.opacity(0.3))
                         .italic()
-
+                    
                     Spacer()
                 }
             }
@@ -162,38 +178,39 @@ struct SlotView: View {
         .buttonStyle(.plain)
         .disabled(quizManager.isFrozen)
     }
-
+    
     private func handleTap() {
         guard !quizManager.isFrozen else { return }
-
+        
         if let option = selectedOption {
-
+            // Place selected option
             withAnimation(.easeInOut(duration: 0.2)) {
                 _ = quizManager.placeOption(option, inSlot: slotIndex)
-                selectedOption = nil 
+                selectedOption = nil // Clear selection after placing
             }
         } else if content != nil {
-
+            // Tap a filled slot to remove its block (if no selection)
             withAnimation(.easeInOut(duration: 0.2)) {
                 _ = quizManager.removeFromSlot(slotIndex)
             }
         }
     }
-
+    
+    // Formatting
     private var slotBackground: Color {
         if quizManager.answerState == .correct { return Color.green.opacity(0.3) }
         if quizManager.answerState == .incorrect { return Color.red.opacity(0.3) }
         if content != nil { return Color.themeOrange.opacity(0.15) }
         return selectedOption != nil ? Color.themeOrange.opacity(0.05) : Color.white.opacity(0.05)
     }
-
+    
     private var slotBorderColor: Color {
         if quizManager.answerState == .correct { return Color.green }
         if quizManager.answerState == .incorrect { return Color.red }
         if content != nil { return Color.themeOrange.opacity(0.6) }
         return selectedOption != nil ? Color.themeOrange.opacity(0.5) : Color.white.opacity(0.2)
     }
-
+    
     private var slotTextColor: Color {
         if quizManager.answerState == .correct { return .green }
         if quizManager.answerState == .incorrect { return .red }
@@ -201,22 +218,23 @@ struct SlotView: View {
     }
 }
 
+// MARK: - Options Section
 struct OptionsSection: View {
     @ObservedObject var quizManager: QuizManager
     let options: [String]
     @Binding var selectedOption: String?
-
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Code Blocks (Tap to Select)")
                 .font(.system(size: 14, weight: .bold, design: .rounded))
                 .foregroundColor(Color.themeOrange)
-
+            
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
                 ForEach(options, id: \.self) { option in
                     let isPlaced = !quizManager.availableOptions.contains(option)
                     let isSelected = selectedOption == option
-
+                    
                     OptionBlock(
                         option: option,
                         isPlaced: isPlaced,
@@ -224,9 +242,9 @@ struct OptionsSection: View {
                     ) {
                         if !isPlaced && !quizManager.isFrozen {
                             if selectedOption == option {
-                                selectedOption = nil 
+                                selectedOption = nil // Deselect
                             } else {
-                                selectedOption = option 
+                                selectedOption = option // Select
                             }
                         }
                     }
@@ -236,12 +254,13 @@ struct OptionsSection: View {
     }
 }
 
+// MARK: - Option Block
 struct OptionBlock: View {
     let option: String
     let isPlaced: Bool
     let isSelected: Bool
     let action: () -> Void
-
+    
     var body: some View {
         Button(action: action) {
             Text(option)
@@ -265,23 +284,24 @@ struct OptionBlock: View {
         .buttonStyle(.plain)
         .disabled(isPlaced)
     }
-
+    
     private var textColor: Color {
         if isPlaced { return .white.opacity(0.3) }
         return isSelected ? .black : .white
     }
-
+    
     private var bgColor: Color {
         if isPlaced { return Color.white.opacity(0.05) }
         return isSelected ? Color.themeOrange : Color.themeOrange.opacity(0.3)
     }
-
+    
     private var borderColor: Color {
         if isPlaced { return Color.white.opacity(0.1) }
         return isSelected ? .white : Color.themeOrange.opacity(0.6)
     }
 }
 
+// MARK: - Preview
 #Preview("Code Arrangement View") {
     let quizManager = QuizManager()
     let sampleQuestion = Question(
@@ -315,9 +335,9 @@ struct OptionBlock: View {
             "low = mid + 1"
         ]
     )
-
+    
     quizManager.startQuiz(topic: "Algorithms", questions: [sampleQuestion])
-
+    
     return ZStack {
         Color.themeDarkTeal.edgesIgnoringSafeArea(.all)
         CodeArrangementView(quizManager: quizManager, question: sampleQuestion)

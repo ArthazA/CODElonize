@@ -84,21 +84,28 @@ class QuizManager: ObservableObject {
             return
         }
 
-        if !arrangementPool.isEmpty {
-            currentQuestions = Randomizer.selectMixedQuestions(
-                mcqPool: mcqPool,
-                arrangementPool: arrangementPool,
-                seed: currentSeed
-            )
-        } else {
+        // if !arrangementPool.isEmpty {
+        //     currentQuestions = Randomizer.selectMixedQuestions(
+        //         mcqPool: mcqPool,
+        //         arrangementPool: arrangementPool,
+        //         seed: currentSeed
+        //     )
+        // } else {
 
-            AppLogger.quiz.warning("No arrangement questions for '\(topic)' — using MCQ only")
-            currentQuestions = Randomizer.selectQuestions(
-                from: mcqPool,
-                count: GameConstants.mcqPerAttempt,
-                seed: currentSeed
-            )
-        }
+        //     AppLogger.quiz.warning("No arrangement questions for '\(topic)' — using MCQ only")
+        //     currentQuestions = Randomizer.selectQuestions(
+        //         from: mcqPool,
+        //         count: GameConstants.mcqPerAttempt,
+        //         seed: currentSeed
+        //     )
+        // }
+
+        currentQuestions = Randomizer.selectQuestions(
+            from: mcqPool,
+            count: GameConstants.questionsPerAttempt,
+            seed: currentSeed
+        )
+
 
         guard !currentQuestions.isEmpty else {
             AppLogger.quiz.error("Randomizer returned empty question set for '\(topic)'")
