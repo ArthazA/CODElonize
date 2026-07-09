@@ -9,25 +9,23 @@ struct Home: View {
     
     var body: some View {
         ZStack {
-            Color.themeTeal.edgesIgnoringSafeArea(.all)
+            Image("background")
+                    .resizable()
+                    .scaledToFill()
+                    .edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 24) {
                 // Title
                 VStack(spacing: 8) {
                     HStack(spacing: 0) {
-                        Text("CODE-")
-                            .foregroundColor(.white)
-                        Text("LONIZED")
-                            .foregroundColor(Color.themeOrange)
+                        AppTitleText(text: "CODE-", color:.white)
+                        AppTitleText(text: "LONIZED", color:.themeDarkOrange)
                     }
-                    .font(.system(size: 44, weight: .heavy, design: .rounded))
-                    .shadow(color: .black.opacity(0.3), radius: 2, x: 0, y: 4)
+                    .shadow(color: .themeDarkTeal.opacity(0.3), radius: 2, x: 0, y: 4)
                     
-                    Text("Answer fast & Conquer the Island!")
-                        .font(.system(size: 18, weight: .bold, design: .rounded))
-                        .foregroundColor(.white)
+                    AppSubtitleText(text: "Answer fast & Conquer the Island!", color:.white)
                 }
-                .padding(.top, 40)
+                .padding(.top, 80)
                 
                 // 3D Island
                 Island3DView()
@@ -64,25 +62,17 @@ struct Home: View {
                         
                         // Code Input Boxes
                         VStack {
-                            
                             HStack(spacing: 12) {
-                                
                                 ForEach(0..<4, id: \.self) { index in
-                                    
                                     ZStack {
-                                        
                                         RoundedRectangle(cornerRadius: 12)
                                             .fill(.white)
                                             .frame(width: 55, height: 60)
-                                        
                                         Text(character(at: index))
                                             .font(.system(size: 28, weight: .bold))
                                             .foregroundColor(.black)
-                                        
                                     }
-                                    
                                 }
-                                
                             }
                             
                             // Hidden TextField
@@ -93,23 +83,16 @@ struct Home: View {
                                 .opacity(0.01)
                                 .frame(width: 1, height: 1)
                                 .onChange(of: roomCode) { _, newValue in
-                                    
                                     roomCode = newValue.filter(\.isNumber)
-                                    
                                     if roomCode.count > 4 {
                                         roomCode = String(roomCode.prefix(4))
                                     }
-                                    
                                     if roomCode.count == 4 {
-                                        
                                         isRoomCodeFocused = false
                                         isJoining = true
-                                        
                                         joinLobby(roomCode)
-                                        
                                     }
                                 }
-                            
                         }
                         .onTapGesture {
                             isRoomCodeFocused = true
@@ -129,18 +112,40 @@ struct Home: View {
                         }
                         
                         Button(action: {
-                            isShowingHowToPlay = true
+                            withAnimation(.easeInOut(duration: 0.25)) {
+                                isShowingHowToPlay = true
+                            }
                         }) {
-                            Text("How to play?")
-                                .font(.system(size: 16, weight: .bold, design: .rounded))
-                                .foregroundColor(Color.themeOrange)
-                                .underline()
+                        Text("How to play?")
+                            .font(.system(size: 16, weight: .bold, design: .rounded))
+                            .foregroundColor(Color.themeOrange)
+                            .underline()
                         }
                         .padding(.top, 10)
                     }
                     .padding(.horizontal, 40)
                     .padding(.bottom, 20)
                 }
+            }
+            .blur(radius: isShowingHowToPlay ? 8 : 0)
+            .disabled(isShowingHowToPlay)
+
+            if isShowingHowToPlay {
+                Color.black
+                    .opacity(0.35)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        withAnimation {
+                            isShowingHowToPlay = false
+                        }
+                    }
+                HowToPlayCard {
+                    withAnimation {
+                        isShowingHowToPlay = false
+                    }
+                }
+                .transition(.scale.combined(with: .opacity))
+                .zIndex(1)
             }
         }
         .overlay(

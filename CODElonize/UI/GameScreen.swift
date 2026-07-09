@@ -11,40 +11,8 @@ struct GameScreen: View {
     
     var body: some View {
         ZStack {
-            // Background / 3D Model
-            Color.themeCream.edgesIgnoringSafeArea(.all)
-            
-            Island3DView()
+            ARViewContainer(arSessionManager: appState.arSessionManager)
                 .edgesIgnoringSafeArea(.all)
-            
-            // Map Pins Overlay (Mockup pins — these will be replaced by AR pinpoints in production)
-            ZStack {
-                MapPin(iconName: "mappin.circle.fill", areaIndex: 0)
-                    .offset(x: -80, y: 150)
-                    .onTapGesture { matchManager.handlePinpointTap(areaIndex: 0) }
-                
-                MapPin(iconName: "mappin.circle.fill", areaIndex: 1)
-                    .offset(x: 10, y: -50)
-                    .onTapGesture { matchManager.handlePinpointTap(areaIndex: 1) }
-                
-                MapPin(iconName: "mappin.circle.fill", areaIndex: 2)
-                    .offset(x: 120, y: -20)
-                    .onTapGesture { matchManager.handlePinpointTap(areaIndex: 2) }
-                
-                MapPin(iconName: "mappin.circle.fill", areaIndex: 3)
-                    .offset(x: 80, y: 100)
-                    .onTapGesture { matchManager.handlePinpointTap(areaIndex: 3) }
-                
-                MapPin(iconName: "mappin.circle.fill", areaIndex: 4)
-                    .offset(x: -50, y: 30)
-                    .onTapGesture { matchManager.handlePinpointTap(areaIndex: 4) }
-                
-                MapPin(iconName: "mappin.circle.fill", areaIndex: 5)
-                    .offset(x: 30, y: -130)
-                    .onTapGesture { matchManager.handlePinpointTap(areaIndex: 5) }
-            }
-            
-            // Spawned Power-ups Overlay
             spawnedPowerUpsOverlay
             
             // HUD Overlay
@@ -67,7 +35,10 @@ struct GameScreen: View {
         .animation(.easeInOut(duration: 0.3), value: matchManager.isQuizActive)
         .animation(.easeInOut(duration: 0.3), value: matchManager.isAreaPickerActive)
         .onAppear {
-            // Start a single-player match for testing if no match is active yet
+            if !appState.arSessionManager.islandPlacement.isPlaced {
+                appState.arSessionManager.placeIslandUsingSavedTransformIfAvailable()
+            }
+            
             if !matchManager.gameState.isMatchActive && !matchManager.gameState.isMatchFinished {
                 matchManager.startSinglePlayerMatch(playerName: appState.playerName.isEmpty ? "Player" : appState.playerName)
             }

@@ -106,10 +106,10 @@ class IslandPlacement {
 
             let bounds = model.visualBounds(relativeTo: nil)
             AppLogger.ar.info("Island RAW size (before scale): \(bounds.extents)")
-            let height = bounds.extents.y
+            let scaledHeight = bounds.extents.y * scale
 
-            model.position.y = -(height / 2) - 0.02
             model.scale = SIMD3<Float>(repeating: scale)
+            model.position.y = -(scaledHeight / 2) - 0.02
             model.orientation = simd_quatf(angle: rotation, axis: SIMD3<Float>(0, 1, 0))
 
             anchor.addChild(model)
@@ -137,10 +137,10 @@ class IslandPlacement {
             let anchor = AnchorEntity(world: worldTransform)
 
             let bounds = model.visualBounds(relativeTo: nil)
-            let height = bounds.extents.y
-            model.position.y = -(height / 2) - 0.02
+            let scaledHeight = bounds.extents.y * scale
 
             model.scale = SIMD3<Float>(repeating: scale)
+            model.position.y = -(scaledHeight / 2) - 0.02
             model.orientation = simd_quatf(angle: rotation, axis: SIMD3<Float>(0, 1, 0))
 
             anchor.addChild(model)
@@ -158,12 +158,19 @@ class IslandPlacement {
         /// - Parameters:
         ///   - scale: New scale factor.
         ///   - rotation: New Y-axis rotation in radians.
-        func updateTransform(scale: Float, rotation: Float) {
-            guard let island = islandEntity else { return }
-            island.scale = SIMD3<Float>(repeating: scale)
-            island.orientation = simd_quatf(angle: rotation, axis: SIMD3<Float>(0, 1, 0))
-            AppLogger.ar.debug("Island transform updated — scale: \(scale), rotation: \(rotation)")
-        }
+    func updateTransform(scale: Float, rotation: Float) {
+        guard let island = islandEntity else { return }
+        
+        let bounds = island.visualBounds(relativeTo: nil)
+        let currentScale = island.scale.x
+        let baseHeight = bounds.extents.y / max(currentScale, 0.0001)
+        let scaledHeight = baseHeight * scale
+
+        island.scale = SIMD3<Float>(repeating: scale)
+        island.position.y = -(scaledHeight / 2) - 0.02
+        island.orientation = simd_quatf(angle: rotation, axis: [0,1,0])
+        AppLogger.ar.debug("Island transform updated — scale: \(scale), rotation: \(rotation)")
+    }
         
         /// Moves the island anchor to a new world position.
         /// Used when the host repositions the island from the Lobby.

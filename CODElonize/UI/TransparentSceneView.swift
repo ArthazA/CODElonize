@@ -17,8 +17,15 @@ struct TransparentSceneView: UIViewRepresentable {
         let view = SCNView()
 
         view.scene = scene
+        let cameraNode = SCNNode()
+        cameraNode.camera = SCNCamera()
 
-        scene.rootNode.scale = SCNVector3(1.5, 1.5, 1.5)
+        cameraNode.position = SCNVector3(0, 9, 14)
+        cameraNode.look(at: SCNVector3Zero)
+
+        scene.rootNode.addChildNode(cameraNode)
+        view.pointOfView = cameraNode
+
 
         view.backgroundColor = .clear
         view.isOpaque = false
@@ -26,15 +33,20 @@ struct TransparentSceneView: UIViewRepresentable {
         view.autoenablesDefaultLighting = true
         view.allowsCameraControl = true
 
-        // Rotate forever
-        let rotate = CABasicAnimation(keyPath: "rotation")
-        rotate.fromValue = SCNVector4(0, 1, 0, 0)
-        rotate.toValue = SCNVector4(0, 1, 0, Float.pi * 2)
-        rotate.duration = 20
-        rotate.repeatCount = .infinity
-        rotate.isRemovedOnCompletion = false
+        view.isPlaying = true
+        view.loops = true
 
-        scene.rootNode.addAnimation(rotate, forKey: "rotate")
+        if let islandNode = scene.rootNode.childNodes.first(where: { $0.camera == nil }) {
+            let rotate = SCNAction.repeatForever(
+                SCNAction.rotateBy(
+                    x: 0,
+                    y: .pi * 2,
+                    z: 0,
+                    duration: 20
+                )
+            )
+            islandNode.runAction(rotate)
+        }
 
         return view
     }

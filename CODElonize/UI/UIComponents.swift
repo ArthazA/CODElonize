@@ -37,10 +37,10 @@ struct PrimaryButton: View {
         Button(action: action) {
             Text(title)
                 .font(.system(size: 20, weight: .heavy, design: .rounded))
-                .foregroundColor(.white)
+                .foregroundColor(.themeBrown)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
-                .background(Color.themeOrange)
+                .background(LinearGradient.themeButton)
                 .cornerRadius(12)
         }
     }
@@ -63,6 +63,28 @@ struct SecondaryButton: View {
     }
 }
 
+struct ThirdButton: View {
+    let title: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(.system(size: 20, weight: .heavy, design: .rounded))
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+                .background(Color.themeDarkTeal)
+                .clipShape(RoundedRectangle(cornerRadius: 18))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(Color.white, lineWidth: 3)
+                )
+                .shadow(color: .black.opacity(0.25), radius: 4, x: 0, y: 4)
+        }
+    }
+}
+
 struct RoomCodeBox: View {
     let character: String
     
@@ -70,13 +92,14 @@ struct RoomCodeBox: View {
         Text(character)
             .font(.system(size: 32, weight: .heavy, design: .rounded))
             .foregroundColor(Color.themeDarkTeal)
-            .frame(width: 60, height: 70)
+            .frame(width: 80, height: 75)
             .background(Color.white)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color.themeDarkTeal, lineWidth: 3)
+                    .stroke(Color.themeBrown, lineWidth: 5)
             )
             .cornerRadius(12)
+            .shadow(color: .black.opacity(0.4), radius: 1, y: 3)
     }
 }
 
@@ -90,10 +113,10 @@ struct PlayerAvatar: View {
     var body: some View {
         VStack(spacing: 8) {
             ZStack(alignment: .bottomTrailing) {
-                Image(imageName)
-                    .resizable()
-                    .scaledToFill()
+                Text(imageName)
+                    .font(.system(size: 54))
                     .frame(width: 80, height: 80)
+                    .background(Color.white)
                     .clipShape(Circle())
                     .overlay(
                         Circle().stroke(
@@ -140,7 +163,7 @@ struct PlayerAvatar: View {
         }
         HStack(spacing: 30) {
             PlayerAvatar(
-                imageName: "player_1",
+                imageName: "🦊",
                 name: "Adi",
                 isReady: true,
                 isHost: true,
@@ -148,7 +171,7 @@ struct PlayerAvatar: View {
             )
 
             PlayerAvatar(
-                imageName: "player_2",
+                imageName: "🦊",
                 name: "Arthaz",
                 isReady: false,
                 isHost: false,

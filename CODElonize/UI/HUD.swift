@@ -233,14 +233,14 @@ struct InventoryButton: View {
             Player(
                 id: hostID,
                 name: "Adi",
-                avatar: "player_1",
+                avatar: "🦊",
                 isHost: true,
                 isReady: true
             ),
             Player(
                 id: UUID(),
                 name: "Barra",
-                avatar: "player_2",
+                avatar: "🐸",
                 isHost: false,
                 isReady: true
             )

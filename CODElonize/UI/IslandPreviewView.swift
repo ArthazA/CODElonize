@@ -35,7 +35,7 @@ private struct ReadyButtonOverlay: View {
     var body: some View {
         Group {
             if arSessionManager.savedPlacementTransform != nil {
-                PrimaryButton(title: "Ready") {
+                ThirdButton(title: "Ready") {
                     arSessionManager.isPreviewMode = false
                     arSessionManager.removePreviewIsland()
                     appState.lobbyManager.setReady(

@@ -25,7 +25,7 @@ final class LobbyManager: ObservableObject {
         let host = Player(
             id: hostID,
             name: hostName,
-            avatar: "player_1",
+            avatar: "🦊",
             isHost: true,
             isReady: false
         )
