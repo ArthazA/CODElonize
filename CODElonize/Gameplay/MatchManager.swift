@@ -195,7 +195,7 @@ class MatchManager: ObservableObject {
         questionSeeds: [UInt64]? = nil
     ) {
         self.isHost = isHost
-        
+        print("🔍 startMatch called with players:", players.map { $0.name }) 
         // Initialize game state (using shared seeds if provided — §6.3)
         gameState.initializeMatch(players: players, localPlayerID: localPlayerID, questionSeeds: questionSeeds)
         
@@ -346,6 +346,24 @@ class MatchManager: ObservableObject {
     /// Records the attempt, evaluates conquest, updates visuals, and refreshes the leaderboard.
     ///
     /// - Parameter time: The completion time in seconds.
+    /// Called when the host needs to broadcast an updated area/player snapshot
+    /// to all clients. Wired externally (`AppState`) to `HostManager.broadcastAreaSync`.
+    var onAreaUpdateNeedsBroadcast: (([Area], [Player]) -> Void)?
+
+    /// Called when a client needs to send its attempt result up to the host.
+    /// Wired externally (`AppState`) to `ClientManager.sendAttemptResult`.
+    var onSendAttemptResult: ((Int, UUID, TimeInterval) -> Void)?
+
+    /// Handles quiz completion. Called by the UI when `QuestionView.onComplete` fires.
+    ///
+    /// On the host, resolves conquest immediately and broadcasts the result to
+    /// every client. On a client, does NOT resolve conquest locally — it sends
+    /// the attempt up to the host instead, and waits for the host's broadcast
+    /// (`applyRemoteAreaSync`) so every device converges on the same result
+    /// (README §6.1 host-authoritative sync — this is the transport that was
+    /// previously missing).
+    ///
+    /// - Parameter time: The completion time in seconds.
     func handleQuizCompletion(time: TimeInterval) {
         guard let areaIndex = activeAreaIndex else {
             AppLogger.gameplay.error("Quiz completed but no active area index")
@@ -354,15 +372,27 @@ class MatchManager: ObservableObject {
         
         let playerID = gameState.localPlayerID
         
-        // Process the conquest
-        //
-        // SCAFFOLD (README §6.1): under host-authoritative sync, a client
-        // should send this attempt result *up* to the host instead of
-        // computing conquest locally; only the host calls
-        // `ConquestSystem.processAttemptResult` and then broadcasts the
-        // outcome. Left unconditional (host-and-client both compute locally)
-        // until that transport exists, per §6.1's own note that this is
-        // blocked on the teammate's sync contract.
+        // Dismiss the quiz overlay right away regardless of host/client — the
+        // player shouldn't sit staring at a frozen quiz waiting on the network.
+        isQuizActive = false
+        activeAreaIndex = nil
+        
+        if isHost {
+            resolveAttempt(areaIndex: areaIndex, playerID: playerID, time: time)
+        } else {
+            onSendAttemptResult?(areaIndex, playerID, time)
+        }
+    }
+
+    /// Called on the host when a *client's* attempt result arrives over the network.
+    func receiveAttemptResult(areaIndex: Int, playerID: UUID, time: TimeInterval) {
+        resolveAttempt(areaIndex: areaIndex, playerID: playerID, time: time)
+    }
+
+    /// Single source of truth for resolving a conquest attempt. Only ever runs
+    /// on the host — either for its own local completion, or for a client's
+    /// result relayed over the network — never on a client directly.
+    private func resolveAttempt(areaIndex: Int, playerID: UUID, time: TimeInterval) {
         let result = ConquestSystem.processAttemptResult(
             areaIndex: areaIndex,
             playerID: playerID,
@@ -370,7 +400,6 @@ class MatchManager: ObservableObject {
             gameState: gameState
         )
         
-        // Log the result
         switch result {
         case .firstClaim(let id):
             AppLogger.gameplay.info("Area \(areaIndex) first claimed by '\(id)'")
@@ -380,18 +409,23 @@ class MatchManager: ObservableObject {
             AppLogger.gameplay.info("Area \(areaIndex) defended by '\(id)'")
         }
         
-        // Clear quiz state
-        isQuizActive = false
-        activeAreaIndex = nil
-        
-        // Refresh leaderboard
         refreshLeaderboard()
         
-        // Check if all areas are conquered (EC-026: spawn earthquake)
         if gameState.allAreasConquered {
             AppLogger.gameplay.info("All areas conquered — spawning earthquake")
             spawnManager.spawnEarthquake()
         }
+        
+        // Push the authoritative state out to every client.
+        onAreaUpdateNeedsBroadcast?(gameState.areas, gameState.players)
+    }
+
+    /// Applies an authoritative state snapshot received from the host.
+    /// Called on clients only, when a `GameStateSyncMessage` arrives.
+    func applyRemoteAreaSync(areas: [Area], players: [Player]) {
+        gameState.areas = areas
+        gameState.players = players
+        refreshLeaderboard()
     }
     
     /// Handles quiz cancellation (e.g., from Tsunami locking the area).

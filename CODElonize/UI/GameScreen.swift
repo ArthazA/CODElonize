@@ -13,6 +13,7 @@ struct GameScreen: View {
         ZStack {
             ARViewContainer(arSessionManager: appState.arSessionManager)
                 .edgesIgnoringSafeArea(.all)
+            
             spawnedPowerUpsOverlay
             
             // HUD Overlay
@@ -59,7 +60,7 @@ struct GameScreen: View {
         if let matchStart = appState.lobbyManager.pendingMatchStart,
            let lobby = appState.lobbyManager.lobby {
             matchManager.startMatch(
-                players: lobby.players,
+                players: matchStart.players,
                 localPlayerID: appState.playerID,
                 isHost: appState.isHost,
                 startTime: matchStart.startTime,
@@ -188,6 +189,53 @@ struct MapPin: View {
                     .cornerRadius(4)
             }
         }
+    }
+}
+
+struct PinpointBadge: View {
+    let areaIndex: Int
+    let fallbackName: String
+    @EnvironmentObject var matchManager: MatchManager
+    
+    private var area: Area? {
+        matchManager.gameState.area(byIndex: areaIndex)
+    }
+    
+    /// Nama pemilik area — dicari dari ownerID lewat GameState.player(byID:)
+    private var ownerDisplayName: String? {
+        guard let area, let ownerID = area.ownerID else { return nil }
+        return matchManager.gameState.player(byID: ownerID)?.name
+    }
+    
+    private var badgeColor: Color {
+        guard let area else { return Color.themeDarkTeal }
+        if area.isLocked { return .gray }
+        return area.isConquered ? Color.themeOrange : Color.themeDarkTeal
+    }
+    
+    var body: some View {
+        VStack(spacing: 1) {
+            if let area, area.isConquered, let ownerName = ownerDisplayName {
+                Text(ownerName)
+                    .font(.system(size: 13, weight: .bold, design: .rounded))
+                
+                // bestTime itu Optional<TimeInterval>, aman di-unwrap karena isConquered == true
+                if let time = area.bestTime {
+                    Text(String(format: "%.2f secs", time))
+                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                }
+            } else {
+                Text(fallbackName)
+                    .font(.system(size: 13, weight: .bold, design: .rounded))
+            }
+        }
+        .foregroundColor(.white)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+        .background(badgeColor)
+        .clipShape(Capsule())
+        .overlay(Capsule().stroke(.white, lineWidth: 1.5))
+        .shadow(radius: 3, y: 2)
     }
 }
 

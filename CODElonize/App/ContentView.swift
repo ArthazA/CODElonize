@@ -43,7 +43,8 @@ struct ARPlacementView: View {
                     appState.arSessionManager.isPreviewMode = false
                     appState.arSessionManager.placeIslandUsingSavedTransformIfAvailable()
                 }
-
+            
+            // Overlay UI
             VStack {
 
                 ARStatusBanner(state: appState.arSessionManager.sessionState)

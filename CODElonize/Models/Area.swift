@@ -13,7 +13,7 @@ import Foundation
 /// and can be temporarily locked (e.g., by Tsunami power-up).
 /// The 7th area (index 6) starts Armageddon-locked and is only unlocked
 /// during the Armageddon Phase (final 60 seconds).
-struct Area: Identifiable, Equatable {
+struct Area: Identifiable, Equatable, Codable {
     
     /// The area index (0–6), also serves as the unique identifier.
     let index: Int

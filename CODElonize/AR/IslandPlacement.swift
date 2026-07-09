@@ -73,6 +73,7 @@ class IslandPlacement {
                 }
             }
             printHierarchy(model)
+            
 
             let anchor = AnchorEntity(raycastResult: result)
 
@@ -104,6 +105,13 @@ class IslandPlacement {
             }
 
             let model = try loadIslandModel()
+            func printHierarchy(_ entity: Entity, level: Int = 0) {
+                print(String(repeating: "-", count: level), entity.name)
+                for child in entity.children {
+                    printHierarchy(child, level: level + 1)
+                }
+            }
+            
             let anchor = AnchorEntity(world: worldTransform)
 
             let bounds = model.visualBounds(relativeTo: nil)

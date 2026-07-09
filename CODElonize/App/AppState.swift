@@ -50,6 +50,30 @@ class AppState: ObservableObject {
             }
             .store(in: &cancellables)
         setupPinpointWiring()
+        setupNetworkedGameplayWiring()
+    }
+
+    // MARK: - Networked Gameplay Wiring
+
+    /// Connects `MatchManager`'s conquest-resolution flow to the network layer:
+    /// - Host: when a conquest is resolved, broadcast the new state to clients.
+    /// - Client: when a quiz completes, send the result up to the host instead
+    ///   of resolving it locally.
+    /// - Client: when the host's broadcast arrives, apply it to local state.
+    private func setupNetworkedGameplayWiring() {
+        lobbyManager.hostManager.matchManager = matchManager
+        lobbyManager.clientManager.matchManager = matchManager
+        
+        matchManager.onAreaUpdateNeedsBroadcast = { [weak self] areas, players in
+            self?.lobbyManager.hostManager.broadcastAreaSync(areas: areas, players: players)
+        }
+        matchManager.onSendAttemptResult = { [weak self] areaIndex, playerID, time in
+            self?.lobbyManager.clientManager.sendAttemptResult(
+                areaIndex: areaIndex,
+                playerID: playerID,
+                time: time
+            )
+        }
     }
     
     // MARK: - Reactive Wiring

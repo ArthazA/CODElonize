@@ -25,6 +25,12 @@ enum ARSessionState: Equatable {
     }
 }
 
+/// Owns the ARView and manages the full AR lifecycle:
+/// plane detection → island placement → pinpoint interaction.
+///
+/// This is the central coordinator for all AR functionality.
+/// It delegates model loading to `IslandPlacement` and pinpoint management to `PinpointSystem`.
+
 class ARSessionManager: NSObject, ObservableObject {
 
     @Published var sessionState: ARSessionState = .initializing
@@ -32,7 +38,10 @@ class ARSessionManager: NSObject, ObservableObject {
     @Published var isPlaneDetected = false
 
     @Published var tappedAreaIndex: Int? = nil
-
+    
+    // MARK: - Island Transform (adjustable by host from Lobby)
+    
+    /// Current island scale factor.
     @Published var islandScale: Float = GameConstants.defaultIslandScale
 
     @Published var islandRotation: Float = 0
@@ -169,7 +178,8 @@ class ARSessionManager: NSObject, ObservableObject {
                 rotation: islandRotation
             )
             if let anchor = islandPlacement.islandAnchor {
-                pinpointSystem.spawnPinpoints(on: anchor)
+                guard let island = islandPlacement.islandEntity else { return }
+                pinpointSystem.spawnPinpoints(on: island)
             }
             sessionState = .islandPlaced
         } catch {
@@ -198,7 +208,8 @@ class ARSessionManager: NSObject, ObservableObject {
             )
 
             if let anchor = islandPlacement.islandAnchor {
-                pinpointSystem.spawnPinpoints(on: anchor)
+                guard let island = islandPlacement.islandEntity else { return }
+                pinpointSystem.spawnPinpoints(on: island)
             }
 
             sessionState = .islandPlaced
@@ -212,13 +223,32 @@ class ARSessionManager: NSObject, ObservableObject {
 
     private func detectPinpointTap(_ location: CGPoint) {
 
-        if let entity = arView.entity(at: location) {
-            if let areaIndex = pinpointSystem.areaIndex(for: entity) {
-                AppLogger.ar.info("Pinpoint tapped: Area \(areaIndex) (\(GameConstants.areaTopics[areaIndex]))")
-                tappedAreaIndex = areaIndex
-            }
+        print("Tap location:", location, "| arView.bounds:", arView.bounds, "| arView.frame:", arView.frame)
+        guard let entity = arView.entity(at: location) else {
+            print("Nothing tapped")
+            return
+        }
+
+        print("Tapped entity:", entity.name)
+
+        var current: Entity? = entity
+        while let e = current {
+            print(" ->", e.name)
+            current = e.parent
+        }
+
+        if let areaIndex = pinpointSystem.areaIndex(for: entity) {
+            print("Area:", areaIndex)
+            tappedAreaIndex = areaIndex
+        } else {
+            print("Not a pinpoint")
         }
     }
+    
+    // MARK: - Island Transform (called from Lobby UI)
+    
+    /// Updates the island's visual transform. Called by the host when adjusting
+    /// scale/rotation from the Lobby screen.
 
     func updateIslandTransform(scale: Float, rotation: Float) {
         self.islandScale = scale

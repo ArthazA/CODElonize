@@ -66,23 +66,11 @@ enum GameConstants {
         "Frameworks"
     ]
     
-    /// Pinpoint positions relative to the island entity's local origin.
-    /// These are placeholder coordinates — adjust after testing with the actual Islands.usdz model.
-    static let pinpointPositions: [SIMD3<Float>] = [
-        SIMD3<Float>( 0.00,  0.03, -0.30),  // Area 0 — SwiftUI (Mountain)
-        SIMD3<Float>( 0.14,  0.04, -0.05),  // Area 1 — Algorithms (Forest East)
-        SIMD3<Float>(-0.33,  0.11, -0.10),  // Area 2 — Data Structures (Forest West)
-        SIMD3<Float>( 0.31,  0.21,  0.14),  // Area 3 — Networking (River)
-        SIMD3<Float>(-0.10,  0.02,  0.09),  // Area 4 — Databases (Village)
-        SIMD3<Float>( 0.03,  0.05,  0.24),  // Area 5 — OOP (Center)
-        SIMD3<Float>( 0.20,  0.08,  0.30),  // Area 6 — Frameworks (Armageddon-locked)
-    ]
-    
     /// Collision radius for each pinpoint (used for tap detection).
-    static let pinpointCollisionRadius: Float = 0.015
+    static let pinpointCollisionRadius: Float = 0.015 * 25
     
     /// Visual radius of the pinpoint sphere marker.
-    static let pinpointVisualRadius: Float = 0.008
+    static let pinpointVisualRadius: Float = 0.3
     
     // MARK: - Match
     

@@ -81,7 +81,6 @@ final class LobbyManager: ObservableObject {
     
     func startGame() {
         hostManager.startGame()
-        didStartGame = true
     }
 
     func notifyGameStarted() {

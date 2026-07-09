@@ -92,7 +92,7 @@ struct RoomCodeBox: View {
             .font(.system(size: 32, weight: .heavy, design: .rounded))
             .foregroundColor(Color.themeDarkTeal)
             .frame(width: 80, height: 75)
-            .background(Color.white)
+            .background(Color.themeWhite)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
                     .stroke(Color.themeBrown, lineWidth: 5)
@@ -115,7 +115,7 @@ struct PlayerAvatar: View {
                 Text(imageName)
                     .font(.system(size: 54))
                     .frame(width: 80, height: 80)
-                    .background(Color.white)
+                    .background(Color.themeBrown)
                     .clipShape(Circle())
                     .overlay(
                         Circle().stroke(

@@ -11,6 +11,7 @@ import Combine
 
 final class HostManager: ObservableObject {
     weak var lobbyManager: LobbyManager?
+    weak var matchManager: MatchManager?
     private var listener: NWListener?
     private var connections: [NWConnection] = []
 
@@ -78,6 +79,12 @@ final class HostManager: ObservableObject {
                     from: data
                 )
                 handleReady(wrapper.payload)
+            case .areaCaptured:
+                let wrapper = try JSONDecoder().decode(
+                    NetworkMessage<AttemptResultMessage>.self,
+                    from: data
+                )
+                handleAttemptResult(wrapper.payload)
             default:
                 break
             }
@@ -188,7 +195,24 @@ final class HostManager: ObservableObject {
 
         broadcastLobby(lobby)
     }
-    
+    private func handleAttemptResult(_ result: AttemptResultMessage) {
+        matchManager?.receiveAttemptResult(
+            areaIndex: result.areaIndex,
+            playerID: result.playerID,
+            time: result.time
+        )
+    }
+
+    /// Sends the current authoritative area/player snapshot to every client.
+    /// Called by `MatchManager` right after it resolves any conquest attempt.
+    func broadcastAreaSync(areas: [Area], players: [Player]) {
+        let payload = GameStateSyncMessage(areas: areas, players: players)
+        let message = NetworkMessage<GameStateSyncMessage>(
+            type: .score,
+            payload: payload
+        )
+        broadcast(message)
+    }
     /// Starts the match: generates the shared start time and per-area
     /// question seeds, broadcasts them to every client, and applies the
     /// same payload locally so the host itself starts in sync (README §6.3).

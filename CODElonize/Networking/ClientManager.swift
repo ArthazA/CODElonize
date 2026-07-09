@@ -11,6 +11,7 @@ import Network
 final class ClientManager {
 
     weak var lobbyManager: LobbyManager?
+    weak var matchManager: MatchManager?
     private var browser: NWBrowser?
     private var discoveredRooms: [NWBrowser.Result] = []
     private var connection: NWConnection?
@@ -161,6 +162,15 @@ final class ClientManager {
                     from: data
                 )
                 handleStartGame(wrapper.payload)
+            case .score:
+                let wrapper = try JSONDecoder().decode(
+                    NetworkMessage<GameStateSyncMessage>.self,
+                    from: data
+                )
+                matchManager?.applyRemoteAreaSync(
+                    areas: wrapper.payload.areas,
+                    players: wrapper.payload.players
+                )
             default:
                 break
             }
@@ -193,5 +203,17 @@ final class ClientManager {
     ) {
         print("Game Started")
         lobbyManager?.applyMatchStart(message)
+    }
+    func sendAttemptResult(areaIndex: Int, playerID: UUID, time: TimeInterval) {
+        let payload = AttemptResultMessage(
+            areaIndex: areaIndex,
+            playerID: playerID,
+            time: time
+        )
+        let message = NetworkMessage<AttemptResultMessage>(
+            type: .areaCaptured,
+            payload: payload
+        )
+        send(message)
     }
 }

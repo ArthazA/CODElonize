@@ -93,7 +93,6 @@ struct Lobby: View {
                         SecondaryButton(title: "Start Game") {
                             appState.arSessionManager.placeIslandUsingSavedTransformIfAvailable()
                             appState.lobbyManager.startGame()
-                            appState.navigate(to: .game)
                         }
                         .padding(.horizontal, 40)
                     }
@@ -107,7 +106,7 @@ struct Lobby: View {
             }
         }
         .onChange(of: appState.lobbyManager.didStartGame) { _, started in
-            if started, !appState.isHost {
+            if started{
                 appState.arSessionManager.placeIslandUsingSavedTransformIfAvailable()
                 appState.navigate(to: .game)
             }

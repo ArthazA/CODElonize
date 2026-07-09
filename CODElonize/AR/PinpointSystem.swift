@@ -25,14 +25,29 @@ class PinpointSystem {
     /// Frameworks`, matching `GameConstants.areaTopics`) instead of the stale
     /// 6-topic naming (`Algorithms, AI, Cybersecurity, OOP, Computer Networks,
     /// Database`) that no longer corresponds to anything in the project.
-    private let areaColors: [UIColor] = [
-        .systemRed,       // Area 0 — SwiftUI (Mountain)
-        .systemPurple,    // Area 1 — Algorithms (Forest East)
-        .systemGreen,     // Area 2 — Data Structures (Forest West)
-        .systemBlue,      // Area 3 — Networking (River)
-        .systemOrange,    // Area 4 — Databases (Village)
-        .systemYellow,    // Area 5 — OOP (Center)
-        .systemTeal,      // Area 6 — Frameworks (Armageddon-locked)
+//    private let areaColors: [UIColor] = [
+//        .systemRed,       // Area 0 — SwiftUI (Mountain)
+//        .systemPurple,    // Area 1 — Algorithms (Forest East)
+//        .systemGreen,     // Area 2 — Data Structures (Forest West)
+//        .systemBlue,      // Area 3 — Networking (River)
+//        .systemOrange,    // Area 4 — Databases (Village)
+//        .systemYellow,    // Area 5 — OOP (Center)
+//        .systemTeal,      // Area 6 — Frameworks (Armageddon-locked)
+//    ]
+
+    private let areaColors: [UIColor] = Array(
+        repeating: .systemYellow,
+        count: GameConstants.areaCount
+    )
+
+    private let areaNames = [
+        "Mountain",
+        "Village",
+        "Castle",
+        "Riverside",
+        "Shipwreck",
+        "Desert",
+        "Area 7"
     ]
     
     // MARK: - Spawning
@@ -40,26 +55,39 @@ class PinpointSystem {
     /// Creates and attaches pinpoint entities to the island anchor.
     /// Each pinpoint is a small colored sphere positioned above its area.
     /// - Parameter islandAnchor: The `AnchorEntity` holding the island model.
-    func spawnPinpoints(on islandAnchor: AnchorEntity) {
+    func spawnPinpoints(on islandEntity: Entity) {
         removeAllPinpoints()
-        
-        let safeCount = min(
-            GameConstants.areaCount,
-            GameConstants.pinpointPositions.count,
-            areaColors.count
-        )
-        
+        let safeCount = min(GameConstants.areaCount, areaColors.count)
         for index in 0..<safeCount {
+            guard let area = islandEntity.findEntity(named: "Area_\(index + 1)") else {
+                AppLogger.ar.warning("Area_\(index + 1) not found")
+                continue
+            }
             let pinpoint = createPinpointEntity(
                 areaIndex: index,
-                position: GameConstants.pinpointPositions[index],
+                position: .zero,
                 color: areaColors[index]
             )
-            islandAnchor.addChild(pinpoint)
+            
+            pinpoint.position.y += 0.5
+            area.addChild(pinpoint)
+            if let sphere = pinpoint.children.first as? ModelEntity,
+               let collision = sphere.components[CollisionComponent.self] {
+                print("🔍 Collision shapes count:", collision.shapes.count)   // <- ini kuncinya
+            } else {
+                print("🔍 No CollisionComponent or not ModelEntity")
+            }
+            print("Pinpoint collision:", pinpoint.components[CollisionComponent.self] != nil)
+            print("Area:", area.name)
+            print("Area world:", area.position(relativeTo: nil))
+            print("Pinpoint world:", pinpoint.position(relativeTo: nil))
+
+            if let sphere = pinpoint.children.first {
+                print("Sphere collision:", sphere.components[CollisionComponent.self] != nil)
+            }
             pinpoints.append(pinpoint)
         }
-        
-        AppLogger.ar.info("Spawned \(safeCount) pinpoints on island")
+        AppLogger.ar.info("Spawned \(self.pinpoints.count) pinpoints")
     }
     
     // MARK: - Pinpoint Creation
@@ -75,12 +103,10 @@ class PinpointSystem {
         position: SIMD3<Float>,
         color: UIColor
     ) -> Entity {
-        // Parent entity for the entire pinpoint assembly
         let pinpointRoot = Entity()
         pinpointRoot.name = "pinpoint_\(areaIndex)"
         pinpointRoot.position = position
         
-        // Sphere head (the tappable marker)
         let sphere = ModelEntity.makeSphere(
             radius: GameConstants.pinpointVisualRadius,
             color: color,
@@ -89,17 +115,59 @@ class PinpointSystem {
         sphere.position = SIMD3<Float>(0, 0, 0)
         pinpointRoot.addChild(sphere)
         
-        // Thin shaft below the sphere
-        let shaftHeight: Float = 0.015
+        let sphereRadius = GameConstants.pinpointVisualRadius
+        let shaftHeight = sphereRadius * 2.5
+        let shaftRadius = sphereRadius * 0.18
+        
         let shaft = ModelEntity.makeCylinder(
             height: shaftHeight,
-            radius: 0.001,
-            color: .darkGray
+            radius: shaftRadius,
+            color: UIColor(named: "ThemeDarkTeal") ?? .systemTeal
         )
-        shaft.position = SIMD3<Float>(0, -(shaftHeight / 2 + GameConstants.pinpointVisualRadius), 0)
+        shaft.position = SIMD3<Float>(0, -(shaftHeight / 2 + sphereRadius), 0)
         pinpointRoot.addChild(shaft)
-        
+
+        let label = makeLabel(text: areaNames[areaIndex])
+        label.position = SIMD3<Float>(0, 0.04, 0)
+        pinpointRoot.addChild(label)
+
         return pinpointRoot
+    }
+
+    
+    private func makeLabel(text: String) -> ModelEntity {
+
+        let mesh = MeshResource.generateText(
+            text,
+            extrusionDepth: 0.003,
+            font: .systemFont(ofSize: 100, weight: .bold),
+            containerFrame: CGRect(x: 0, y: 0, width: 500, height: 100),
+            alignment: .center,
+            lineBreakMode: .byClipping
+        )
+
+        let material = SimpleMaterial(
+            color: .white,
+            isMetallic: false
+        )
+
+        let label = ModelEntity(
+            mesh: mesh,
+            materials: [material]
+        )
+
+        label.scale = SIMD3<Float>(repeating: 0.0015)
+
+        label.position = [0,0.12,0]
+
+        label.orientation = simd_quatf(
+            angle: .pi,
+            axis: [0,1,0]
+        )
+
+        print("Label bounds:", label.visualBounds(relativeTo: nil).extents)
+
+        return label
     }
     
     // MARK: - Tap Detection
@@ -138,5 +206,20 @@ class PinpointSystem {
         }
         pinpoints.removeAll()
         AppLogger.ar.debug("All pinpoints removed")
+    }
+    // MARK: - Overlay Data Access
+
+    /// Data ringan yang dibutuhkan SwiftUI overlay untuk menampilkan label per pinpoint.
+    struct PinpointInfo {
+        let areaIndex: Int
+        let name: String
+        let entity: Entity
+    }
+
+    /// Mengembalikan info semua pinpoint yang sedang aktif, untuk dipakai proyeksi ke layar.
+    func allPinpointInfo() -> [PinpointInfo] {
+        pinpoints.enumerated().map { index, entity in
+            PinpointInfo(areaIndex: index, name: areaNames[index], entity: entity)
+        }
     }
 }

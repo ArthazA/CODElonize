@@ -52,7 +52,7 @@ struct HowToPlayCard: View {
                     StrokedText(
                         text: "HOW TO PLAY?",
                         font: .custom("Luckiest Guy", size: 32),
-                        fillColor: .white,
+                        fillColor: .themeWhite,
                         strokeColor: .themeDarkTeal,
                         strokeWidth: 2
                     )
