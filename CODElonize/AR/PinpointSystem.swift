@@ -18,8 +18,14 @@ class PinpointSystem {
 
     func spawnPinpoints(on islandAnchor: AnchorEntity) {
         removeAllPinpoints()
-
-        for index in 0..<GameConstants.areaCount {
+        
+        let safeCount = min(
+            GameConstants.areaCount,
+            GameConstants.pinpointPositions.count,
+            areaColors.count
+        )
+        
+        for index in 0..<safeCount {
             let pinpoint = createPinpointEntity(
                 areaIndex: index,
                 position: GameConstants.pinpointPositions[index],
@@ -28,8 +34,8 @@ class PinpointSystem {
             islandAnchor.addChild(pinpoint)
             pinpoints.append(pinpoint)
         }
-
-        AppLogger.ar.info("Spawned \(GameConstants.areaCount) pinpoints on island")
+        
+        AppLogger.ar.info("Spawned \(safeCount) pinpoints on island")
     }
 
     private func createPinpointEntity(

@@ -9,26 +9,25 @@ struct Home: View {
 
     var body: some View {
         ZStack {
-            Color.themeTeal.edgesIgnoringSafeArea(.all)
-
+            Image("background")
+                    .resizable()
+                    .scaledToFill()
+                    .edgesIgnoringSafeArea(.all)
+            
             VStack(spacing: 24) {
 
                 VStack(spacing: 8) {
                     HStack(spacing: 0) {
-                        Text("CODE-")
-                            .foregroundColor(.white)
-                        Text("LONIZED")
-                            .foregroundColor(Color.themeOrange)
+                        AppTitleText(text: "CODE-", color:.white)
+                        AppTitleText(text: "LONIZED", color:.themeDarkOrange)
                     }
-                    .font(.system(size: 44, weight: .heavy, design: .rounded))
-                    .shadow(color: .black.opacity(0.3), radius: 2, x: 0, y: 4)
-
-                    Text("Answer fast & Conquer the Island!")
-                        .font(.system(size: 18, weight: .bold, design: .rounded))
-                        .foregroundColor(.white)
+                    .shadow(color: .themeDarkTeal.opacity(0.3), radius: 2, x: 0, y: 4)
+                    
+                    AppSubtitleText(text: "Answer fast & Conquer the Island!", color:.white)
                 }
-                .padding(.top, 40)
-
+                .padding(.top, 80)
+                
+                // 3D Island
                 Island3DView()
                     .frame(height: isRoomCodeFocused ? 100 : 280)
                     .animation(.easeInOut(duration: 0.3), value: isRoomCodeFocused)
@@ -125,18 +124,40 @@ struct Home: View {
                         }
 
                         Button(action: {
-                            isShowingHowToPlay = true
+                            withAnimation(.easeInOut(duration: 0.25)) {
+                                isShowingHowToPlay = true
+                            }
                         }) {
-                            Text("How to play?")
-                                .font(.system(size: 16, weight: .bold, design: .rounded))
-                                .foregroundColor(Color.themeOrange)
-                                .underline()
+                        Text("How to play?")
+                            .font(.system(size: 16, weight: .bold, design: .rounded))
+                            .foregroundColor(Color.themeOrange)
+                            .underline()
                         }
                         .padding(.top, 10)
                     }
                     .padding(.horizontal, 40)
                     .padding(.bottom, 20)
                 }
+            }
+            .blur(radius: isShowingHowToPlay ? 8 : 0)
+            .disabled(isShowingHowToPlay)
+
+            if isShowingHowToPlay {
+                Color.black
+                    .opacity(0.35)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        withAnimation {
+                            isShowingHowToPlay = false
+                        }
+                    }
+                HowToPlayCard {
+                    withAnimation {
+                        isShowingHowToPlay = false
+                    }
+                }
+                .transition(.scale.combined(with: .opacity))
+                .zIndex(1)
             }
         }
         .overlay(

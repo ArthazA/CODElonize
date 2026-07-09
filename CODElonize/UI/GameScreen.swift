@@ -6,10 +6,7 @@ struct GameScreen: View {
 
     var body: some View {
         ZStack {
-
-            Color.themeCream.edgesIgnoringSafeArea(.all)
-
-            Island3DView()
+            ARViewContainer(arSessionManager: appState.arSessionManager)
                 .edgesIgnoringSafeArea(.all)
 
             ZStack {
@@ -57,7 +54,10 @@ struct GameScreen: View {
         .animation(.easeInOut(duration: 0.3), value: matchManager.isQuizActive)
         .animation(.easeInOut(duration: 0.3), value: matchManager.isAreaPickerActive)
         .onAppear {
-
+            if !appState.arSessionManager.islandPlacement.isPlaced {
+                appState.arSessionManager.placeIslandUsingSavedTransformIfAvailable()
+            }
+            
             if !matchManager.gameState.isMatchActive && !matchManager.gameState.isMatchFinished {
                 matchManager.startSinglePlayerMatch(playerName: appState.playerName.isEmpty ? "Player" : appState.playerName)
             }

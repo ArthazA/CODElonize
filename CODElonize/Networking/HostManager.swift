@@ -143,18 +143,18 @@ final class HostManager: ObservableObject {
         guard var lobby = lobbyManager?.lobby else {
             return
         }
-        let avatars = [
-            "player_1",
-            "player_2",
-            "player_3",
-            "player_4",
-            "player_5"
+        let animals = [
+            "🦊","🐻","🐰","🐸","🐼",
+            "🐨","🐧","🐙","🦁","🐯"
         ]
+
         let used = lobby.players.map(\.avatar)
-        let available = avatars.filter {
+
+        let available = animals.filter {
             !used.contains($0)
         }
-        let avatar = available.randomElement()!
+
+        let avatar = available.randomElement() ?? "🐶"
         let player = Player(
             id: join.playerID,
             name: join.playerName,

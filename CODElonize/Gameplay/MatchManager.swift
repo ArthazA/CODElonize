@@ -111,6 +111,7 @@ class MatchManager: ObservableObject {
         let player = Player(
             id: localID,
             name: playerName,
+            avatar: "🦊",
             isHost: true,
             isReady: true
         )

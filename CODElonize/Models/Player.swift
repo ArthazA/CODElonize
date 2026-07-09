@@ -4,7 +4,7 @@ import Foundation
 struct Player: Codable, Identifiable {
     let id: UUID
     var name: String
-    var avatar: String = "player_1" 
+    var avatar: String
     var isHost: Bool
     var isReady: Bool
 
@@ -25,4 +25,15 @@ struct Player: Codable, Identifiable {
     }
 
     var displayName: String { name }
+    
+    private static let animalEmojis = [
+        "🦊", "🐰", "🐻", "🐙", "🐼",
+        "🐸", "🐯", "🦁", "🐨", "🐵",
+        "🐶", "🐱", "🐹", "🦄", "🐧",
+        "🦜", "🦖", "🐢", "🐬", "🦉"
+    ]
+
+    private static func randomAnimal() -> String {
+        animalEmojis.randomElement()!
+    }
 }

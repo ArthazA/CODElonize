@@ -46,10 +46,11 @@ class ARSessionManager: NSObject, ObservableObject {
         super.init()
     }
     lazy var arView: ARView = {
+        print("🔥 CREATE ARVIEW")
         let view = ARView(frame: .zero)
-            if enableAR {
-                configureARView(view)
-            }
+        if enableAR {
+            configureARView(view)
+        }
         return view
     }()
 
@@ -84,7 +85,6 @@ class ARSessionManager: NSObject, ObservableObject {
         let location = sender.location(in: arView)
 
         if isPreviewMode {
-            guard savedPlacementTransform == nil else { return }
             placePreviewIslandAtTap(location)
             return
         }
@@ -100,25 +100,56 @@ class ARSessionManager: NSObject, ObservableObject {
     }
 
     private func placePreviewIslandAtTap(_ location: CGPoint) {
+        print("Preview tap")
         guard let result = arView.raycast(
             from: location,
-            allowing: .estimatedPlane,
+            allowing: .existingPlaneInfinite,
             alignment: .horizontal
         ).first else {
             AppLogger.ar.debug("No horizontal plane at tap location (preview)")
             return
         }
 
-        guard let entity = try? Entity.load(named: "PreviewIslands") else {
-            AppLogger.ar.error("Gagal load PreviewIslands.usdz")
-            return
+        if let previewAnchor {
+
+            print("=== MOVE PREVIEW ===")
+            print("Before move anchor scale:", previewAnchor.scale)
+
+            previewAnchor.transform = Transform(matrix: result.worldTransform)
+
+            print("After move anchor scale:", previewAnchor.scale)
+
+            if let entity = previewAnchor.children.first {
+                print("Entity scale:", entity.scale)
+                print("Bounds:", entity.visualBounds(relativeTo: nil).extents)
+            }
+
+        } else {
+
+            guard let entity = try? Entity.load(named: "PreviewIslands") else {
+                AppLogger.ar.error("Failed to load PreviewIslands")
+                return
+            }
+
+            print("=== FIRST CREATE ===")
+            print("Original entity scale:", entity.scale)
+            print("Original bounds:", entity.visualBounds(relativeTo: nil).extents)
+
+            let bounds = entity.visualBounds(relativeTo: nil)
+            let scaledHeight = bounds.extents.y * islandScale
+
+            entity.scale = SIMD3<Float>(repeating: islandScale)
+            entity.position.y = -(scaledHeight / 2) - 0.02
+            entity.orientation = simd_quatf(angle: islandRotation, axis: [0,1,0])
+
+            let anchor = AnchorEntity(world: result.worldTransform)
+
+            anchor.addChild(entity)
+            arView.scene.addAnchor(anchor)
+
+            previewAnchor = anchor
+            print("Anchor transform:", anchor.transform.matrix)
         }
-
-        previewAnchor = AnchorEntity(world: result.worldTransform)
-        previewAnchor?.addChild(entity)
-
-        arView.scene.addAnchor(previewAnchor!)
-
         savedPlacementTransform = result.worldTransform
         AppLogger.ar.info("Preview island placed, transform saved")
     }
@@ -151,7 +182,7 @@ class ARSessionManager: NSObject, ObservableObject {
 
         guard let result = arView.raycast(
             from: location,
-            allowing: .estimatedPlane,
+            allowing: .existingPlaneInfinite,
             alignment: .horizontal
         ).first else {
             AppLogger.ar.debug("No horizontal plane at tap location")
@@ -201,11 +232,12 @@ class ARSessionManager: NSObject, ObservableObject {
     }
 
     func resumeSession() {
-        let configuration = ARWorldTrackingConfiguration()
-        configuration.planeDetection = [.horizontal]
-        configuration.environmentTexturing = .automatic
+//        let configuration = ARWorldTrackingConfiguration()
+//        configuration.planeDetection = [.horizontal]
+//        configuration.environmentTexturing = .automatic
+        guard let configuration = arView.session.configuration else { return }
         arView.session.run(configuration)
-        AppLogger.ar.info("AR session resumed")
+//        AppLogger.ar.info("AR session resumed")
     }
 
     func resetSession() {

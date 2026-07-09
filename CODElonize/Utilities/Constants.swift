@@ -5,11 +5,15 @@ import simd
 enum GameConstants {
 
     static let islandModelName = "Islands"
-
-    static let defaultIslandScale: Float = 2
-
-    static let minIslandScale: Float = 0.005
-
+    
+    /// Default scale applied to the island model when first placed.
+    /// The host can adjust this from the Lobby before the match starts.
+    static let defaultIslandScale: Float = 0.05
+    
+    /// Minimum scale the host can set for the island.
+    static let minIslandScale: Float = 0.05
+    
+    /// Maximum scale the host can set for the island.
     static let maxIslandScale: Float = 0.05
 
     static let maxPlayers = 5

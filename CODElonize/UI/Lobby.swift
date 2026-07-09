@@ -32,12 +32,12 @@ struct Lobby: View {
                 VStack(spacing: 12) {
                     Text("ROOM CODE")
                         .font(.system(size: 20, weight: .heavy, design: .rounded))
-                        .foregroundColor(Color.themeDarkTeal)
+                        .foregroundColor(Color.themeBrown)
                         .padding(.top, 40)
 
                     HStack(spacing: 16) {
                         if roomCode.count == 4 {
-                            HStack(spacing: 16) {
+                            HStack(spacing: 7) {
                                 ForEach(0..<4) { index in
                                     RoomCodeBox(
                                         character: roomCode[index]
@@ -60,9 +60,9 @@ struct Lobby: View {
                 VStack(spacing: 20) {
                     Text("Players Joining (\(players.count)/\(appState.lobbyManager.lobby?.maxPlayers ?? 5))")
                         .font(.system(size: 24, weight: .heavy, design: .rounded))
-                        .foregroundColor(Color.themeTeal)
-                        .underline(true, color: Color.themeTeal)
-
+                        .foregroundColor(Color.themeDarkTeal)
+                    
+                    // Grid of players
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 30) {
                         ForEach(players) { player in
                             PlayerAvatar(
@@ -81,11 +81,7 @@ struct Lobby: View {
 
                 if !isMyselfReady {
                     VStack(spacing: 16) {
-                        Text("Preview the island before you're ready.")
-                            .font(.system(size: 16, weight: .bold, design: .rounded))
-                            .foregroundColor(Color.themeTeal)
-
-                        PrimaryButton(title: "Preview Island") {
+                        SecondaryButton(title: "Preview Island") {
                             appState.navigate(to: .islandPreview)
                         }
                         .padding(.horizontal, 40)
@@ -94,18 +90,14 @@ struct Lobby: View {
 
                 } else if appState.isHost {
                     VStack(spacing: 16) {
-                        Text("Preview the island before starting.")
-                            .font(.system(size: 16, weight: .bold, design: .rounded))
-                            .foregroundColor(Color.themeTeal)
-
                         SecondaryButton(title: "Start Game") {
-                            appState.navigate(to: .arPlacement)
+                            appState.arSessionManager.placeIslandUsingSavedTransformIfAvailable()
                             appState.lobbyManager.startGame()
+                            appState.navigate(to: .game)
                         }
                         .padding(.horizontal, 40)
                     }
                     .padding(.bottom, 40)
-
                 } else {
                     Text("Waiting the host to start the game...")
                         .font(.system(size: 18, weight: .heavy, design: .rounded))
@@ -116,7 +108,8 @@ struct Lobby: View {
         }
         .onChange(of: appState.lobbyManager.didStartGame) { _, started in
             if started, !appState.isHost {
-                appState.navigate(to: .arPlacement)
+                appState.arSessionManager.placeIslandUsingSavedTransformIfAvailable()
+                appState.navigate(to: .game)
             }
         }
     }
@@ -136,14 +129,14 @@ struct Lobby: View {
             Player(
                 id: hostID,
                 name: "Host",
-                avatar: "player_1",
+                avatar: "🦊",
                 isHost: true,
                 isReady: true
             ),
             Player(
                 id: UUID(),
                 name: "Player",
-                avatar: "player_3",
+                avatar: "🦊",
                 isHost: false,
                 isReady: false
             )
