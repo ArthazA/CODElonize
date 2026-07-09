@@ -2,172 +2,148 @@
     "topic": "Algorithms",
     "questions": [
         {
-            "id": "d294f987-d087-46e4-bc5d-2fe7bafd0aed",
+            "id": "4662508a-9305-4745-8446-4a8fdfad62b5",
             "type": "mcq",
-            "text": "Sample MCQ 0 about Algorithms?",
+            "text": "What is the worst-case time complexity of QuickSort?",
             "choices": [
-                "Option A for Algorithms",
-                "Option B for Algorithms",
-                "Option C for Algorithms",
-                "Option D for Algorithms"
-            ],
-            "correctIndex": 0
-        },
-        {
-            "id": "41719103-50f7-41d9-a79e-8cfcf8146bd8",
-            "type": "mcq",
-            "text": "Sample MCQ 1 about Algorithms?",
-            "choices": [
-                "Option A for Algorithms",
-                "Option B for Algorithms",
-                "Option C for Algorithms",
-                "Option D for Algorithms"
+                "O(log n)",
+                "O(n^2)",
+                "O(n)",
+                "O(n log n)"
             ],
             "correctIndex": 1
         },
         {
-            "id": "4dc9ec27-b3b9-4cbc-9eb0-b05eb8543c1e",
+            "id": "a8cf94d4-99a0-4a7a-9d2e-db2ecdbfb06d",
             "type": "mcq",
-            "text": "Sample MCQ 2 about Algorithms?",
+            "text": "Which algorithm is used to find the shortest path in a weighted graph?",
             "choices": [
-                "Option A for Algorithms",
-                "Option B for Algorithms",
-                "Option C for Algorithms",
-                "Option D for Algorithms"
+                "Dijkstra's Algorithm",
+                "Kruskal's Algorithm",
+                "Breadth-First Search",
+                "Depth-First Search"
+            ],
+            "correctIndex": 0
+        },
+        {
+            "id": "40e202d1-5834-43b8-be59-268669b27f19",
+            "type": "mcq",
+            "text": "What is the time complexity of Binary Search on a sorted array?",
+            "choices": [
+                "O(n)",
+                "O(1)",
+                "O(log n)",
+                "O(n log n)"
             ],
             "correctIndex": 2
         },
         {
-            "id": "df40ef10-8e7a-4279-9f01-e202f3e48c7c",
+            "id": "eae71270-1a14-405f-a2b5-b594eb93d935",
             "type": "mcq",
-            "text": "Sample MCQ 3 about Algorithms?",
+            "text": "Which sorting algorithm is considered stable?",
             "choices": [
-                "Option A for Algorithms",
-                "Option B for Algorithms",
-                "Option C for Algorithms",
-                "Option D for Algorithms"
+                "QuickSort",
+                "Selection Sort",
+                "Heap Sort",
+                "Merge Sort"
             ],
             "correctIndex": 3
         },
         {
-            "id": "1704034b-6808-42b6-97e9-2a41d0b1a6c0",
+            "id": "70b73e30-b415-4629-8451-f8db0864e369",
             "type": "mcq",
-            "text": "Sample MCQ 4 about Algorithms?",
+            "text": "What algorithm paradigm does Fibonacci sequence calculation with memoization fall under?",
             "choices": [
-                "Option A for Algorithms",
-                "Option B for Algorithms",
-                "Option C for Algorithms",
-                "Option D for Algorithms"
+                "Greedy Algorithm",
+                "Backtracking",
+                "Dynamic Programming",
+                "Divide and Conquer"
             ],
-            "correctIndex": 0
+            "correctIndex": 2
         },
         {
-            "id": "5fd47a3e-203b-4830-94a1-a931a3cbea89",
+            "id": "c900e63d-cdeb-438c-8d0f-2ecba7ed9db9",
             "type": "mcq",
-            "text": "Sample MCQ 5 about Algorithms?",
+            "text": "Which traversal strategy visits all children of a node before visiting its siblings?",
             "choices": [
-                "Option A for Algorithms",
-                "Option B for Algorithms",
-                "Option C for Algorithms",
-                "Option D for Algorithms"
+                "Level-Order Traversal",
+                "Breadth-First Search",
+                "Depth-First Search",
+                "Dijkstra's"
+            ],
+            "correctIndex": 2
+        },
+        {
+            "id": "cdde973a-705a-409d-8014-bd35cded0e12",
+            "type": "mcq",
+            "text": "What is the time complexity of inserting into a balanced Binary Search Tree?",
+            "choices": [
+                "O(n)",
+                "O(log n)",
+                "O(n log n)",
+                "O(1)"
             ],
             "correctIndex": 1
         },
         {
-            "id": "7bc601da-36bf-402a-a6e7-a9234215d8c5",
-            "type": "code_arrangement",
-            "text": "Complete the code for Algorithms problem 0:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
-            ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
+          "id": "e91d1bf5-434d-4678-b350-bf47f9555211",
+          "type": "code_arrangement",
+          "text": "Complete the binary search midpoint calculation:",
+          "codeTemplate": [
+            "func binarySearch(_ arr: [Int], _ target: Int) -> Int? {",
+            "    var low = 0, high = arr.count - 1",
+            "    while low <= high {",
+            "        _____",
+            "        if arr[mid] == target {",
+            "            _____",
+            "        } else if arr[mid] < target {",
+            "            _____",
+            "        }",
+            "    }",
+            "    return nil",
+            "}"
+          ],
+          "options": [
+            "let mid = (low + high) / 2",
+            "return mid",
+            "low = mid + 1",
+            "high = mid - 1"
+          ],
+          "correctAnswer": [
+            "let mid = (low + high) / 2",
+            "return mid",
+            "low = mid + 1"
+          ]
         },
         {
-            "id": "13524474-83f0-484a-bf18-c43b95adb8b8",
-            "type": "code_arrangement",
-            "text": "Complete the code for Algorithms problem 1:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
-            ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
-        },
-        {
-            "id": "defc73e4-4acd-478a-a64f-7e362adb9a37",
-            "type": "code_arrangement",
-            "text": "Complete the code for Algorithms problem 2:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
-            ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
-        },
-        {
-            "id": "4a944548-04fc-4ddc-82d1-26aa1478e020",
-            "type": "code_arrangement",
-            "text": "Complete the code for Algorithms problem 3:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
-            ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
+          "id": "e91d1bf5-434d-4678-b350-bf47f9555212",
+          "type": "code_arrangement",
+          "text": "Complete the binary search midpoint calculation:",
+          "codeTemplate": [
+            "func binarySearch(_ arr: [Int], _ target: Int) -> Int? {",
+            "    var low = 0, high = arr.count - 1",
+            "    while low <= high {",
+            "        _____",
+            "        if arr[mid] == target {",
+            "            _____",
+            "        } else if arr[mid] < target {",
+            "            _____",
+            "        }",
+            "    }",
+            "    return nil",
+            "}"
+          ],
+          "options": [
+            "let mid = (low + high) / 2",
+            "return mid",
+            "low = mid + 1",
+            "high = mid - 1"
+          ],
+          "correctAnswer": [
+            "let mid = (low + high) / 2",
+            "return mid",
+            "low = mid + 1"
+          ]
         }
     ]
 }

@@ -67,6 +67,38 @@ class AppState: ObservableObject {
                 self?.arSessionManager.tappedAreaIndex = nil
             }
             .store(in: &cancellables)
+        
+        arSessionManager.$tappedPowerUpID
+            .compactMap { $0 }
+            .sink { [weak self] id in
+                self?.matchManager.handlePowerUpCollection(spawnID: id)
+                self?.arSessionManager.tappedPowerUpID = nil
+            }
+            .store(in: &cancellables)
+
+        arSessionManager.$tappedEmberMothID
+            .compactMap { $0 }
+            .sink { [weak self] id in
+                self?.matchManager.handleEmberMothCollection(spawnID: id)
+                self?.arSessionManager.tappedEmberMothID = nil
+            }
+            .store(in: &cancellables)
+
+        matchManager.spawnManager.$spawnedPowerUps
+            .combineLatest(matchManager.spawnManager.$spawnedEmberMoths)
+            .sink { [weak self] powerUps, moths in
+                self?.arSessionManager.syncPowerUps(powerUps: powerUps, emberMoths: moths)
+            }
+            .store(in: &cancellables)
+        
+        matchManager.$isQuizActive
+            .combineLatest(matchManager.$isAreaPickerActive, matchManager.$isAreaInfoActive)
+            .map { quiz, picker, info in quiz || picker || info }
+            .removeDuplicates()
+            .sink { [weak self] blocking in
+                self?.arSessionManager.isOverlayBlockingTaps = blocking
+            }
+            .store(in: &cancellables)
     }
     
     // MARK: - Navigation
