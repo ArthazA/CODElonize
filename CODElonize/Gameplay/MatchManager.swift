@@ -12,8 +12,9 @@ import os
 /// Central coordinator that ties together all gameplay systems.
 ///
 /// `MatchManager` is the single `ObservableObject` injected into the SwiftUI environment.
-/// It owns the `GameState`, `QuizManager`, and `TimerSystem`, and orchestrates the
-/// full gameplay loop: pinpoint tap → quiz → time recording → conquest → leaderboard.
+/// It owns the `GameState`, `QuizManager`, `TimerSystem`, and `SpawnManager`,
+/// and orchestrates the full gameplay loop:
+/// pinpoint tap → quiz → time recording → conquest → leaderboard → power-ups.
 ///
 /// In the future, networking will call `MatchManager`'s public methods when receiving
 /// host broadcasts, without requiring any structural changes.
@@ -30,6 +31,9 @@ class MatchManager: ObservableObject {
     /// The match countdown timer.
     let timerSystem = TimerSystem()
     
+    /// Power-up spawning system (Phase 7).
+    let spawnManager = SpawnManager()
+    
     // MARK: - Published UI State
     
     /// Whether the quiz overlay is currently showing.
@@ -44,14 +48,30 @@ class MatchManager: ObservableObject {
     /// The final match result (set when the match finishes).
     @Published var matchResult: MatchResult? = nil
     
+    /// Whether the area picker overlay is showing (for power-up activation).
+    @Published var isAreaPickerActive: Bool = false
+    
+    /// The power-up type currently being targeted (waiting for area selection).
+    @Published var pendingPowerUpType: PowerUpType? = nil
+    
+    /// Feedback message from the most recent power-up activation.
+    @Published var powerUpFeedback: String? = nil
+    
+    /// Whether a power-up is currently resolving (blocks new activations, EC-020).
+    @Published var isPowerUpResolving: Bool = false
+    
     // MARK: - Private
     
     private var cancellables = Set<AnyCancellable>()
+    
+    /// Timer for Tsunami unlock scheduling.
+    private var tsunamiUnlockTimers: [Int: AnyCancellable] = [:]
     
     // MARK: - Initialization
     
     init() {
         setupTimerExpiry()
+        setupArmageddonTrigger()
         setupGameStateObservation()
     }
     
@@ -61,6 +81,30 @@ class MatchManager: ObservableObject {
             AppLogger.gameplay.info("Timer expired — ending match")
             self?.endMatch()
         }
+    }
+    
+    /// Monitors the countdown timer to trigger Armageddon Phase.
+    private func setupArmageddonTrigger() {
+        timerSystem.$remainingTime
+            .sink { [weak self] remaining in
+                guard let self = self else { return }
+                if remaining <= GameConstants.armageddonRemainingTime,
+                   self.gameState.isMatchActive,
+                   !self.gameState.armageddonTriggered {
+                    
+                    self.gameState.armageddonTriggered = true
+                    self.gameState.isArmageddonActive = true
+                    
+                    // Unlock the 7th area (index 6)
+                    AreaManager.unlockArea(index: 6, gameState: self.gameState)
+                    
+                    // Spawn the first Ember Moth
+                    self.spawnManager.spawnEmberMoth()
+                    
+                    AppLogger.gameplay.info("Armageddon Phase triggered!")
+                }
+            }
+            .store(in: &cancellables)
     }
     
     /// Observes GameState changes to keep the leaderboard up to date.
@@ -93,6 +137,15 @@ class MatchManager: ObservableObject {
         isQuizActive = false
         activeAreaIndex = nil
         matchResult = nil
+        isAreaPickerActive = false
+        pendingPowerUpType = nil
+        powerUpFeedback = nil
+        isPowerUpResolving = false
+        
+        // Reset power-up systems
+        spawnManager.reset()
+        tsunamiUnlockTimers.values.forEach { $0.cancel() }
+        tsunamiUnlockTimers.removeAll()
         
         // Calculate initial leaderboard
         refreshLeaderboard()
@@ -100,6 +153,9 @@ class MatchManager: ObservableObject {
         // Start the countdown
         timerSystem.resetTimer()
         timerSystem.startTimer()
+        
+        // Start power-up spawning
+        spawnManager.startSpawning()
         
         AppLogger.gameplay.info(
             "Match started with \(players.count) player(s). Local player: '\(localPlayerID)'"
@@ -129,6 +185,7 @@ class MatchManager: ObservableObject {
         
         // Stop everything
         timerSystem.stopTimer()
+        spawnManager.stopSpawning()
         gameState.isMatchActive = false
         gameState.isMatchFinished = true
         
@@ -138,6 +195,14 @@ class MatchManager: ObservableObject {
             isQuizActive = false
             activeAreaIndex = nil
         }
+        
+        // Cancel area picker if open
+        isAreaPickerActive = false
+        pendingPowerUpType = nil
+        
+        // Cancel tsunami timers
+        tsunamiUnlockTimers.values.forEach { $0.cancel() }
+        tsunamiUnlockTimers.removeAll()
         
         // Calculate final results
         ConquestSystem.updateConqueredCounts(gameState: gameState)
@@ -162,6 +227,11 @@ class MatchManager: ObservableObject {
         
         guard !isQuizActive else {
             AppLogger.gameplay.debug("Pinpoint tap ignored — quiz already active")
+            return
+        }
+        
+        guard !isAreaPickerActive else {
+            AppLogger.gameplay.debug("Pinpoint tap ignored — area picker active")
             return
         }
         
@@ -233,8 +303,8 @@ class MatchManager: ObservableObject {
         
         // Check if all areas are conquered (EC-026: spawn earthquake)
         if gameState.allAreasConquered {
-            AppLogger.gameplay.info("All areas conquered — earthquake spawn trigger (Phase 7)")
-            // Phase 7 will handle: spawnEarthquakePowerUp()
+            AppLogger.gameplay.info("All areas conquered — spawning earthquake")
+            spawnManager.spawnEarthquake()
         }
     }
     
@@ -252,11 +322,178 @@ class MatchManager: ObservableObject {
         AppLogger.gameplay.info("Quiz cancelled for player '\(playerID)'")
     }
     
+    // MARK: - Power-Up Collection
+    
+    /// Handles tapping a spawned power-up to collect it.
+    ///
+    /// - Parameter spawnID: The UUID of the spawned power-up.
+    func handlePowerUpCollection(spawnID: UUID) {
+        let playerID = gameState.localPlayerID
+        
+        // Check inventory capacity
+        guard let player = gameState.localPlayer,
+              player.inventory.count < GameConstants.maxInventorySize else {
+            powerUpFeedback = "Inventory full!"
+            clearFeedbackAfterDelay()
+            return
+        }
+        
+        // Attempt claim from spawn manager using new probability mechanic
+        guard let type = spawnManager.attemptClaim(spawnID: spawnID, playerID: playerID) else {
+            powerUpFeedback = "Claim failed!"
+            clearFeedbackAfterDelay()
+            return
+        }
+        
+        // Add to player inventory
+        PowerUpManager.addToInventory(type: type, playerID: playerID, gameState: gameState)
+        
+        powerUpFeedback = "\(type.displayName) collected!"
+        clearFeedbackAfterDelay()
+    }
+    
+    /// Handles tapping a spawned Ember Moth to collect it.
+    ///
+    /// - Parameter spawnID: The UUID of the spawned Ember Moth.
+    func handleEmberMothCollection(spawnID: UUID) {
+        let playerID = gameState.localPlayerID
+        
+        if spawnManager.attemptEmberMothClaim(mothID: spawnID, playerID: playerID) {
+            gameState.awardEmberMothPoints(playerID: playerID)
+            refreshLeaderboard()
+            
+            powerUpFeedback = "Ember Moth collected! +0.5 pts"
+        } else {
+            powerUpFeedback = "Moth claim failed!"
+        }
+        
+        clearFeedbackAfterDelay()
+    }
+    
+    // MARK: - Power-Up Activation
+    
+    /// Opens the area picker for a power-up from the player's inventory.
+    ///
+    /// - Parameter type: The power-up type to activate.
+    func startAreaPicker(for type: PowerUpType) {
+        guard !isPowerUpResolving else {
+            powerUpFeedback = "Wait for current power-up to resolve"
+            clearFeedbackAfterDelay()
+            return
+        }
+        
+        guard !isQuizActive else {
+            powerUpFeedback = "Can't use power-ups during a quiz"
+            clearFeedbackAfterDelay()
+            return
+        }
+        
+        pendingPowerUpType = type
+        isAreaPickerActive = true
+    }
+    
+    /// Cancels the area picker without activating anything.
+    func cancelAreaPicker() {
+        isAreaPickerActive = false
+        pendingPowerUpType = nil
+    }
+    
+    /// Activates the pending power-up on the selected target area.
+    ///
+    /// - Parameter targetArea: The area index to target.
+    func handlePowerUpActivation(targetArea: Int) {
+        guard let type = pendingPowerUpType else { return }
+        
+        let playerID = gameState.localPlayerID
+        
+        // Close the picker
+        isAreaPickerActive = false
+        pendingPowerUpType = nil
+        
+        // Mark as resolving (EC-020: block concurrent activations)
+        isPowerUpResolving = true
+        
+        // Execute the effect
+        let result: ActivationResult
+        switch type {
+        case .earthquake:
+            result = PowerUpManager.activateEarthquake(
+                playerID: playerID,
+                targetArea: targetArea,
+                gameState: gameState
+            )
+            
+        case .tsunami:
+            result = PowerUpManager.activateTsunami(
+                playerID: playerID,
+                targetArea: targetArea,
+                gameState: gameState
+            )
+            // If successful, schedule the unlock timer
+            if case .success = result {
+                scheduleTsunamiUnlock(for: targetArea)
+                // Kick any player currently quizzing this area
+                if let localArea = activeAreaIndex, localArea == targetArea {
+                    handleQuizCancellation()
+                }
+            }
+            
+        case .pocketWatch:
+            result = PowerUpManager.activatePocketWatch(
+                playerID: playerID,
+                targetArea: targetArea,
+                gameState: gameState
+            )
+        }
+        
+        // Process result
+        switch result {
+        case .success(let description):
+            powerUpFeedback = description
+            refreshLeaderboard()
+        case .failed(let reason):
+            powerUpFeedback = reason
+        }
+        
+        clearFeedbackAfterDelay()
+        
+        // Unblock after a brief delay
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            self?.isPowerUpResolving = false
+        }
+    }
+    
+    // MARK: - Tsunami Unlock Timer
+    
+    /// Schedules an automatic unlock for a Tsunami-locked area.
+    private func scheduleTsunamiUnlock(for areaIndex: Int) {
+        // Cancel existing timer for this area if any (EC-023: renew)
+        tsunamiUnlockTimers[areaIndex]?.cancel()
+        
+        tsunamiUnlockTimers[areaIndex] = Just(())
+            .delay(for: .seconds(GameConstants.tsunamiLockDuration), scheduler: DispatchQueue.main)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                AreaManager.unlockArea(index: areaIndex, gameState: self.gameState)
+                self.tsunamiUnlockTimers.removeValue(forKey: areaIndex)
+                AppLogger.gameplay.info("Area \(areaIndex) auto-unlocked after Tsunami")
+            }
+    }
+    
     // MARK: - Leaderboard
     
     /// Refreshes the leaderboard from current game state.
     private func refreshLeaderboard() {
         leaderboard = ScoreManager.calculateScores(gameState: gameState)
+    }
+    
+    // MARK: - Feedback
+    
+    /// Clears the power-up feedback message after a delay.
+    private func clearFeedbackAfterDelay() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) { [weak self] in
+            self?.powerUpFeedback = nil
+        }
     }
     
     // MARK: - Area Info (for tapping already-completed areas)

@@ -1,23 +1,173 @@
 {
-  "topic": "ai",
-  "questions": [
-    {
-      "id": "A2000001-0001-0001-0001-000000000001",
-      "text": "What does CNN stand for in deep learning?",
-      "choices": ["Central Neural Network", "Convolutional Neural Network", "Connected Node Network", "Computed Neuron Network"],
-      "correctIndex": 1
-    },
-    {
-      "id": "A2000001-0001-0001-0001-000000000002",
-      "text": "Which technique helps prevent overfitting in neural networks?",
-      "choices": ["Dropout", "Gradient Descent", "Backpropagation", "Forward Pass"],
-      "correctIndex": 0
-    },
-    {
-      "id": "A2000001-0001-0001-0001-000000000003",
-      "text": "What is the purpose of an activation function?",
-      "choices": ["To store weights", "To introduce non-linearity", "To reduce parameters", "To normalize data"],
-      "correctIndex": 1
-    }
-  ]
+    "topic": "AI",
+    "questions": [
+        {
+            "id": "5423907d-8af2-49c7-857e-449221e42206",
+            "type": "mcq",
+            "text": "Sample MCQ 0 about AI?",
+            "choices": [
+                "Option A for AI",
+                "Option B for AI",
+                "Option C for AI",
+                "Option D for AI"
+            ],
+            "correctIndex": 0
+        },
+        {
+            "id": "7e308621-f1f0-4131-ab57-cdf94f2449ee",
+            "type": "mcq",
+            "text": "Sample MCQ 1 about AI?",
+            "choices": [
+                "Option A for AI",
+                "Option B for AI",
+                "Option C for AI",
+                "Option D for AI"
+            ],
+            "correctIndex": 1
+        },
+        {
+            "id": "8168a176-ab6c-4b9a-a38a-76f6deee91e1",
+            "type": "mcq",
+            "text": "Sample MCQ 2 about AI?",
+            "choices": [
+                "Option A for AI",
+                "Option B for AI",
+                "Option C for AI",
+                "Option D for AI"
+            ],
+            "correctIndex": 2
+        },
+        {
+            "id": "291d52c7-e346-4a58-8aec-c86cebb49739",
+            "type": "mcq",
+            "text": "Sample MCQ 3 about AI?",
+            "choices": [
+                "Option A for AI",
+                "Option B for AI",
+                "Option C for AI",
+                "Option D for AI"
+            ],
+            "correctIndex": 3
+        },
+        {
+            "id": "67965396-d4dd-4c5e-bc5d-b79de3afcb78",
+            "type": "mcq",
+            "text": "Sample MCQ 4 about AI?",
+            "choices": [
+                "Option A for AI",
+                "Option B for AI",
+                "Option C for AI",
+                "Option D for AI"
+            ],
+            "correctIndex": 0
+        },
+        {
+            "id": "81bbe5fd-3d23-485a-af89-b7cbb99f1823",
+            "type": "mcq",
+            "text": "Sample MCQ 5 about AI?",
+            "choices": [
+                "Option A for AI",
+                "Option B for AI",
+                "Option C for AI",
+                "Option D for AI"
+            ],
+            "correctIndex": 1
+        },
+        {
+            "id": "7b3c9ba5-d06c-4a57-b077-89e4a0789e9c",
+            "type": "code_arrangement",
+            "text": "Complete the code for AI problem 0:",
+            "codeTemplate": [
+                "func example() {",
+                "    _____",
+                "    print(\"middle\")",
+                "    _____",
+                "    _____",
+                "}"
+            ],
+            "options": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b",
+                "let d = 4"
+            ],
+            "correctAnswer": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b"
+            ]
+        },
+        {
+            "id": "5b6c9d67-4f3d-4779-a00d-0e9783df7296",
+            "type": "code_arrangement",
+            "text": "Complete the code for AI problem 1:",
+            "codeTemplate": [
+                "func example() {",
+                "    _____",
+                "    print(\"middle\")",
+                "    _____",
+                "    _____",
+                "}"
+            ],
+            "options": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b",
+                "let d = 4"
+            ],
+            "correctAnswer": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b"
+            ]
+        },
+        {
+            "id": "9829c9c6-84e2-4d63-8f34-e5738401b9aa",
+            "type": "code_arrangement",
+            "text": "Complete the code for AI problem 2:",
+            "codeTemplate": [
+                "func example() {",
+                "    _____",
+                "    print(\"middle\")",
+                "    _____",
+                "    _____",
+                "}"
+            ],
+            "options": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b",
+                "let d = 4"
+            ],
+            "correctAnswer": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b"
+            ]
+        },
+        {
+            "id": "924dbbcf-6c0c-4830-8482-2143154846d6",
+            "type": "code_arrangement",
+            "text": "Complete the code for AI problem 3:",
+            "codeTemplate": [
+                "func example() {",
+                "    _____",
+                "    print(\"middle\")",
+                "    _____",
+                "    _____",
+                "}"
+            ],
+            "options": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b",
+                "let d = 4"
+            ],
+            "correctAnswer": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b"
+            ]
+        }
+    ]
 }

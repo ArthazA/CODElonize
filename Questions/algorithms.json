@@ -1,23 +1,173 @@
 {
-  "topic": "algorithms",
-  "questions": [
-    {
-      "id": "A1000001-0001-0001-0001-000000000001",
-      "text": "What is the time complexity of binary search?",
-      "choices": ["O(n)", "O(log n)", "O(n log n)", "O(1)"],
-      "correctIndex": 1
-    },
-    {
-      "id": "A1000001-0001-0001-0001-000000000002",
-      "text": "Which sorting algorithm has the best average-case time complexity?",
-      "choices": ["Bubble Sort", "Selection Sort", "Merge Sort", "Insertion Sort"],
-      "correctIndex": 2
-    },
-    {
-      "id": "A1000001-0001-0001-0001-000000000003",
-      "text": "What data structure does BFS use?",
-      "choices": ["Stack", "Queue", "Heap", "Tree"],
-      "correctIndex": 1
-    }
-  ]
+    "topic": "Algorithms",
+    "questions": [
+        {
+            "id": "d294f987-d087-46e4-bc5d-2fe7bafd0aed",
+            "type": "mcq",
+            "text": "Sample MCQ 0 about Algorithms?",
+            "choices": [
+                "Option A for Algorithms",
+                "Option B for Algorithms",
+                "Option C for Algorithms",
+                "Option D for Algorithms"
+            ],
+            "correctIndex": 0
+        },
+        {
+            "id": "41719103-50f7-41d9-a79e-8cfcf8146bd8",
+            "type": "mcq",
+            "text": "Sample MCQ 1 about Algorithms?",
+            "choices": [
+                "Option A for Algorithms",
+                "Option B for Algorithms",
+                "Option C for Algorithms",
+                "Option D for Algorithms"
+            ],
+            "correctIndex": 1
+        },
+        {
+            "id": "4dc9ec27-b3b9-4cbc-9eb0-b05eb8543c1e",
+            "type": "mcq",
+            "text": "Sample MCQ 2 about Algorithms?",
+            "choices": [
+                "Option A for Algorithms",
+                "Option B for Algorithms",
+                "Option C for Algorithms",
+                "Option D for Algorithms"
+            ],
+            "correctIndex": 2
+        },
+        {
+            "id": "df40ef10-8e7a-4279-9f01-e202f3e48c7c",
+            "type": "mcq",
+            "text": "Sample MCQ 3 about Algorithms?",
+            "choices": [
+                "Option A for Algorithms",
+                "Option B for Algorithms",
+                "Option C for Algorithms",
+                "Option D for Algorithms"
+            ],
+            "correctIndex": 3
+        },
+        {
+            "id": "1704034b-6808-42b6-97e9-2a41d0b1a6c0",
+            "type": "mcq",
+            "text": "Sample MCQ 4 about Algorithms?",
+            "choices": [
+                "Option A for Algorithms",
+                "Option B for Algorithms",
+                "Option C for Algorithms",
+                "Option D for Algorithms"
+            ],
+            "correctIndex": 0
+        },
+        {
+            "id": "5fd47a3e-203b-4830-94a1-a931a3cbea89",
+            "type": "mcq",
+            "text": "Sample MCQ 5 about Algorithms?",
+            "choices": [
+                "Option A for Algorithms",
+                "Option B for Algorithms",
+                "Option C for Algorithms",
+                "Option D for Algorithms"
+            ],
+            "correctIndex": 1
+        },
+        {
+            "id": "7bc601da-36bf-402a-a6e7-a9234215d8c5",
+            "type": "code_arrangement",
+            "text": "Complete the code for Algorithms problem 0:",
+            "codeTemplate": [
+                "func example() {",
+                "    _____",
+                "    print(\"middle\")",
+                "    _____",
+                "    _____",
+                "}"
+            ],
+            "options": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b",
+                "let d = 4"
+            ],
+            "correctAnswer": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b"
+            ]
+        },
+        {
+            "id": "13524474-83f0-484a-bf18-c43b95adb8b8",
+            "type": "code_arrangement",
+            "text": "Complete the code for Algorithms problem 1:",
+            "codeTemplate": [
+                "func example() {",
+                "    _____",
+                "    print(\"middle\")",
+                "    _____",
+                "    _____",
+                "}"
+            ],
+            "options": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b",
+                "let d = 4"
+            ],
+            "correctAnswer": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b"
+            ]
+        },
+        {
+            "id": "defc73e4-4acd-478a-a64f-7e362adb9a37",
+            "type": "code_arrangement",
+            "text": "Complete the code for Algorithms problem 2:",
+            "codeTemplate": [
+                "func example() {",
+                "    _____",
+                "    print(\"middle\")",
+                "    _____",
+                "    _____",
+                "}"
+            ],
+            "options": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b",
+                "let d = 4"
+            ],
+            "correctAnswer": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b"
+            ]
+        },
+        {
+            "id": "4a944548-04fc-4ddc-82d1-26aa1478e020",
+            "type": "code_arrangement",
+            "text": "Complete the code for Algorithms problem 3:",
+            "codeTemplate": [
+                "func example() {",
+                "    _____",
+                "    print(\"middle\")",
+                "    _____",
+                "    _____",
+                "}"
+            ],
+            "options": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b",
+                "let d = 4"
+            ],
+            "correctAnswer": [
+                "let a = 1",
+                "let b = 2",
+                "let c = a + b"
+            ]
+        }
+    ]
 }

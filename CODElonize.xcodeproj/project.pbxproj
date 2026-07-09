@@ -14,7 +14,7 @@
 		2ECB910D2FFC94F100919EFB /* Exceptions for "CODElonize" folder in "CODElonize" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				CustomInfo.plist,
 			);
 			target = AF4FB08A2FF605EB00FD31B4 /* CODElonize */;
 		};
@@ -297,7 +297,7 @@
 				DEVELOPMENT_TEAM = RL4D4674QY;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = CODElonize/Info.plist;
+				INFOPLIST_FILE = CODElonize/CustomInfo.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "show AR";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "CODElonize uses the local network to discover nearby players";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -333,7 +333,7 @@
 				DEVELOPMENT_TEAM = RL4D4674QY;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = CODElonize/Info.plist;
+				INFOPLIST_FILE = CODElonize/CustomInfo.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "show AR";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "CODElonize uses the local network to discover nearby players";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

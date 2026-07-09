@@ -51,6 +51,42 @@ enum Randomizer {
         return selected
     }
     
+    /// Selects a mixed set of MCQ and Code Arrangement questions deterministically.
+    ///
+    /// Guarantees the returned array is ordered: MCQ questions first, then Code Arrangement.
+    /// Both subsets are independently shuffled using the same seed for determinism.
+    ///
+    /// - Parameters:
+    ///   - mcqPool: All available MCQ questions for the topic.
+    ///   - arrangementPool: All available Code Arrangement questions for the topic.
+    ///   - mcqCount: Number of MCQ questions to select (default: `GameConstants.mcqPerAttempt`).
+    ///   - arrangementCount: Number of arrangement questions (default: `GameConstants.arrangementPerAttempt`).
+    ///   - seed: A shared seed value to ensure deterministic results across devices.
+    /// - Returns: An ordered array of MCQ questions followed by Code Arrangement questions.
+    static func selectMixedQuestions(
+        mcqPool: [Question],
+        arrangementPool: [Question],
+        mcqCount: Int = GameConstants.mcqPerAttempt,
+        arrangementCount: Int = GameConstants.arrangementPerAttempt,
+        seed: UInt64
+    ) -> [Question] {
+        // Use the same seed but different derived seeds for each pool
+        // to ensure independence while maintaining determinism
+        let mcqSeed = seed
+        let arrangementSeed = seed &+ 1  // Overflow-safe increment for a distinct but derived seed
+        
+        let selectedMCQ = selectQuestions(from: mcqPool, count: mcqCount, seed: mcqSeed)
+        let selectedArrangement = selectQuestions(from: arrangementPool, count: arrangementCount, seed: arrangementSeed)
+        
+        let mixed = selectedMCQ + selectedArrangement
+        
+        AppLogger.quiz.info(
+            "Mixed selection: \(selectedMCQ.count) MCQ + \(selectedArrangement.count) arrangement = \(mixed.count) total (seed: \(seed))"
+        )
+        
+        return mixed
+    }
+    
     /// Generates a random seed value.
     ///
     /// The host calls this when starting a quiz session, then shares the seed

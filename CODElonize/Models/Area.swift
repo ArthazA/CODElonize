@@ -7,19 +7,21 @@
 
 import Foundation
 
-/// Represents one of the six conquerable areas on the island.
+/// Represents one of the seven conquerable areas on the island.
 ///
 /// Each area has a learning topic, tracks ownership via best completion time,
 /// and can be temporarily locked (e.g., by Tsunami power-up).
+/// The 7th area (index 6) starts Armageddon-locked and is only unlocked
+/// during the Armageddon Phase (final 60 seconds).
 struct Area: Identifiable, Equatable {
     
-    /// The area index (0–5), also serves as the unique identifier.
+    /// The area index (0–6), also serves as the unique identifier.
     let index: Int
     
     /// Convenience identifier for `Identifiable` conformance.
     var id: Int { index }
     
-    /// The learning topic for this area (e.g. "Algorithms", "AI").
+    /// The learning topic for this area (e.g. "Algorithms", "SwiftUI").
     let topic: String
     
     /// The player ID of the current owner, or nil if unconquered.
@@ -33,6 +35,10 @@ struct Area: Identifiable, Equatable {
     
     /// Remaining lock time in seconds. Counts down to zero.
     var lockRemainingTime: TimeInterval = 0
+    
+    /// Whether this area is Armageddon-locked (only the 7th area).
+    /// This lock is permanent until the Armageddon Phase unlocks it.
+    var isArmageddonLocked: Bool = false
     
     /// The shared seed for deterministic question selection.
     /// Generated when the match starts and regenerated on Earthquake reset.
@@ -50,19 +56,21 @@ struct Area: Identifiable, Equatable {
     }
     
     /// Whether this area is available for a new attempt
-    /// (not locked and match is active).
+    /// (not locked by Tsunami and not Armageddon-locked).
     var isAvailable: Bool {
-        !isLocked
+        !isLocked && !isArmageddonLocked
     }
     
     // MARK: - Factory
     
-    /// Creates the initial set of 6 areas with topics from `GameConstants`.
+    /// Creates the initial set of 7 areas with topics from `GameConstants`.
+    /// The last area (index 6) is Armageddon-locked.
     static func createAllAreas() -> [Area] {
         (0..<GameConstants.areaCount).map { index in
             Area(
                 index: index,
                 topic: GameConstants.areaTopics[index],
+                isArmageddonLocked: index == GameConstants.armageddonAreaIndex,
                 questionSeed: Randomizer.generateSeed()
             )
         }
