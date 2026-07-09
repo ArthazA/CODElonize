@@ -2,172 +2,88 @@
     "topic": "Data Structures",
     "questions": [
         {
-            "id": "d2998dd6-9410-4c0f-acf5-dffe111b5d85",
+            "id": "9fded884-9aef-4ff7-afe8-7576f2d5b59c",
             "type": "mcq",
-            "text": "Sample MCQ 0 about Data Structures?",
+            "text": "Which data structure operates on a Last-In-First-Out (LIFO) principle?",
             "choices": [
-                "Option A for Data Structures",
-                "Option B for Data Structures",
-                "Option C for Data Structures",
-                "Option D for Data Structures"
+                "Stack",
+                "Queue",
+                "Linked List",
+                "Tree"
             ],
             "correctIndex": 0
         },
         {
-            "id": "b3028c4b-14b0-4b70-8fda-c6decd136460",
+            "id": "4cfe3bdb-d5c6-4c99-8607-d402644a2de6",
             "type": "mcq",
-            "text": "Sample MCQ 1 about Data Structures?",
+            "text": "What is the primary advantage of a Hash Table?",
             "choices": [
-                "Option A for Data Structures",
-                "Option B for Data Structures",
-                "Option C for Data Structures",
-                "Option D for Data Structures"
+                "O(1) average time complexity for lookups",
+                "Uses less memory than an array",
+                "Easy to find the maximum element",
+                "Elements are always sorted"
+            ],
+            "correctIndex": 0
+        },
+        {
+            "id": "e180f9f1-1889-4a2d-91f6-7270fc9844be",
+            "type": "mcq",
+            "text": "Which data structure is best for implementing a priority queue?",
+            "choices": [
+                "Array",
+                "Heap",
+                "Linked List",
+                "Stack"
             ],
             "correctIndex": 1
         },
         {
-            "id": "cc057417-b2f0-452a-ad43-38047dbce2b7",
+            "id": "ffe43783-54f8-4131-8ddc-9d6b7c99384a",
             "type": "mcq",
-            "text": "Sample MCQ 2 about Data Structures?",
+            "text": "In a singly linked list, each node contains data and a reference to what?",
             "choices": [
-                "Option A for Data Structures",
-                "Option B for Data Structures",
-                "Option C for Data Structures",
-                "Option D for Data Structures"
+                "The next node",
+                "The previous node",
+                "Both next and previous nodes",
+                "The head of the list"
             ],
-            "correctIndex": 2
+            "correctIndex": 0
         },
         {
-            "id": "575f3237-5ed0-410c-825f-5f8f9caec11b",
+            "id": "3184f0e3-2602-496d-a8ff-deea438e4728",
             "type": "mcq",
-            "text": "Sample MCQ 3 about Data Structures?",
+            "text": "A Graph where edges have no direction is called?",
             "choices": [
-                "Option A for Data Structures",
-                "Option B for Data Structures",
-                "Option C for Data Structures",
-                "Option D for Data Structures"
+                "Acyclic Graph",
+                "Weighted Graph",
+                "Directed Graph",
+                "Undirected Graph"
             ],
             "correctIndex": 3
         },
         {
-            "id": "463244ad-b9eb-4358-bed4-415dd1c6bf0a",
+            "id": "80b5fa6a-c473-4606-b3c8-42b6d847c9ff",
             "type": "mcq",
-            "text": "Sample MCQ 4 about Data Structures?",
+            "text": "Which data structure is typically used for Breadth-First Search (BFS)?",
             "choices": [
-                "Option A for Data Structures",
-                "Option B for Data Structures",
-                "Option C for Data Structures",
-                "Option D for Data Structures"
+                "Priority Queue",
+                "Stack",
+                "Queue",
+                "Hash Table"
+            ],
+            "correctIndex": 2
+        },
+        {
+            "id": "6146c33e-0f1e-4d4b-bd31-99efd881cefe",
+            "type": "mcq",
+            "text": "What is a leaf node in a tree?",
+            "choices": [
+                "A node with no children",
+                "The topmost node",
+                "The root node",
+                "A node with two children"
             ],
             "correctIndex": 0
-        },
-        {
-            "id": "f569ae7a-dbc5-41b2-9bcd-415d63c9c2fa",
-            "type": "mcq",
-            "text": "Sample MCQ 5 about Data Structures?",
-            "choices": [
-                "Option A for Data Structures",
-                "Option B for Data Structures",
-                "Option C for Data Structures",
-                "Option D for Data Structures"
-            ],
-            "correctIndex": 1
-        },
-        {
-            "id": "1ae41be9-b7c5-4eab-b47f-11dc63df1ecb",
-            "type": "code_arrangement",
-            "text": "Complete the code for Data Structures problem 0:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
-            ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
-        },
-        {
-            "id": "4fed01fd-4f1a-47a1-9c51-ccfad179e2f7",
-            "type": "code_arrangement",
-            "text": "Complete the code for Data Structures problem 1:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
-            ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
-        },
-        {
-            "id": "48dfc6f6-253a-4a56-af05-3667b9566424",
-            "type": "code_arrangement",
-            "text": "Complete the code for Data Structures problem 2:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
-            ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
-        },
-        {
-            "id": "d9ff42bf-8ef5-4a8a-bc3f-0ff14333d483",
-            "type": "code_arrangement",
-            "text": "Complete the code for Data Structures problem 3:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
-            ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
         }
     ]
 }

@@ -63,9 +63,13 @@ class SpawnManager: ObservableObject {
     }
     
     /// Whether the island can accept more power-up spawns.
+//    var canSpawn: Bool {
+//        activePowerUps.count < GameConstants.maxActivePowerUps
+//    }
     var canSpawn: Bool {
-        activePowerUps.count < GameConstants.maxActivePowerUps
+        (activePowerUps.count + activeEmberMoths.count) < GameConstants.maxActivePowerUps
     }
+
     
     // MARK: - Spawn Control
     
@@ -357,8 +361,15 @@ class SpawnManager: ObservableObject {
     /// Attempts to spawn a random power-up, then schedules the next one.
     private func performSpawn() {
         if canSpawn {
-            let type = PowerUpType.allCases.randomElement()!
-            spawnPowerUp(ofType: type)
+            // Give it a 25% chance to spawn an Ember Moth instead of a Power-Up
+            let shouldSpawnMoth = Int.random(in: 1...4) == 1
+            
+            if shouldSpawnMoth {
+                spawnEmberMoth()
+            } else {
+                let type = PowerUpType.allCases.randomElement()!
+                spawnPowerUp(ofType: type)
+            }
         }
         
         // Schedule next spawn regardless (will skip if at capacity)
@@ -366,6 +377,7 @@ class SpawnManager: ObservableObject {
             scheduleNextSpawn()
         }
     }
+
     
     /// Creates a new spawned power-up at an available slot.
     private func spawnPowerUp(ofType type: PowerUpType) {

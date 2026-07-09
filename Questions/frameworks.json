@@ -2,172 +2,88 @@
     "topic": "Frameworks",
     "questions": [
         {
-            "id": "63356e8a-8983-4c2b-9902-0625d98b10ae",
+            "id": "4fea6554-04f6-4d78-84c2-34319a94b1fb",
             "type": "mcq",
-            "text": "Sample MCQ 0 about Frameworks?",
+            "text": "What is the primary purpose of a software framework?",
             "choices": [
-                "Option A for Frameworks",
-                "Option B for Frameworks",
-                "Option C for Frameworks",
-                "Option D for Frameworks"
-            ],
-            "correctIndex": 0
-        },
-        {
-            "id": "e2c02d7b-131a-42a6-9366-416f4e1e21c5",
-            "type": "mcq",
-            "text": "Sample MCQ 1 about Frameworks?",
-            "choices": [
-                "Option A for Frameworks",
-                "Option B for Frameworks",
-                "Option C for Frameworks",
-                "Option D for Frameworks"
-            ],
-            "correctIndex": 1
-        },
-        {
-            "id": "db9bbf86-1f95-47a5-946d-793e34f5ce67",
-            "type": "mcq",
-            "text": "Sample MCQ 2 about Frameworks?",
-            "choices": [
-                "Option A for Frameworks",
-                "Option B for Frameworks",
-                "Option C for Frameworks",
-                "Option D for Frameworks"
+                "To compile source code into machine code",
+                "To replace programming languages",
+                "To provide a foundation and standard way to build and deploy applications",
+                "To write code for the developer automatically"
             ],
             "correctIndex": 2
         },
         {
-            "id": "23617943-d052-4a63-9647-c1f291cfcac2",
+            "id": "c355688e-6eb8-471c-b4e0-d5bdaf83e53a",
             "type": "mcq",
-            "text": "Sample MCQ 3 about Frameworks?",
+            "text": "Which of the following is a popular front-end JavaScript framework/library?",
             "choices": [
-                "Option A for Frameworks",
-                "Option B for Frameworks",
-                "Option C for Frameworks",
-                "Option D for Frameworks"
+                "Laravel",
+                "Django",
+                "React",
+                "Spring"
             ],
-            "correctIndex": 3
+            "correctIndex": 2
         },
         {
-            "id": "daa13510-0bab-4861-bb8b-4b43ebfcebc6",
+            "id": "b8bdd7d9-5d4f-4fd6-ac2e-d138f0df021f",
             "type": "mcq",
-            "text": "Sample MCQ 4 about Frameworks?",
+            "text": "What architectural pattern is commonly used by UI frameworks like Spring MVC and Ruby on Rails?",
             "choices": [
-                "Option A for Frameworks",
-                "Option B for Frameworks",
-                "Option C for Frameworks",
-                "Option D for Frameworks"
+                "Microservices",
+                "Singleton",
+                "Model-View-Controller (MVC)",
+                "Event-Driven"
+            ],
+            "correctIndex": 2
+        },
+        {
+            "id": "fac6be8f-7233-4da7-86a5-e3b481aea784",
+            "type": "mcq",
+            "text": "Which framework is primarily used for building iOS applications?",
+            "choices": [
+                "SwiftUI / UIKit",
+                "React Native",
+                "Flutter",
+                "Xamarin"
             ],
             "correctIndex": 0
         },
         {
-            "id": "20d0cb2e-0ea8-4717-9d0b-603b5a2f64a7",
+            "id": "a036dc1a-3a2d-4e7b-8a9f-d1bd3467abd7",
             "type": "mcq",
-            "text": "Sample MCQ 5 about Frameworks?",
+            "text": "In the context of frameworks, what does 'Inversion of Control' (IoC) mean?",
             "choices": [
-                "Option A for Frameworks",
-                "Option B for Frameworks",
-                "Option C for Frameworks",
-                "Option D for Frameworks"
+                "The database controls the application flow",
+                "The user has full control over the application state",
+                "The framework calls your custom code, rather than your code calling the framework",
+                "Developers write code without using libraries"
+            ],
+            "correctIndex": 2
+        },
+        {
+            "id": "274c8db0-0f9f-4a15-a954-4fc65d96f95d",
+            "type": "mcq",
+            "text": "Which Python framework is known for its 'batteries-included' approach to web development?",
+            "choices": [
+                "FastAPI",
+                "Django",
+                "Tornado",
+                "Flask"
             ],
             "correctIndex": 1
         },
         {
-            "id": "e91d1bf5-434d-4678-b350-bf47f9555211",
-            "type": "code_arrangement",
-            "text": "Complete the code for Frameworks problem 0:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
+            "id": "18154d9e-8d79-4aac-b5f3-ab53d805bfad",
+            "type": "mcq",
+            "text": "What is React Native primarily used for?",
+            "choices": [
+                "Managing state in web applications",
+                "Building native iOS apps using Swift",
+                "Creating backend REST APIs",
+                "Building cross-platform mobile apps using JavaScript"
             ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
-        },
-        {
-            "id": "3e56d71a-7a35-43c8-ab0a-92ac0ade368a",
-            "type": "code_arrangement",
-            "text": "Complete the code for Frameworks problem 1:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
-            ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
-        },
-        {
-            "id": "e86e7f82-630d-41de-8c8a-3500282f80d0",
-            "type": "code_arrangement",
-            "text": "Complete the code for Frameworks problem 2:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
-            ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
-        },
-        {
-            "id": "64d88d9d-6670-457e-86fd-1a531a676380",
-            "type": "code_arrangement",
-            "text": "Complete the code for Frameworks problem 3:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
-            ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
+            "correctIndex": 3
         }
     ]
 }
