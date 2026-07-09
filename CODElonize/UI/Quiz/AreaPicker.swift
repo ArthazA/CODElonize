@@ -1,44 +1,37 @@
 import SwiftUI
 
-/// Area selection overlay displayed when a player activates a power-up.
-///
-/// Shows all 6 areas as selectable buttons. Some areas may be disabled
-/// depending on the power-up type (e.g., Pocket Watch disables unconquered areas).
-/// The player taps an area to confirm activation, or cancels.
 struct AreaPicker: View {
     @EnvironmentObject var matchManager: MatchManager
-    
-    /// The power-up type being activated (determines which areas are valid targets).
+
     let powerUpType: PowerUpType
-    
+
     var body: some View {
         ZStack {
-            // Semi-transparent backdrop
+
             Color.black.opacity(0.5)
                 .edgesIgnoringSafeArea(.all)
                 .onTapGesture {
                     matchManager.cancelAreaPicker()
                 }
-            
+
             VStack(spacing: 20) {
-                // Header
+
                 VStack(spacing: 8) {
                     Image(systemName: powerUpType.iconName)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 40, height: 40)
                         .foregroundColor(iconColor)
-                    
+
                     Text("Use \(powerUpType.displayName)")
                         .font(.system(size: 22, weight: .heavy, design: .rounded))
                         .foregroundColor(.white)
-                    
+
                     Text("Select a target area")
                         .font(.system(size: 14, weight: .semibold, design: .rounded))
                         .foregroundColor(.white.opacity(0.7))
                 }
-                
-                // Area grid (2×3)
+
                 VStack(spacing: 12) {
                     HStack(spacing: 12) {
                         areaButton(index: 0)
@@ -53,8 +46,7 @@ struct AreaPicker: View {
                         areaButton(index: 5)
                     }
                 }
-                
-                // Cancel button
+
                 Button {
                     matchManager.cancelAreaPicker()
                 } label: {
@@ -75,14 +67,11 @@ struct AreaPicker: View {
             .shadow(color: .black.opacity(0.4), radius: 20, y: 10)
         }
     }
-    
-    // MARK: - Area Button
-    
-    /// A button representing one area as a potential target.
+
     private func areaButton(index: Int) -> some View {
         let isValid = isValidTarget(index: index)
         let area = matchManager.gameState.areas[safe: index]
-        
+
         return Button {
             matchManager.handlePowerUpActivation(targetArea: index)
         } label: {
@@ -90,8 +79,7 @@ struct AreaPicker: View {
                 Text(GameConstants.areaTopics[safe: index] ?? "Area \(index)")
                     .font(.system(size: 14, weight: .heavy, design: .rounded))
                     .foregroundColor(isValid ? .white : .white.opacity(0.3))
-                
-                // Status line
+
                 HStack(spacing: 4) {
                     if let area, area.isLocked {
                         Image(systemName: "lock.fill")
@@ -122,10 +110,7 @@ struct AreaPicker: View {
         }
         .disabled(!isValid)
     }
-    
-    // MARK: - Helpers
-    
-    /// Whether the given area is a valid target for this power-up type.
+
     private func isValidTarget(index: Int) -> Bool {
         let reason = PowerUpManager.validateActivation(
             type: powerUpType,
@@ -135,8 +120,7 @@ struct AreaPicker: View {
         )
         return reason == nil
     }
-    
-    /// Color associated with the current power-up type.
+
     private var iconColor: Color {
         switch powerUpType {
         case .earthquake: return .orange
@@ -146,10 +130,8 @@ struct AreaPicker: View {
     }
 }
 
-// MARK: - Safe Array Access
-
 extension Array {
-    /// Safe subscript that returns nil for out-of-bounds indices.
+
     subscript(safe index: Index) -> Element? {
         indices.contains(index) ? self[index] : nil
     }

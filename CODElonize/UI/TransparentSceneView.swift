@@ -1,9 +1,3 @@
-//
-//  TransparentSceneView.swift.swift
-//  CODElonize
-//
-//  Created by Nadila Rizky Amelia on 06/07/26.
-//
 
 import SwiftUI
 import SceneKit

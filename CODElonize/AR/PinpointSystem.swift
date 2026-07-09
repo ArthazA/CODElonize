@@ -9,27 +9,35 @@ import RealityKit
 import UIKit
 import os
 
-/// Manages the 6 virtual pinpoint markers placed on the island.
-/// Each pinpoint represents a conquerable area with a specific learning topic.
-/// Players tap a pinpoint to open the quiz for that area.
 class PinpointSystem {
     
-    /// The pinpoint entities indexed by area (0..<6).
     private(set) var pinpoints: [Entity] = []
     
     /// Color palette for each area's pinpoint marker.
+    ///
+    /// FIX (README §5.1): this previously only had 6 entries while
+    /// `GameConstants.areaCount == 7`, which caused `areaColors[6]` to index
+    /// out of bounds and crash as soon as area 6 (Frameworks / Armageddon area)
+    /// was spawned. A 7th color has been added below.
+    ///
+    /// FIX (README §5.7): comments now reflect the canonical 7-topic list
+    /// (`SwiftUI, Algorithms, Data Structures, Networking, Databases, OOP,
+    /// Frameworks`, matching `GameConstants.areaTopics`) instead of the stale
+    /// 6-topic naming (`Algorithms, AI, Cybersecurity, OOP, Computer Networks,
+    /// Database`) that no longer corresponds to anything in the project.
     private let areaColors: [UIColor] = [
-        .systemRed,       // Area 0 — Algorithms
-        .systemPurple,    // Area 1 — AI
-        .systemGreen,     // Area 2 — Cybersecurity
-        .systemBlue,      // Area 3 — OOP
-        .systemOrange,    // Area 4 — Computer Networks
-        .systemYellow,    // Area 5 — Database
+        .systemRed,       // Area 0 — SwiftUI (Mountain)
+        .systemPurple,    // Area 1 — Algorithms (Forest East)
+        .systemGreen,     // Area 2 — Data Structures (Forest West)
+        .systemBlue,      // Area 3 — Networking (River)
+        .systemOrange,    // Area 4 — Databases (Village)
+        .systemYellow,    // Area 5 — OOP (Center)
+        .systemTeal,      // Area 6 — Frameworks (Armageddon-locked)
     ]
     
     // MARK: - Spawning
     
-    /// Creates and attaches 6 pinpoint entities to the island anchor.
+    /// Creates and attaches pinpoint entities to the island anchor.
     /// Each pinpoint is a small colored sphere positioned above its area.
     /// - Parameter islandAnchor: The `AnchorEntity` holding the island model.
     func spawnPinpoints(on islandAnchor: AnchorEntity) {
@@ -58,7 +66,7 @@ class PinpointSystem {
     
     /// Creates a single pinpoint entity consisting of a sphere marker and a thin shaft.
     /// - Parameters:
-    ///   - areaIndex: The index of the area (0-5).
+    ///   - areaIndex: The index of the area (0-6).
     ///   - position: The 3D position relative to the island anchor.
     ///   - color: The color of the pinpoint marker.
     /// - Returns: A parent `Entity` containing the pinpoint visuals.
@@ -98,7 +106,7 @@ class PinpointSystem {
     
     /// Determines if the given entity (or any of its ancestors) is a pinpoint.
     /// - Parameter entity: The entity returned from a hit test.
-    /// - Returns: The area index (0-5) if the entity belongs to a pinpoint, nil otherwise.
+    /// - Returns: The area index if the entity belongs to a pinpoint, nil otherwise.
     func areaIndex(for entity: Entity) -> Int? {
         return entity.findPinpointAreaIndex()
     }

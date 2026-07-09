@@ -185,10 +185,13 @@ final class ClientManager {
         send(message)
     }
     
+    /// Receives the host's match-start payload (shared start time + question
+    /// seeds + final roster) and forwards it to `LobbyManager` so the client
+    /// can start its own `MatchManager` in sync with the host (README §6.3).
     private func handleStartGame(
         _ message: StartGameMessage
     ) {
         print("Game Started")
-        lobbyManager?.notifyGameStarted()
+        lobbyManager?.applyMatchStart(message)
     }
 }

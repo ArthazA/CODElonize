@@ -69,12 +69,20 @@ struct SpawnedPowerUp: Identifiable, Equatable {
     /// When this power-up was spawned (for display/cleanup purposes).
     let spawnTime: Date
     
+    /// The last time this specific instance was interacted with (tapped,
+    /// claim attempted, or newly (re)spawned). `SpawnManager` compares this
+    /// against `GameConstants.powerUpIdleRelocateTimeout` on a per-entity
+    /// basis to decide when *this instance* — and only this instance —
+    /// should relocate (README §5.4).
+    var lastInteractionTime: Date
+    
     /// Creates a new spawned power-up.
     init(type: PowerUpType, spawnSlot: Int) {
         self.id = UUID()
         self.type = type
         self.spawnSlot = spawnSlot
         self.spawnTime = Date()
+        self.lastInteractionTime = self.spawnTime
     }
 }
 
@@ -104,6 +112,11 @@ struct SpawnedEmberMoth: Identifiable, Equatable {
     /// When this Ember Moth was spawned.
     let spawnTime: Date
     
+    /// The last time this specific instance was interacted with. See
+    /// `SpawnedPowerUp.lastInteractionTime` for the per-entity relocation
+    /// rationale (README §5.4).
+    var lastInteractionTime: Date
+    
     /// SF Symbol icon name for the HUD display.
     static let iconName = "flame.fill"
     
@@ -115,5 +128,6 @@ struct SpawnedEmberMoth: Identifiable, Equatable {
         self.id = UUID()
         self.spawnSlot = spawnSlot
         self.spawnTime = Date()
+        self.lastInteractionTime = self.spawnTime
     }
 }

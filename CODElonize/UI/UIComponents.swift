@@ -2,19 +2,18 @@ import SwiftUI
 
 extension Color {
     static let themePaper = Color(hex: "F3EACE")
-    
-    // Quick hex initializer
+
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         var int: UInt64 = 0
         Scanner(string: hex).scanHexInt64(&int)
         let a, r, g, b: UInt64
         switch hex.count {
-        case 3: // RGB (12-bit)
+        case 3: 
             (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-        case 6: // RGB (24-bit)
+        case 6: 
             (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
-        case 8: // ARGB (32-bit)
+        case 8: 
             (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
         default:
             (a, r, g, b) = (1, 1, 1, 0)
@@ -32,7 +31,7 @@ extension Color {
 struct PrimaryButton: View {
     let title: String
     let action: () -> Void
-    
+
     var body: some View {
         Button(action: action) {
             Text(title)
@@ -49,7 +48,7 @@ struct PrimaryButton: View {
 struct SecondaryButton: View {
     let title: String
     let action: () -> Void
-    
+
     var body: some View {
         Button(action: action) {
             Text(title)
@@ -87,7 +86,7 @@ struct ThirdButton: View {
 
 struct RoomCodeBox: View {
     let character: String
-    
+
     var body: some View {
         Text(character)
             .font(.system(size: 32, weight: .heavy, design: .rounded))
@@ -109,7 +108,7 @@ struct PlayerAvatar: View {
     let isReady: Bool
     let isHost: Bool
     let isSelf: Bool
-    
+
     var body: some View {
         VStack(spacing: 8) {
             ZStack(alignment: .bottomTrailing) {
@@ -141,11 +140,11 @@ struct PlayerAvatar: View {
                         .offset(x: 4, y: 4)
                 }
             }
-            
+
             Text(isHost ? "\(name) (Host)" : name)
                 .font(.system(size: 16, weight: .bold, design: .rounded))
                 .foregroundColor(Color.themeDarkTeal)
-            
+
             Text(isReady ? "Ready" : "Waiting")
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
                 .foregroundColor(Color.themeTeal)

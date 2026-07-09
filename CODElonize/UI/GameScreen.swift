@@ -40,13 +40,35 @@ struct GameScreen: View {
             }
             
             if !matchManager.gameState.isMatchActive && !matchManager.gameState.isMatchFinished {
-                matchManager.startSinglePlayerMatch(playerName: appState.playerName.isEmpty ? "Player" : appState.playerName)
+                startMatchFromAvailableData()
             }
         }
         .onChange(of: matchManager.gameState.isMatchFinished) { _, isFinished in
             if isFinished {
                 appState.navigate(to: .results)
             }
+        }
+    }
+    
+    /// Starts the match using real multiplayer data when available
+    /// (`LobbyManager.pendingMatchStart`, populated via the host's broadcast
+    /// `StartGameMessage` — README §6.3), otherwise falls back to a local
+    /// single-player match for dev/testing (README §5.8/§8.5 — this fallback
+    /// is intentionally kept, not removed).
+    private func startMatchFromAvailableData() {
+        if let matchStart = appState.lobbyManager.pendingMatchStart,
+           let lobby = appState.lobbyManager.lobby {
+            matchManager.startMatch(
+                players: lobby.players,
+                localPlayerID: appState.playerID,
+                isHost: appState.isHost,
+                startTime: matchStart.startTime,
+                questionSeeds: matchStart.questionSeeds
+            )
+        } else {
+            matchManager.startSinglePlayerMatch(
+                playerName: appState.playerName.isEmpty ? "Player" : appState.playerName
+            )
         }
     }
     

@@ -6,7 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		AF10D2292FFF434E0081931B /* TestFlight_VersionNotes.md in Resources */ = {isa = PBXBuildFile; fileRef = AF10D2282FFF43420081931B /* TestFlight_VersionNotes.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		AF10D2282FFF43420081931B /* TestFlight_VersionNotes.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = TestFlight_VersionNotes.md; sourceTree = "<group>"; };
 		AF4FB08B2FF605EB00FD31B4 /* CODElonize.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CODElonize.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -67,6 +72,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AF10D22E2FFF51DA0081931B /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				AF10D2282FFF43420081931B /* TestFlight_VersionNotes.md */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		AF4FB0822FF605EB00FD31B4 = {
 			isa = PBXGroup;
 			children = (
@@ -77,6 +90,7 @@
 				AF4FB08D2FF605EB00FD31B4 /* CODElonize */,
 				AFE000EC2FFA687C006F5FAB /* Tests */,
 				AF4FB08C2FF605EB00FD31B4 /* Products */,
+				AF10D22E2FFF51DA0081931B /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -157,6 +171,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AF10D2292FFF434E0081931B /* TestFlight_VersionNotes.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -301,7 +316,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = RL4D4674QY;
+				DEVELOPMENT_TEAM = Z7A2NU72PN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CODElonize/CustomInfo.plist;
@@ -318,7 +333,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.nadila.CODElonize;
+				PRODUCT_BUNDLE_IDENTIFIER = com.arthaz.CODElonize;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -337,7 +352,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = RL4D4674QY;
+				DEVELOPMENT_TEAM = Z7A2NU72PN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CODElonize/CustomInfo.plist;
@@ -354,7 +369,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.nadila.CODElonize;
+				PRODUCT_BUNDLE_IDENTIFIER = com.arthaz.CODElonize;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;

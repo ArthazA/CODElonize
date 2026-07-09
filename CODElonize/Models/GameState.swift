@@ -126,10 +126,15 @@ class GameState: ObservableObject {
     /// - Parameters:
     ///   - players: The players participating in the match.
     ///   - localPlayerID: The ID of the player on this device.
-    func initializeMatch(players: [Player], localPlayerID: UUID) {
+    ///   - questionSeeds: Optional host-generated seeds, one per area
+    ///     (README §6.3). When provided, every device's `Area.createAllAreas`
+    ///     produces identical question seeds, which is required for fairness
+    ///     when multiple players attempt the same area. Pass `nil` for the
+    ///     single-player/dev fallback.
+    func initializeMatch(players: [Player], localPlayerID: UUID, questionSeeds: [UInt64]? = nil) {
         self.players = players
         self.localPlayerID = localPlayerID
-        self.areas = Area.createAllAreas()
+        self.areas = Area.createAllAreas(seeds: questionSeeds)
         self.matchTimeRemaining = GameConstants.matchDuration
         self.isMatchActive = true
         self.isMatchFinished = false

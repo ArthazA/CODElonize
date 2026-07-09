@@ -1,6 +1,18 @@
 import SwiftUI
-internal import UniformTypeIdentifiers
 
+/// The Code Arrangement quiz interaction.
+///
+/// DECISION (README §5.3/§8.1): `Docs/UpdateV2.md` originally described a
+/// drag-and-drop interaction ("player drags code blocks into slots"), and
+/// this file used to import `UniformTypeIdentifiers` for that purpose —
+/// but no `DragGesture`, `.draggable`, or `.onDrop` was ever actually
+/// implemented; the shipped mechanic has always been tap-to-select,
+/// tap-to-place (`selectedOption` state + `handleTap()` in `SlotView` below).
+/// That's now formally adopted as the intended interaction model rather than
+/// stale/abandoned scaffolding: dragging a small on-screen UI element while
+/// the rest of the scene is a live AR camera feed is awkward on mobile, and
+/// tap-to-select is both simpler and more reliable in that context. The
+/// unused `UniformTypeIdentifiers` import has been removed accordingly.
 struct CodeArrangementView: View {
     @ObservedObject var quizManager: QuizManager
     let question: Question

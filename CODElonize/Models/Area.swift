@@ -65,13 +65,20 @@ struct Area: Identifiable, Equatable {
     
     /// Creates the initial set of 7 areas with topics from `GameConstants`.
     /// The last area (index 6) is Armageddon-locked.
-    static func createAllAreas() -> [Area] {
+    ///
+    /// - Parameter seeds: Optional host-generated seeds, one per area index
+    ///   (README §6.3). When provided (multiplayer), every device produces
+    ///   identical areas with identical question seeds, which is required
+    ///   for fair simultaneous quiz attempts. When `nil` (single-player/dev
+    ///   fallback), each area generates its own local random seed, which is
+    ///   fine since there's only one device to keep in sync with.
+    static func createAllAreas(seeds: [UInt64]? = nil) -> [Area] {
         (0..<GameConstants.areaCount).map { index in
             Area(
                 index: index,
                 topic: GameConstants.areaTopics[index],
                 isArmageddonLocked: index == GameConstants.armageddonAreaIndex,
-                questionSeed: Randomizer.generateSeed()
+                questionSeed: seeds?[safe: index] ?? Randomizer.generateSeed()
             )
         }
     }

@@ -2,8 +2,8 @@ import SwiftUI
 
 struct Lobby: View {
     @EnvironmentObject var appState: AppState
-    @State var isHost: Bool = true // Toggle this in Preview to see the different states
-    
+    @State var isHost: Bool = true 
+
     private var players: [Player] {
         appState.lobbyManager.lobby?.players ?? []
     }
@@ -15,26 +15,26 @@ struct Lobby: View {
     private var isMyselfReady: Bool {
         myself?.isReady ?? false
     }
-    
+
     private var roomCode: [String] {
         guard let lobby = appState.lobbyManager.lobby else {
             return []
         }
         return lobby.roomCode.map(String.init)
     }
-    
+
     var body: some View {
         ZStack {
             Color.themeCream.edgesIgnoringSafeArea(.all)
-            
+
             VStack {
-                // Header
+
                 VStack(spacing: 12) {
                     Text("ROOM CODE")
                         .font(.system(size: 20, weight: .heavy, design: .rounded))
                         .foregroundColor(Color.themeBrown)
                         .padding(.top, 40)
-                    
+
                     HStack(spacing: 16) {
                         if roomCode.count == 4 {
                             HStack(spacing: 7) {
@@ -46,14 +46,17 @@ struct Lobby: View {
                             }
                         }
                     }
+
+                    Text("Tap to copy, share with friends nearby")
+                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                        .foregroundColor(Color.themeTeal)
                 }
-                
+
                 Divider()
                     .background(Color.themeTeal.opacity(0.5))
                     .padding(.horizontal, 40)
                     .padding(.vertical, 20)
-                
-                // Players List
+
                 VStack(spacing: 20) {
                     Text("Players Joining (\(players.count)/\(appState.lobbyManager.lobby?.maxPlayers ?? 5))")
                         .font(.system(size: 24, weight: .heavy, design: .rounded))
@@ -73,10 +76,9 @@ struct Lobby: View {
                     }
                     .padding(.horizontal, 20)
                 }
-                
+
                 Spacer()
-                
-                // Bottom Area
+
                 if !isMyselfReady {
                     VStack(spacing: 16) {
                         SecondaryButton(title: "Preview Island") {

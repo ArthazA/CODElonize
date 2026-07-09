@@ -60,6 +60,19 @@ class MatchManager: ObservableObject {
     /// Whether a power-up is currently resolving (blocks new activations, EC-020).
     @Published var isPowerUpResolving: Bool = false
     
+    /// Whether this device is the host for the current match.
+    ///
+    /// SCAFFOLD (README §6.1): host-authoritative sync means only the host
+    /// should actually *compute* conquest/power-up/score results; clients
+    /// should receive and apply results instead of recomputing them locally.
+    /// This flag is threaded through so that split can be implemented once
+    /// your teammate's transport contract (README §7) exists. It intentionally
+    /// does NOT gate any gameplay logic yet — doing so before there's an
+    /// "apply event received from host" pathway on the client would just
+    /// make clients silently do nothing. Defaults to `true` so the existing
+    /// single-player/dev fallback (§5.8/§8.5) keeps working unmodified.
+    @Published var isHost: Bool = true
+    
     // MARK: - Private
     
     private var cancellables = Set<AnyCancellable>()
@@ -73,6 +86,7 @@ class MatchManager: ObservableObject {
         setupTimerExpiry()
         setupArmageddonTrigger()
         setupGameStateObservation()
+        forwardChildPublishers()
     }
     
     /// Wires the timer's expiry callback to end the match.
@@ -119,19 +133,71 @@ class MatchManager: ObservableObject {
             .store(in: &cancellables)
     }
     
+    /// Forwards `objectWillChange` from every owned sub-manager up through
+    /// `MatchManager`'s own `objectWillChange`.
+    ///
+    /// FIX (README §5.2): `AppState` already does this for `lobbyManager`,
+    /// but `MatchManager` never did it for `spawnManager`, `timerSystem`, or
+    /// `quizManager`. Since `GameScreen`/`HUD` only observe `matchManager`
+    /// via `@EnvironmentObject`, SwiftUI only re-rendered when *MatchManager's
+    /// own* `@Published` properties changed — not when e.g.
+    /// `spawnManager.spawnedPowerUps` or `timerSystem.remainingTime` mutated
+    /// internally. That's the actual root cause behind both "power-ups only
+    /// seem to appear after Armageddon" and "the timer only seems to update
+    /// on interaction" — the underlying systems were ticking/spawning
+    /// correctly the whole time, the view just was never told to redraw
+    /// until something else (like a pinpoint tap) happened to touch
+    /// `MatchManager`'s own published state. This must be fixed before
+    /// building anything new on top of these systems (per §5.2/§9 step 2),
+    /// which is why it's wired here in `init()`.
+    private func forwardChildPublishers() {
+        spawnManager.objectWillChange
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
+        
+        timerSystem.objectWillChange
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
+        
+        quizManager.objectWillChange
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
+    }
+    
     // MARK: - Match Lifecycle
     
     /// Starts a new match with the given players.
     ///
-    /// For single-player testing, pass a single player. For multiplayer,
-    /// the networking layer will provide all connected players.
-    ///
     /// - Parameters:
     ///   - players: The players participating in the match.
     ///   - localPlayerID: The ID of the player on this device.
-    func startMatch(players: [Player], localPlayerID: UUID) {
-        // Initialize game state
-        gameState.initializeMatch(players: players, localPlayerID: localPlayerID)
+    ///   - isHost: Whether this device is the host for the match. Defaults to
+    ///     `true` to preserve existing single-player/dev-fallback behavior.
+    ///   - startTime: A shared match-start epoch (e.g. from `StartGameMessage`),
+    ///     used to drive the timer in self-correcting shared-timestamp mode
+    ///     (README §6.2). Pass `nil` to fall back to local per-device decrementing
+    ///     (single-player/dev mode).
+    ///   - questionSeeds: 7 host-generated seeds (one per area) so every device
+    ///     gets identical randomized question sets per area (README §6.3).
+    ///     Pass `nil` to let each area generate its own local seed
+    ///     (single-player/dev mode — fine, since there's only one device).
+    func startMatch(
+        players: [Player],
+        localPlayerID: UUID,
+        isHost: Bool = true,
+        startTime: Date? = nil,
+        questionSeeds: [UInt64]? = nil
+    ) {
+        self.isHost = isHost
+        
+        // Initialize game state (using shared seeds if provided — §6.3)
+        gameState.initializeMatch(players: players, localPlayerID: localPlayerID, questionSeeds: questionSeeds)
         
         // Reset match manager state
         isQuizActive = false
@@ -150,22 +216,28 @@ class MatchManager: ObservableObject {
         // Calculate initial leaderboard
         refreshLeaderboard()
         
-        // Start the countdown
-        timerSystem.resetTimer()
-        timerSystem.startTimer()
+        // Start the countdown — shared-timestamp mode if a start time was
+        // provided (multiplayer), local decrement mode otherwise (dev/single-player).
+        if let startTime {
+            timerSystem.start(from: startTime, duration: GameConstants.matchDuration)
+        } else {
+            timerSystem.resetTimer()
+            timerSystem.startTimer()
+        }
         
         // Start power-up spawning
         spawnManager.startSpawning()
         
         AppLogger.gameplay.info(
-            "Match started with \(players.count) player(s). Local player: '\(localPlayerID)'"
+            "Match started with \(players.count) player(s). Local player: '\(localPlayerID)', isHost: \(isHost)"
         )
     }
     
     /// Convenience method to start a single-player match for testing.
     ///
     /// Creates a match with just the local player. Useful during development
-    /// before networking is implemented.
+    /// before networking is implemented. Kept intentionally as a permanent
+    /// dev/testing fallback per README §8.5's recommendation.
     ///
     /// - Parameter playerName: The display name for the local player.
     func startSinglePlayerMatch(playerName: String) {
@@ -206,6 +278,11 @@ class MatchManager: ObservableObject {
         tsunamiUnlockTimers.removeAll()
         
         // Calculate final results
+        //
+        // SCAFFOLD (README §6.1): once the sync contract exists, only the
+        // host should compute this and broadcast the result; clients should
+        // apply a received `MatchResult` instead. Left unconditional for now
+        // since there is no "apply received result" pathway yet to fall back to.
         ConquestSystem.updateConqueredCounts(gameState: gameState)
         matchResult = ScoreManager.determineResult(gameState: gameState)
         
@@ -278,6 +355,14 @@ class MatchManager: ObservableObject {
         let playerID = gameState.localPlayerID
         
         // Process the conquest
+        //
+        // SCAFFOLD (README §6.1): under host-authoritative sync, a client
+        // should send this attempt result *up* to the host instead of
+        // computing conquest locally; only the host calls
+        // `ConquestSystem.processAttemptResult` and then broadcasts the
+        // outcome. Left unconditional (host-and-client both compute locally)
+        // until that transport exists, per §6.1's own note that this is
+        // blocked on the teammate's sync contract.
         let result = ConquestSystem.processAttemptResult(
             areaIndex: areaIndex,
             playerID: playerID,

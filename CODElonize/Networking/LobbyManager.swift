@@ -12,6 +12,13 @@ final class LobbyManager: ObservableObject {
 
     @Published var lobby: LobbyModel?
     @Published var didStartGame = false
+    
+    /// The match-start payload (shared start time, question seeds, final
+    /// roster) — set on the host when it starts the game, and on clients
+    /// when they receive the host's broadcast. `GameScreen` reads this to
+    /// start `MatchManager` with real multiplayer data instead of the
+    /// single-player dev fallback (README §6.3, §5.8).
+    @Published var pendingMatchStart: StartGameMessage?
 
     let hostManager = HostManager()
     let clientManager = ClientManager()
@@ -81,5 +88,22 @@ final class LobbyManager: ObservableObject {
         DispatchQueue.main.async {
             self.didStartGame = true
         }
+    }
+    
+    /// Records the match-start payload (from either the host starting the
+    /// game locally, or a client receiving the host's broadcast) and flags
+    /// that the game has started (README §6.3).
+    func applyMatchStart(_ message: StartGameMessage) {
+        DispatchQueue.main.async {
+            self.pendingMatchStart = message
+            self.didStartGame = true
+        }
+    }
+    
+    /// Clears the stored match-start payload. Call when returning to home so
+    /// a stale payload from a previous match isn't reused.
+    func clearMatchStart() {
+        pendingMatchStart = nil
+        didStartGame = false
     }
 }

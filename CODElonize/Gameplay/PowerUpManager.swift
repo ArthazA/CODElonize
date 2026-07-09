@@ -22,7 +22,7 @@ enum ActivationResult: Equatable {
 /// `PowerUpManager` contains the core logic for all three power-up effects:
 /// - **Earthquake**: Resets area (owner, times, questions)
 /// - **Tsunami**: Locks area, kicks active players
-/// - **Pocket Watch**: Reduces player's time by 10%, re-evaluates ownership
+/// - **Pocket Watch**: Reduces player's time by 20%, re-evaluates ownership
 ///
 /// It operates on `GameState` and calls into `AreaManager`/`ConquestSystem`
 /// for the actual state mutations.
@@ -201,7 +201,12 @@ enum PowerUpManager {
     /// Activates a Pocket Watch power-up on the target area.
     ///
     /// Effects (EC-024, EC-025 compatible):
-    /// - Reduces the activating player's recorded time by 10%
+    /// - Reduces the activating player's recorded time by 20% (`GameConstants.pocketWatchReduction`)
+    ///
+    /// FIX (README §6.6): this docstring previously said "10%", which never
+    /// matched the code — `GameConstants.pocketWatchReduction` has always
+    /// been `0.20` and the calculation below has always used it correctly.
+    /// This was a comment-only inaccuracy, now corrected.
     /// - Re-evaluates ownership — may change owner if adjusted time is fastest
     /// - Does nothing on unconquered areas (EC-025)
     ///
@@ -230,7 +235,7 @@ enum PowerUpManager {
         // Consume the power-up
         removeFromInventory(type: .pocketWatch, playerID: playerID, gameState: gameState)
         
-        // Reduce time by 10%
+        // Reduce time by 20% (GameConstants.pocketWatchReduction)
         let reduction = currentTime * Double(GameConstants.pocketWatchReduction)
         let newTime = currentTime - reduction
         

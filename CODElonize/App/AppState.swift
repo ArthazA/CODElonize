@@ -84,6 +84,9 @@ class AppState: ObservableObject {
         matchManager.matchResult = nil
         isHost = false
         currentScreen = .home
+        // Clear any stale match-start payload so the next match doesn't
+        // accidentally reuse a previous game's start time/seeds (README §6.3).
+        lobbyManager.clearMatchStart()
         AppLogger.ui.info("Returned to home, session reset")
     }
     
