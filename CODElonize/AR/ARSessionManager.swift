@@ -236,28 +236,55 @@ class ARSessionManager: NSObject, ObservableObject {
         }
     }
 
+//    private func detectPinpointTap(_ location: CGPoint) {
+//
+//        print("Tap location:", location, "| arView.bounds:", arView.bounds, "| arView.frame:", arView.frame)
+//        guard let entity = arView.entity(at: location) else {
+//            print("Nothing tapped")
+//            return
+//        }
+//
+//        print("Tapped entity:", entity.name)
+//
+//        var current: Entity? = entity
+//        while let e = current {
+//            print(" ->", e.name)
+//            current = e.parent
+//        }
+//
+//        if let areaIndex = pinpointSystem.areaIndex(for: entity) {
+//            print("Area:", areaIndex)
+//            tappedAreaIndex = areaIndex
+//        } else {
+//            print("Not a pinpoint")
+//        }
+//    }
+    
     private func detectPinpointTap(_ location: CGPoint) {
-
-        print("Tap location:", location, "| arView.bounds:", arView.bounds, "| arView.frame:", arView.frame)
         guard let entity = arView.entity(at: location) else {
             print("Nothing tapped")
             return
         }
 
-        print("Tapped entity:", entity.name)
-
-        var current: Entity? = entity
-        while let e = current {
-            print(" ->", e.name)
-            current = e.parent
-        }
-
         if let areaIndex = pinpointSystem.areaIndex(for: entity) {
             print("Area:", areaIndex)
             tappedAreaIndex = areaIndex
-        } else {
-            print("Not a pinpoint")
+            return
         }
+
+        if let (id, kind) = entity.findPowerUpSpawnID() {
+            switch kind {
+            case "powerup":
+                tappedPowerUpID = id
+            case "embermoth":
+                tappedEmberMothID = id
+            default:
+                break
+            }
+            return
+        }
+
+        print("Not a pinpoint or power-up")
     }
     
     // MARK: - Island Transform (called from Lobby UI)
