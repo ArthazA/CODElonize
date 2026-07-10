@@ -64,6 +64,9 @@ struct GameScreen: View {
     private func startMatchFromAvailableData() {
         if let matchStart = appState.lobbyManager.pendingMatchStart,
            let lobby = appState.lobbyManager.lobby {
+            print("NOW =", Date())
+            print("START =", matchStart.startTime)
+            print("DIFF =", Date().timeIntervalSince(matchStart.startTime))
             matchManager.startMatch(
                 players: matchStart.players,
                 localPlayerID: appState.playerID,

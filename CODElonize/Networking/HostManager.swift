@@ -231,6 +231,7 @@ final class HostManager: ObservableObject {
             questionSeeds: seeds,
             players: lobby.players
         )
+        print("START =", payload.startTime)
         let message = NetworkMessage<StartGameMessage>(
             type: .startGame,
             payload: payload

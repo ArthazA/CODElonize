@@ -117,7 +117,7 @@ class ARSessionManager: NSObject, ObservableObject {
             placeIslandAtTap(location)
         case .islandPlaced:
 //            detectPinpointTap(location)
-            detectEntityTap(location)
+            detectPinpointTap(location)
         case .failed:
             break
         }
