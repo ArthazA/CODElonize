@@ -13,8 +13,7 @@ struct GameScreen: View {
         ZStack {
             ARViewContainer(arSessionManager: appState.arSessionManager)
                 .edgesIgnoringSafeArea(.all)
-            
-            spawnedPowerUpsOverlay
+//            spawnedPowerUpsOverlay
             
             // HUD Overlay
             HUD()
@@ -32,9 +31,15 @@ struct GameScreen: View {
                 AreaPicker(powerUpType: type)
                     .transition(.opacity)
             }
+            
+            if matchManager.isAreaInfoActive, let idx = matchManager.areaInfoIndex {
+                AreaAttemptsView(areaIndex: idx)
+                    .transition(.opacity)
+            }
         }
         .animation(.easeInOut(duration: 0.3), value: matchManager.isQuizActive)
         .animation(.easeInOut(duration: 0.3), value: matchManager.isAreaPickerActive)
+        .animation(.easeInOut(duration: 0.3), value: matchManager.isAreaInfoActive)
         .onAppear {
             if !appState.arSessionManager.islandPlacement.isPlaced {
                 appState.arSessionManager.placeIslandUsingSavedTransformIfAvailable()
@@ -76,16 +81,16 @@ struct GameScreen: View {
     // MARK: - Spawned Power-ups
     
     /// Displays uncollected power-ups as floating collectible icons on the game screen.
-    private var spawnedPowerUpsOverlay: some View {
-        ForEach(matchManager.spawnManager.activePowerUps) { powerUp in
-            SpawnedPowerUpView(powerUp: powerUp) {
-                matchManager.handlePowerUpCollection(spawnID: powerUp.id)
-            }
-            .offset(spawnOffset(for: powerUp.spawnSlot))
-            .transition(.scale.combined(with: .opacity))
-        }
-        .animation(.spring(response: 0.5, dampingFraction: 0.7), value: matchManager.spawnManager.activePowerUps.count)
-    }
+//    private var spawnedPowerUpsOverlay: some View {
+//        ForEach(matchManager.spawnManager.activePowerUps) { powerUp in
+//            SpawnedPowerUpView(powerUp: powerUp) {
+//                matchManager.handlePowerUpCollection(spawnID: powerUp.id)
+//            }
+//            .offset(spawnOffset(for: powerUp.spawnSlot))
+//            .transition(.scale.combined(with: .opacity))
+//        }
+//        .animation(.spring(response: 0.5, dampingFraction: 0.7), value: matchManager.spawnManager.activePowerUps.count)
+//    }
     
     /// Maps a spawn slot index to a screen offset for mockup display.
     private func spawnOffset(for slot: Int) -> CGSize {
@@ -102,50 +107,50 @@ struct GameScreen: View {
 }
 
 /// A floating, tappable power-up collectible on the game screen.
-struct SpawnedPowerUpView: View {
-    let powerUp: SpawnedPowerUp
-    let onCollect: () -> Void
-    
-    @State private var isBouncing = false
-    
-    /// Color for this power-up type.
-    private var typeColor: Color {
-        switch powerUp.type {
-        case .earthquake: return .orange
-        case .tsunami: return .blue
-        case .pocketWatch: return .purple
-        }
-    }
-    
-    var body: some View {
-        Button(action: onCollect) {
-            ZStack {
-                // Glow circle
-                Circle()
-                    .fill(typeColor.opacity(0.3))
-                    .frame(width: 50, height: 50)
-                    .scaleEffect(isBouncing ? 1.2 : 1.0)
-                
-                // Inner circle
-                Circle()
-                    .fill(typeColor)
-                    .frame(width: 40, height: 40)
-                    .overlay(
-                        Image(systemName: powerUp.type.iconName)
-                            .font(.system(size: 18, weight: .bold))
-                            .foregroundColor(.white)
-                    )
-                    .shadow(color: typeColor.opacity(0.6), radius: 8, y: 4)
-            }
-            .offset(y: isBouncing ? -4 : 4)
-        }
-        .onAppear {
-            withAnimation(.easeInOut(duration: 1.2).repeatForever(autoreverses: true)) {
-                isBouncing = true
-            }
-        }
-    }
-}
+//struct SpawnedPowerUpView: View {
+//    let powerUp: SpawnedPowerUp
+//    let onCollect: () -> Void
+//    
+//    @State private var isBouncing = false
+//    
+//    /// Color for this power-up type.
+//    private var typeColor: Color {
+//        switch powerUp.type {
+//        case .earthquake: return .orange
+//        case .tsunami: return .blue
+//        case .pocketWatch: return .purple
+//        }
+//    }
+//    
+//    var body: some View {
+//        Button(action: onCollect) {
+//            ZStack {
+//                // Glow circle
+//                Circle()
+//                    .fill(typeColor.opacity(0.3))
+//                    .frame(width: 50, height: 50)
+//                    .scaleEffect(isBouncing ? 1.2 : 1.0)
+//                
+//                // Inner circle
+//                Circle()
+//                    .fill(typeColor)
+//                    .frame(width: 40, height: 40)
+//                    .overlay(
+//                        Image(systemName: powerUp.type.iconName)
+//                            .font(.system(size: 18, weight: .bold))
+//                            .foregroundColor(.white)
+//                    )
+//                    .shadow(color: typeColor.opacity(0.6), radius: 8, y: 4)
+//            }
+//            .offset(y: isBouncing ? -4 : 4)
+//        }
+//        .onAppear {
+//            withAnimation(.easeInOut(duration: 1.2).repeatForever(autoreverses: true)) {
+//                isBouncing = true
+//            }
+//        }
+//    }
+//}
 
 /// A tappable map pin representing an area on the island.
 struct MapPin: View {

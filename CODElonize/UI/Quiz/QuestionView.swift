@@ -176,14 +176,21 @@ struct QuestionView: View {
         }
     }
 
+//    @ViewBuilder
+//    private var freezeOverlay: some View {
+//        if quizManager.isFrozen {
+//            RoundedRectangle(cornerRadius: 16)
+//                .fill(Color.red.opacity(0.15))
+//                .allowsHitTesting(false)
+//                .transition(.opacity)
+//                .animation(.easeInOut(duration: 0.3), value: quizManager.isFrozen)
+//        }
+//    }
+    
     @ViewBuilder
     private var freezeOverlay: some View {
         if quizManager.isFrozen {
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color.red.opacity(0.15))
-                .allowsHitTesting(false)
-                .transition(.opacity)
-                .animation(.easeInOut(duration: 0.3), value: quizManager.isFrozen)
+            FreezeOverlay(remaining: quizManager.freezeRemaining, total: GameConstants.wrongAnswerPenalty)
         }
     }
 

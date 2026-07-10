@@ -2,172 +2,88 @@
     "topic": "Networking",
     "questions": [
         {
-            "id": "6e9b68d6-bff7-4213-aeab-17a62e06fe1d",
+            "id": "d1a705df-af65-43be-a946-e7ade0ba7a7f",
             "type": "mcq",
-            "text": "Sample MCQ 0 about Networking?",
+            "text": "What does HTTP stand for?",
             "choices": [
-                "Option A for Networking",
-                "Option B for Networking",
-                "Option C for Networking",
-                "Option D for Networking"
-            ],
-            "correctIndex": 0
-        },
-        {
-            "id": "82804f29-5c55-4c48-88b5-c9666e9d06ee",
-            "type": "mcq",
-            "text": "Sample MCQ 1 about Networking?",
-            "choices": [
-                "Option A for Networking",
-                "Option B for Networking",
-                "Option C for Networking",
-                "Option D for Networking"
+                "High-Level Text Protocol",
+                "HyperText Transfer Protocol",
+                "HyperText Transmission Process",
+                "HyperLink Transfer Protocol"
             ],
             "correctIndex": 1
         },
         {
-            "id": "d5177161-986e-4ee7-90fc-3bef34458e0c",
+            "id": "633a2b87-574c-4f87-a71a-4961391612b4",
             "type": "mcq",
-            "text": "Sample MCQ 2 about Networking?",
+            "text": "Which HTTP method is typically used to create a new resource?",
             "choices": [
-                "Option A for Networking",
-                "Option B for Networking",
-                "Option C for Networking",
-                "Option D for Networking"
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE"
             ],
-            "correctIndex": 2
+            "correctIndex": 1
         },
         {
-            "id": "29e5b5ac-b056-4db5-9d69-95769eeab046",
+            "id": "0b022592-b949-4fb3-9869-0c1cfe4a61de",
             "type": "mcq",
-            "text": "Sample MCQ 3 about Networking?",
+            "text": "What port is primarily used for HTTPS traffic?",
             "choices": [
-                "Option A for Networking",
-                "Option B for Networking",
-                "Option C for Networking",
-                "Option D for Networking"
+                "22",
+                "21",
+                "80",
+                "443"
             ],
             "correctIndex": 3
         },
         {
-            "id": "2da02390-485f-4501-bbe3-321225df3a51",
+            "id": "4576edd1-1b5b-491e-b604-baaca399ab93",
             "type": "mcq",
-            "text": "Sample MCQ 4 about Networking?",
+            "text": "Which layer of the OSI model does IP (Internet Protocol) operate on?",
             "choices": [
-                "Option A for Networking",
-                "Option B for Networking",
-                "Option C for Networking",
-                "Option D for Networking"
+                "Data Link Layer",
+                "Application Layer",
+                "Network Layer",
+                "Transport Layer"
+            ],
+            "correctIndex": 2
+        },
+        {
+            "id": "ab24f3bd-57f2-4a83-95ef-17b78f2c8008",
+            "type": "mcq",
+            "text": "What does DNS do?",
+            "choices": [
+                "Translates domain names to IP addresses",
+                "Encrypts web traffic",
+                "Assigns IP addresses to devices",
+                "Routes packets between networks"
             ],
             "correctIndex": 0
         },
         {
-            "id": "239a46f9-09d0-45f5-92d7-c6c7f489ec1b",
+            "id": "2b23d7f3-b7e9-477e-8943-df90ea20c088",
             "type": "mcq",
-            "text": "Sample MCQ 5 about Networking?",
+            "text": "Which protocol guarantees the reliable, in-order delivery of data?",
             "choices": [
-                "Option A for Networking",
-                "Option B for Networking",
-                "Option C for Networking",
-                "Option D for Networking"
+                "UDP",
+                "ICMP",
+                "IP",
+                "TCP"
             ],
-            "correctIndex": 1
+            "correctIndex": 3
         },
         {
-            "id": "402292be-216a-40d9-8e0c-6d3f9f5538da",
-            "type": "code_arrangement",
-            "text": "Complete the code for Networking problem 0:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
+            "id": "7d90f36c-bc86-4628-a34a-9d9408fa6098",
+            "type": "mcq",
+            "text": "What is the common format for transmitting structured data over APIs today?",
+            "choices": [
+                "XML",
+                "CSV",
+                "HTML",
+                "JSON"
             ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
-        },
-        {
-            "id": "18969894-9d35-46ba-89b6-1a549be44774",
-            "type": "code_arrangement",
-            "text": "Complete the code for Networking problem 1:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
-            ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
-        },
-        {
-            "id": "5d0c0ce0-081c-4a4a-8fe8-cec55b328657",
-            "type": "code_arrangement",
-            "text": "Complete the code for Networking problem 2:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
-            ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
-        },
-        {
-            "id": "b25414de-fb76-4e60-8fcf-a3ebebf25d70",
-            "type": "code_arrangement",
-            "text": "Complete the code for Networking problem 3:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
-            ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
+            "correctIndex": 3
         }
     ]
 }

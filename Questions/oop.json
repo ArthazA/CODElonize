@@ -2,172 +2,88 @@
     "topic": "OOP",
     "questions": [
         {
-            "id": "3e369401-327d-4e49-a8dc-ed6742bbdac9",
+            "id": "894f6972-0a30-4f48-a3d5-6394fd62c537",
             "type": "mcq",
-            "text": "Sample MCQ 0 about OOP?",
+            "text": "Which principle restricts direct access to some of an object's components?",
             "choices": [
-                "Option A for OOP",
-                "Option B for OOP",
-                "Option C for OOP",
-                "Option D for OOP"
-            ],
-            "correctIndex": 0
-        },
-        {
-            "id": "21296257-a811-442f-ae46-db15ccc85c91",
-            "type": "mcq",
-            "text": "Sample MCQ 1 about OOP?",
-            "choices": [
-                "Option A for OOP",
-                "Option B for OOP",
-                "Option C for OOP",
-                "Option D for OOP"
+                "Abstraction",
+                "Encapsulation",
+                "Inheritance",
+                "Polymorphism"
             ],
             "correctIndex": 1
         },
         {
-            "id": "c03100b1-07e3-4fee-82d1-11fdf128c216",
+            "id": "3e0cf667-93eb-4375-9e48-8d6e959060e0",
             "type": "mcq",
-            "text": "Sample MCQ 2 about OOP?",
+            "text": "What allows a child class to provide a specific implementation of a method already provided by its parent class?",
             "choices": [
-                "Option A for OOP",
-                "Option B for OOP",
-                "Option C for OOP",
-                "Option D for OOP"
-            ],
-            "correctIndex": 2
-        },
-        {
-            "id": "8a617678-d92f-46c4-be03-82d0f3a8f43a",
-            "type": "mcq",
-            "text": "Sample MCQ 3 about OOP?",
-            "choices": [
-                "Option A for OOP",
-                "Option B for OOP",
-                "Option C for OOP",
-                "Option D for OOP"
+                "Instantiation",
+                "Encapsulation",
+                "Overloading",
+                "Overriding"
             ],
             "correctIndex": 3
         },
         {
-            "id": "06b3e93c-eba1-4710-9ee4-258237edcb32",
+            "id": "935c0e9a-b147-4c45-8edf-c1eb3b8374b4",
             "type": "mcq",
-            "text": "Sample MCQ 4 about OOP?",
+            "text": "What is Polymorphism?",
             "choices": [
-                "Option A for OOP",
-                "Option B for OOP",
-                "Option C for OOP",
-                "Option D for OOP"
+                "The ability of different classes to be treated as instances of the same class through a common interface",
+                "Hiding the internal state of an object",
+                "Combining data and methods into a single unit",
+                "Creating multiple objects from one class"
             ],
             "correctIndex": 0
         },
         {
-            "id": "a7d7145f-dc6c-4d6e-a739-ebf55f4eec3d",
+            "id": "cecdb039-c9ad-4c91-9783-894b118ec830",
             "type": "mcq",
-            "text": "Sample MCQ 5 about OOP?",
+            "text": "What is an Abstract Class?",
             "choices": [
-                "Option A for OOP",
-                "Option B for OOP",
-                "Option C for OOP",
-                "Option D for OOP"
+                "A class that inherits from multiple parents",
+                "A class that cannot be instantiated on its own",
+                "A class with no properties",
+                "A class that can only have one instance"
             ],
             "correctIndex": 1
         },
         {
-            "id": "ef13e554-9ae5-41c0-bc94-3768e9bb48d1",
-            "type": "code_arrangement",
-            "text": "Complete the code for OOP problem 0:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
+            "id": "7b6cff2c-61d5-49f3-92ef-f94cb8346d5f",
+            "type": "mcq",
+            "text": "Which term describes a blueprint or template for creating objects?",
+            "choices": [
+                "Interface",
+                "Method",
+                "Package",
+                "Class"
             ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
+            "correctIndex": 3
         },
         {
-            "id": "f16e2a3f-3053-4cdf-90d0-66625a34cf3b",
-            "type": "code_arrangement",
-            "text": "Complete the code for OOP problem 1:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
+            "id": "d43f8b32-ef3e-425f-a254-5305fa91d961",
+            "type": "mcq",
+            "text": "What is the concept of a class deriving properties and behaviors from another class?",
+            "choices": [
+                "Association",
+                "Inheritance",
+                "Composition",
+                "Polymorphism"
             ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
+            "correctIndex": 1
         },
         {
-            "id": "58ffd2d7-016f-40e0-9ac7-9ee4c7b83c20",
-            "type": "code_arrangement",
-            "text": "Complete the code for OOP problem 2:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
+            "id": "3ac66a47-8792-484c-83d3-3a34c1c7a22d",
+            "type": "mcq",
+            "text": "In OOP, what is a constructor?",
+            "choices": [
+                "A variable that holds the object's state",
+                "A function that destroys an object",
+                "A tool for compiling code",
+                "A special method used to initialize objects"
             ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
-        },
-        {
-            "id": "c201b3a0-c42c-4f92-a4db-871b6eb3159a",
-            "type": "code_arrangement",
-            "text": "Complete the code for OOP problem 3:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
-            ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
+            "correctIndex": 3
         }
     ]
 }

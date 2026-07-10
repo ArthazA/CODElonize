@@ -9,6 +9,13 @@ import Foundation
 import Combine
 import os
 
+struct AreaAttempt: Identifiable {
+    let id: String
+    let player: Player?
+    let time: TimeInterval
+    let isFastest: Bool
+}
+
 /// Central coordinator that ties together all gameplay systems.
 ///
 /// `MatchManager` is the single `ObservableObject` injected into the SwiftUI environment.
@@ -51,6 +58,9 @@ class MatchManager: ObservableObject {
     /// Whether the area picker overlay is showing (for power-up activation).
     @Published var isAreaPickerActive: Bool = false
     
+    @Published var isAreaInfoActive: Bool = false
+    @Published var areaInfoIndex: Int? = nil
+    
     /// The power-up type currently being targeted (waiting for area selection).
     @Published var pendingPowerUpType: PowerUpType? = nil
     
@@ -72,6 +82,24 @@ class MatchManager: ObservableObject {
     /// make clients silently do nothing. Defaults to `true` so the existing
     /// single-player/dev fallback (§5.8/§8.5) keeps working unmodified.
     @Published var isHost: Bool = true
+    
+    func closeAreaInfo() {
+        isAreaInfoActive = false
+        areaInfoIndex = nil
+    }
+
+    func attempts(forArea index: Int) -> [AreaAttempt] {
+        guard let area = gameState.area(byIndex: index) else { return [] }
+        let sorted = area.attemptRecords.sorted { $0.value < $1.value }
+        return sorted.enumerated().map { i, entry in
+            AreaAttempt(
+                id: entry.key,
+                player: gameState.player(byID: entry.key),
+                time: entry.value,
+                isFastest: i == 0
+            )
+        }
+    }
     
     // MARK: - Private
     
@@ -313,12 +341,18 @@ class MatchManager: ObservableObject {
             return
         }
         
+        guard !isAreaInfoActive else {
+            AppLogger.gameplay.debug("Pinpoint tap ignored — area info active")
+            return
+        }
+        
         let playerID = gameState.localPlayerID
         
-        // Check if the player already completed this area (EC-012: allow viewing)
         if let player = gameState.localPlayer, player.completedAreas.contains(areaIndex) {
-            AppLogger.gameplay.info("Area \(areaIndex) already attempted — view only")
-            // Future: show area info overlay instead of quiz
+            AppLogger.gameplay.info("Area \(areaIndex) already attempted — showing attempts")
+            areaInfoIndex = areaIndex
+            isAreaInfoActive = true
+            // Future: show area info overlay instead of quiz DONES
             return
         }
         

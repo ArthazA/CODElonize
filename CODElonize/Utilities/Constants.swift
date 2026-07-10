@@ -75,7 +75,7 @@ enum GameConstants {
     // MARK: - Match
     
     /// Default match duration in seconds (5 minutes).
-    static let matchDuration: TimeInterval = 300
+    static let matchDuration: TimeInterval = 180
     
     /// Time penalty in seconds when a wrong answer is given (UI freeze).
     static let wrongAnswerPenalty: TimeInterval = 3

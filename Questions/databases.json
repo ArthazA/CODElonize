@@ -2,172 +2,88 @@
     "topic": "Databases",
     "questions": [
         {
-            "id": "3d1eaccd-2f62-455f-9930-da3311cd53af",
+            "id": "403f4e3e-d327-4d87-92a0-c11422ea5883",
             "type": "mcq",
-            "text": "Sample MCQ 0 about Databases?",
+            "text": "What does SQL stand for?",
             "choices": [
-                "Option A for Databases",
-                "Option B for Databases",
-                "Option C for Databases",
-                "Option D for Databases"
-            ],
-            "correctIndex": 0
-        },
-        {
-            "id": "df8710c6-83a2-4baa-9f63-60503d5a3909",
-            "type": "mcq",
-            "text": "Sample MCQ 1 about Databases?",
-            "choices": [
-                "Option A for Databases",
-                "Option B for Databases",
-                "Option C for Databases",
-                "Option D for Databases"
-            ],
-            "correctIndex": 1
-        },
-        {
-            "id": "65d4fa24-7612-4262-9b3b-ca1c9bf54bc2",
-            "type": "mcq",
-            "text": "Sample MCQ 2 about Databases?",
-            "choices": [
-                "Option A for Databases",
-                "Option B for Databases",
-                "Option C for Databases",
-                "Option D for Databases"
+                "Standard Query Logic",
+                "Sequential Query Language",
+                "Structured Query Language",
+                "Simple Query Language"
             ],
             "correctIndex": 2
         },
         {
-            "id": "dcc443a5-a94c-4baa-ad05-b212e3fecea5",
+            "id": "4356881e-90ac-4b93-9ec0-9dddd32298b3",
             "type": "mcq",
-            "text": "Sample MCQ 3 about Databases?",
+            "text": "Which SQL command is used to extract data from a database?",
             "choices": [
-                "Option A for Databases",
-                "Option B for Databases",
-                "Option C for Databases",
-                "Option D for Databases"
-            ],
-            "correctIndex": 3
-        },
-        {
-            "id": "6a3cf044-b3e3-481a-b1fa-c126f36f12d6",
-            "type": "mcq",
-            "text": "Sample MCQ 4 about Databases?",
-            "choices": [
-                "Option A for Databases",
-                "Option B for Databases",
-                "Option C for Databases",
-                "Option D for Databases"
-            ],
-            "correctIndex": 0
-        },
-        {
-            "id": "02231c99-a76d-45b7-ab74-2600c5302feb",
-            "type": "mcq",
-            "text": "Sample MCQ 5 about Databases?",
-            "choices": [
-                "Option A for Databases",
-                "Option B for Databases",
-                "Option C for Databases",
-                "Option D for Databases"
+                "GET",
+                "SELECT",
+                "FETCH",
+                "EXTRACT"
             ],
             "correctIndex": 1
         },
         {
-            "id": "f7659093-69d1-4033-8e8d-d10c83bc6cba",
-            "type": "code_arrangement",
-            "text": "Complete the code for Databases problem 0:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
+            "id": "872bc263-fa58-4aa7-930a-79ac830cae50",
+            "type": "mcq",
+            "text": "In relational databases, what uniquely identifies each record in a table?",
+            "choices": [
+                "Primary Key",
+                "Foreign Key",
+                "Unique Key",
+                "Index"
             ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
+            "correctIndex": 0
         },
         {
-            "id": "12837019-a4f8-426e-8353-1de4c38c6122",
-            "type": "code_arrangement",
-            "text": "Complete the code for Databases problem 1:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
+            "id": "cfa00fa6-9ece-4002-9ba2-049c72484e98",
+            "type": "mcq",
+            "text": "What is a Foreign Key?",
+            "choices": [
+                "A field that links to the primary key of another table",
+                "A key used for encryption",
+                "A key that allows null values",
+                "A key generated outside the database"
             ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
+            "correctIndex": 0
         },
         {
-            "id": "b1eec2b9-9c0c-4402-b3ea-85221bd3b449",
-            "type": "code_arrangement",
-            "text": "Complete the code for Databases problem 2:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
+            "id": "d7792281-bf70-46ed-9f79-9b9682f9049a",
+            "type": "mcq",
+            "text": "Which property of a transaction ensures that it either fully completes or completely rolls back?",
+            "choices": [
+                "Atomicity",
+                "Isolation",
+                "Consistency",
+                "Durability"
             ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
+            "correctIndex": 0
         },
         {
-            "id": "3e3b6d4e-11ae-4d6f-b5c0-9caa9662953e",
-            "type": "code_arrangement",
-            "text": "Complete the code for Databases problem 3:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
+            "id": "57c58f22-87d6-4ce3-9c3e-443481eeda5c",
+            "type": "mcq",
+            "text": "What is the purpose of an Index in a database?",
+            "choices": [
+                "To link two tables together",
+                "To enforce uniqueness",
+                "To compress the data",
+                "To speed up data retrieval"
             ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
+            "correctIndex": 3
+        },
+        {
+            "id": "9653a856-d5ff-4fd7-b433-fb77610fa9a2",
+            "type": "mcq",
+            "text": "Which type of database stores data as JSON-like documents rather than tables?",
+            "choices": [
+                "Graph (e.g. Neo4j)",
+                "NoSQL (e.g. MongoDB)",
+                "Relational (e.g. PostgreSQL)",
+                "In-Memory (e.g. Redis)"
             ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
+            "correctIndex": 1
         }
     ]
 }

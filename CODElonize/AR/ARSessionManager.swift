@@ -43,6 +43,12 @@ class ARSessionManager: NSObject, ObservableObject {
     
     /// Current island scale factor.
     @Published var islandScale: Float = GameConstants.defaultIslandScale
+    
+    /// Set by AppState/MatchManager whenever a SwiftUI overlay (quiz, area
+    /// picker, area info) is covering the AR view. When true, AR tap-to-place/
+    /// tap-to-interact is suppressed so overlay buttons reliably receive touches
+    /// instead of racing the UIKit gesture recognizer attached to `arView`.
+    @Published var isOverlayBlockingTaps = false
 
     @Published var islandRotation: Float = 0
     @Published var isPreviewMode = false
@@ -66,6 +72,11 @@ class ARSessionManager: NSObject, ObservableObject {
     let islandPlacement = IslandPlacement()
 
     let pinpointSystem = PinpointSystem()
+    
+    let powerUpEntitySystem = PowerUpEntitySystem()
+
+    @Published var tappedPowerUpID: UUID? = nil
+    @Published var tappedEmberMothID: UUID? = nil
 
     private func configureARView(_ view: ARView) {
 
@@ -81,6 +92,7 @@ class ARSessionManager: NSObject, ObservableObject {
         view.session.run(configuration)
 
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+        tapGesture.delegate = self
         view.addGestureRecognizer(tapGesture)
 
         #if DEBUG
@@ -91,6 +103,8 @@ class ARSessionManager: NSObject, ObservableObject {
     }
 
     @objc private func handleTap(_ sender: UITapGestureRecognizer) {
+        guard !isOverlayBlockingTaps else { return }
+        
         let location = sender.location(in: arView)
 
         if isPreviewMode {
@@ -102,7 +116,8 @@ class ARSessionManager: NSObject, ObservableObject {
         case .initializing, .planeDetected:
             placeIslandAtTap(location)
         case .islandPlaced:
-            detectPinpointTap(location)
+//            detectPinpointTap(location)
+            detectEntityTap(location)
         case .failed:
             break
         }
@@ -255,6 +270,11 @@ class ARSessionManager: NSObject, ObservableObject {
         self.islandRotation = rotation
         islandPlacement.updateTransform(scale: scale, rotation: rotation)
     }
+    
+    func syncPowerUps(powerUps: [SpawnedPowerUp], emberMoths: [SpawnedEmberMoth]) {
+        guard let anchor = islandPlacement.islandAnchor else { return }
+        powerUpEntitySystem.sync(powerUps: powerUps, emberMoths: emberMoths, islandAnchor: anchor)
+    }
 
     func pauseSession() {
         arView.session.pause()
@@ -272,6 +292,7 @@ class ARSessionManager: NSObject, ObservableObject {
 
     func resetSession() {
         islandPlacement.removeIsland(from: arView)
+        powerUpEntitySystem.removeAll()
         pinpointSystem.removeAllPinpoints()
         sessionState = .initializing
         isPlaneDetected = false
@@ -322,5 +343,14 @@ extension ARSessionManager: ARSessionDelegate {
 
     func sessionInterruptionEnded(_ session: ARSession) {
         AppLogger.ar.info("AR session interruption ended, resuming")
+    }
+}
+
+extension ARSessionManager: UIGestureRecognizerDelegate {
+    func gestureRecognizer(
+        _ gestureRecognizer: UIGestureRecognizer,
+        shouldReceive touch: UITouch
+    ) -> Bool {
+        !isOverlayBlockingTaps
     }
 }

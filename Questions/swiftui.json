@@ -2,172 +2,88 @@
     "topic": "SwiftUI",
     "questions": [
         {
-            "id": "90bf54c5-cade-4ebf-be4a-2011242845fa",
+            "id": "96934723-c0f5-49ae-99ad-8c01260c14e3",
             "type": "mcq",
-            "text": "Sample MCQ 0 about SwiftUI?",
+            "text": "Which property wrapper is used for simple state management within a view?",
             "choices": [
-                "Option A for SwiftUI",
-                "Option B for SwiftUI",
-                "Option C for SwiftUI",
-                "Option D for SwiftUI"
-            ],
-            "correctIndex": 0
-        },
-        {
-            "id": "a92fc51a-3be2-4adc-a61d-4fed1728ebc2",
-            "type": "mcq",
-            "text": "Sample MCQ 1 about SwiftUI?",
-            "choices": [
-                "Option A for SwiftUI",
-                "Option B for SwiftUI",
-                "Option C for SwiftUI",
-                "Option D for SwiftUI"
+                "@ObservedObject",
+                "@State",
+                "@Binding",
+                "@Environment"
             ],
             "correctIndex": 1
         },
         {
-            "id": "c01677dc-ca7e-423e-9b19-782793f8da9f",
+            "id": "54a0c588-18cb-4432-899d-2f9ac98fc868",
             "type": "mcq",
-            "text": "Sample MCQ 2 about SwiftUI?",
+            "text": "What is the basic building block of a UI in SwiftUI?",
             "choices": [
-                "Option A for SwiftUI",
-                "Option B for SwiftUI",
-                "Option C for SwiftUI",
-                "Option D for SwiftUI"
-            ],
-            "correctIndex": 2
-        },
-        {
-            "id": "7e0b8e1a-9990-4b1c-915c-587f9a9c437a",
-            "type": "mcq",
-            "text": "Sample MCQ 3 about SwiftUI?",
-            "choices": [
-                "Option A for SwiftUI",
-                "Option B for SwiftUI",
-                "Option C for SwiftUI",
-                "Option D for SwiftUI"
+                "Storyboard",
+                "Controller",
+                "Model",
+                "View"
             ],
             "correctIndex": 3
         },
         {
-            "id": "b20009a4-c4a4-4ff8-893b-ed44ef6e6bf6",
+            "id": "43a83988-f361-4f2c-9369-0f531106836d",
             "type": "mcq",
-            "text": "Sample MCQ 4 about SwiftUI?",
+            "text": "How do you create a vertical stack of views?",
             "choices": [
-                "Option A for SwiftUI",
-                "Option B for SwiftUI",
-                "Option C for SwiftUI",
-                "Option D for SwiftUI"
-            ],
-            "correctIndex": 0
-        },
-        {
-            "id": "4bf18d2d-bbb1-4e7d-8a15-75b23977d49d",
-            "type": "mcq",
-            "text": "Sample MCQ 5 about SwiftUI?",
-            "choices": [
-                "Option A for SwiftUI",
-                "Option B for SwiftUI",
-                "Option C for SwiftUI",
-                "Option D for SwiftUI"
+                "List",
+                "VStack",
+                "HStack",
+                "ZStack"
             ],
             "correctIndex": 1
         },
         {
-            "id": "f21f7c5a-90b7-40d6-87bc-f31b5513dfac",
-            "type": "code_arrangement",
-            "text": "Complete the code for SwiftUI problem 0:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
+            "id": "3812b102-ff69-4fdb-8d80-f8a823e38d5c",
+            "type": "mcq",
+            "text": "Which modifier is used to add space around a view?",
+            "choices": [
+                ".margin()",
+                ".offset()",
+                ".padding()",
+                ".spacing()"
             ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
+            "correctIndex": 2
         },
         {
-            "id": "bfa3321c-9e62-4637-9cde-e139a64962e0",
-            "type": "code_arrangement",
-            "text": "Complete the code for SwiftUI problem 1:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
+            "id": "814e7cb8-8837-4696-949b-e630b0401369",
+            "type": "mcq",
+            "text": "What protocol must a struct conform to in order to be a SwiftUI view?",
+            "choices": [
+                "AnyObject",
+                "View",
+                "UIView",
+                "ObservableObject"
             ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
+            "correctIndex": 1
         },
         {
-            "id": "cf111459-8285-4315-abac-ffdc8debc114",
-            "type": "code_arrangement",
-            "text": "Complete the code for SwiftUI problem 2:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
+            "id": "edd21ba8-9f1e-4aca-9c3b-6e10115921a5",
+            "type": "mcq",
+            "text": "Which property wrapper allows a view to read and write a value owned by a parent view?",
+            "choices": [
+                "@EnvironmentObject",
+                "@Published",
+                "@Binding",
+                "@State"
             ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
+            "correctIndex": 2
         },
         {
-            "id": "e7cda671-69ac-44e4-bcd7-86a02d1f9f23",
-            "type": "code_arrangement",
-            "text": "Complete the code for SwiftUI problem 3:",
-            "codeTemplate": [
-                "func example() {",
-                "    _____",
-                "    print(\"middle\")",
-                "    _____",
-                "    _____",
-                "}"
+            "id": "46c0d2df-748e-46cf-b2de-764e5baafb46",
+            "type": "mcq",
+            "text": "How do you present a modal sheet in SwiftUI?",
+            "choices": [
+                ".present(sheet:)",
+                ".modal(isPresented:content:)",
+                ".sheet(isPresented:content:)",
+                ".overlay(sheet:)"
             ],
-            "options": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b",
-                "let d = 4"
-            ],
-            "correctAnswer": [
-                "let a = 1",
-                "let b = 2",
-                "let c = a + b"
-            ]
+            "correctIndex": 2
         }
     ]
 }
